@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Parent Guide — Gurukool</title>
@@ -95,14 +98,15 @@
       <p>There is a single 4–6 digit PIN that protects <b>both champs on this device</b>. It is asked before anything
          that could change or erase progress:</p>
       <ul>
-        <li>Maths: <b>Reset all progress</b>, loading a progress code or file, cloud sync <b>settings</b></li>
-        <li>Science: the Doubt Jar's parent view, cloud sync settings, disconnecting sync</li>
-        <li>Everywhere: loading a backup file</li>
+        <li>Maths: <b>Reset all progress</b>, loading a progress code or file</li>
+        <li>Science: the Doubt Jar's parent view, resetting progress (Science Dashboard)</li>
+        <li>Admin Console: cloud sync <b>settings</b>, disconnecting sync, loading a backup file</li>
       </ul>
-      <p>Your child can freely play, learn and tap the sync button — the PIN only guards the adult controls.
-         The PIN lives on this device (it is not synced, not emailed, not stored anywhere else).</p>
+      <p>Your child can freely play and learn — saving is fully automatic, and the PIN only guards the adult
+         controls. The PIN lives on this device (it is not synced, not emailed, not stored anywhere else).</p>
       <div class="two" style="margin-top:14px;">
         <button class="btn btn--ghost" onclick="guideChangePin()">🔑 Change the PIN</button>
+        <a class="btn btn--ghost" href="admin.html" style="text-decoration:none;">⚙️ Open the Admin Console</a>
       </div>
       <div class="callout callout--amber">
         <b>Forgot the PIN?</b> The honest escape hatch: clear this website's data in the browser settings
@@ -133,23 +137,25 @@
       <h2>☁️ Cloud sync — one tap saves both champs</h2>
       <span class="tag tag--teal">Set up once per device · a parent's 5-minute job</span>
       <p style="margin-top:12px;">This stores your child's maths <b>and</b> science progress in a private file in your own
-         GitHub account — your family's locker. After setup, one tap on <b>☁️</b> (Science home page or Maths
-         Dashboard) does three things: pulls the latest progress, merges it (nothing is ever lost — best scores and
-         badges are kept from every device), and saves a dated backup file to this device.</p>
+         GitHub account — your family's locker. After setup, <b>saving is automatic</b>: every Gurukool page
+         silently syncs to the locker every 10 minutes while it is open, and the merge never destroys anything —
+         best scores and badges are kept from every device. A dated backup file for your records downloads
+         whenever you press <b>Sync now</b> in the Admin Console.</p>
       <ol class="steps">
         <li>On <b>github.com</b>, create a new repository: any name (for example <i>champs-progress</i>), and choose <b>Private</b>. You don't need to add anything to it.</li>
         <li>Still on GitHub: click your profile picture → <b>Settings</b> → <b>Developer settings</b> (bottom of the left menu) → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
         <li>Name it anything (e.g. <i>champ-sync</i>). Under <b>Repository access</b> choose <b>Only select repositories</b> and pick the repo you just made. Under <b>Permissions → Repository permissions → Contents</b>, choose <b>Read and write</b>. For <b>Expiration</b>, choose <b>No expiration</b> — then it never runs out.</li>
         <li>Generate, then <b>copy the token</b> (it starts with <i>github_pat_</i>). GitHub shows it only once — paste it temporarily in your notes or email it to yourself.</li>
-        <li>In the game: tap <b>☁️</b> (Science home) or Math-Champ <b>Dashboard → ⚙️ Settings (parent)</b>, enter your GitHub username, the repo name and the token. Then tap <b>Sync now</b>.</li>
+        <li>Open the <b>Admin Console</b>: Gurukool home page → bottom link <b>⚙️ Admin console</b> → enter the parent PIN → fill your GitHub username, repo name and token → <b>Save settings & sync now</b>. That ONE setup powers every champ on the device — Math-Champ, Science-Champ and future ones like LR-Champ. From then on everything syncs by itself every 10 minutes; press <b>Sync now</b> in the console any time for an instant push plus a dated backup file.</li>
       </ol>
       <div class="callout callout--green">
-        <b>Day-to-day:</b> no routine needed — progress saves on the device automatically. Just tap <b>☁️</b>
-        once at the end of a session if you want it in the locker too. On a <b>new device</b>: open the site, set up
-        the ☁️ once (same steps 2–5 — the same token works everywhere), tap Sync, and everything arrives.
+        <b>Day-to-day:</b> no routine needed — progress saves on the device instantly and to the family locker
+        automatically every 10 minutes while any champ is open. On a <b>new device</b>: do the console setup once
+        (same steps 2–5 — the same token works everywhere), and the latest progress arrives automatically when a
+        champ page is opened (or press <b>Sync now</b> in the console).
       </div>
       <p><b>If a token ever stops working</b> (expired or revoked): nothing is lost. Progress stays on each device
-         and in the repo. Just make a new token and paste it into the ☁️ settings.</p>
+         and in the repo. Just make a new token and paste it into the Admin Console.</p>
     </div>
 
     <div class="card">
@@ -181,8 +187,8 @@
         <tr><th>"GitHub says 404"</th><td>The repo name or username is mistyped in ☁️ settings, or the token doesn't include that repo.</td></tr>
         <tr><th>"GitHub says 401/403"</th><td>The token is expired or missing the <b>Contents: Read and write</b> permission. Make a new one.</td></tr>
         <tr><th>"Could not save"</th><td>Usually no internet, or the token lost write access. Local progress is unaffected — nothing is at risk.</td></tr>
-        <tr><th>Wrong device has newer progress</th><td>Just tap ☁️ on that device first, then on this one — merging always keeps the best of both.</td></tr>
-        <tr><th>Fresh device looks empty</th><td>Set up ☁️ on it once, tap Sync — everything arrives.</td></tr>
+        <tr><th>Wrong device has newer progress</th><td>Open any champ on that device once — its auto-sync pushes the progress up, and this device pulls it within 10 minutes. Merging always keeps the best of both.</td></tr>
+        <tr><th>Fresh device looks empty</th><td>Set up cloud in the Admin Console on it once — everything arrives automatically when a champ is opened (or press Sync now).</td></tr>
       </table>
     </div>
 

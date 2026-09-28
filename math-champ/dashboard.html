@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Dashboard — Math-Champ</title>
+  <title>Math-Champ — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -108,38 +111,19 @@
 
     <!-- cloud sync -->
     <section class="card card--elevated card--teal" style="margin-bottom:16px;">
-      <p class="section-label section-label--teal">☁️ Cloud sync — both champs, one tap</p>
+      <p class="section-label section-label--teal">☁️ Cloud sync — automatic, no buttons</p>
       <p class="small muted" style="margin:0 0 16px;">
-        One tap saves <b>Maths + Science</b> progress to your family's private GitHub locker <i>and</i> downloads a
-        dated backup file to this device — so nothing can ever be lost. Set up once per device (a parent job — see
-        <b>Settings</b>).
+        Progress saves to this device instantly on every answer, and both champs now <b>auto-sync to the
+        family cloud locker every 10 minutes</b> while any Gurukool page is open — there is nothing to
+        press and no save button anywhere. Cloud is set up and managed in ONE place, the <b>Admin
+        Console</b> (from the Gurukool home page, parent PIN needed) — one setup powers every champ,
+        including future ones.
       </p>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn btn--small btn--teal" id="cs-sync" type="button">☁️ Sync now + save backup</button>
-        <button class="btn btn--small btn--ghost" id="cs-setup" type="button">⚙️ Settings (parent)</button>
+        <a class="btn btn--small btn--ghost" href="../admin.html" style="text-decoration:none;">⚙️ Admin console</a>
         <a class="btn btn--small btn--ghost" href="../parent-guide.html" style="text-decoration:none;">📖 Parent guide</a>
-        <label class="btn btn--small btn--ghost" for="cs-file" style="cursor:pointer;">📂 Load backup file</label>
-        <input type="file" id="cs-file" accept=".txt,.json" style="display:none;">
       </div>
-      <div id="cs-setup-form" style="display:none; margin-top:14px;">
-        <p class="field-label" style="color:var(--teal); margin:0 0 8px;">One-time cloud setup (this device)</p>
-        <div class="pp-grid">
-          <div class="pp-col">
-            <input id="cs-owner" placeholder="GitHub username" style="width:100%; margin-bottom:6px; padding:8px 10px; border:1px solid var(--line); border-radius:8px;">
-            <input id="cs-repo" placeholder="Private repo name (e.g. champs-progress)" style="width:100%; margin-bottom:6px; padding:8px 10px; border:1px solid var(--line); border-radius:8px;">
-          </div>
-          <div class="pp-col">
-            <input id="cs-token" placeholder="Fine-grained token (starts github_pat_…)" style="width:100%; margin-bottom:6px; padding:8px 10px; border:1px solid var(--line); border-radius:8px;">
-            <input id="cs-path" placeholder="File name inside repo (default progress.json)" style="width:100%; margin-bottom:6px; padding:8px 10px; border:1px solid var(--line); border-radius:8px;">
-          </div>
-        </div>
-        <p class="small muted" style="margin:0 0 10px;">On github.com: create a <b>private</b> repo, then Settings → Developer settings → Fine-grained tokens →
-        Generate. Select ONLY that repo, permission <b>Contents: Read and write</b>, expiration <b>No expiration</b>.
-        The same setup works for Science-Champ — it is shared.</p>
-        <button class="btn btn--small btn--primary" id="cs-save" type="button">Save & sync now</button>
-      </div>
-      <div id="cs-note" class="tag tag--green" style="display:none; margin-top:10px;"></div>
-    </section>
+      </section>
 
     <!-- progress passport -->
     <section class="card card--elevated card--teal" style="margin-bottom:16px;">
@@ -428,74 +412,6 @@
       reader.readAsText(f);
     });
 
-    /* ---------- cloud sync (both champs, one tap) ---------- */
-
-    function csNote(msg, ms) {
-      var n = el('cs-note');
-      n.textContent = msg;
-      n.style.display = 'inline-block';
-      setTimeout(function () { n.style.display = 'none'; }, ms || 5000);
-    }
-
-    el('cs-sync').addEventListener('click', function () {
-      OC.save();
-      ChampSync.sync({
-        getSq: null,
-        getOc: function () { return OC.STATE; },
-        onMerged: function (sq, oc) {
-          if (oc && oc.attempts) { OC.STATE = oc; OC.save(); }
-        },
-        toast: function (m) { csNote(m, 4000); },
-        onNeedSetup: function () { el('cs-setup-form').style.display = 'block'; csNote('First set up cloud sync below (a parent does this once per device).', 6000); }
-      }).then(function (status) {
-        if (status === 'ok') setTimeout(function () { location.reload(); }, 1800);
-      });
-    });
-
-    el('cs-setup').addEventListener('click', function () {
-      OC.parentGate(function () {
-        var c = ChampSync.ghCfg();
-        el('cs-owner').value = c ? c.owner : '';
-        el('cs-repo').value = c ? c.repo : '';
-        el('cs-path').value = c ? (c.path || 'progress.json') : 'progress.json';
-        el('cs-token').value = c ? c.token : '';
-        el('cs-setup-form').style.display = 'block';
-      });
-    });
-
-    el('cs-save').addEventListener('click', function () {
-      var c = {
-        owner: el('cs-owner').value.trim(),
-        repo: el('cs-repo').value.trim(),
-        path: el('cs-path').value.trim() || 'progress.json',
-        token: el('cs-token').value.trim()
-      };
-      if (!c.owner || !c.repo || !c.token) { alert('Please fill the username, repo and token.'); return; }
-      ChampSync.saveGhCfg(c);
-      el('cs-setup-form').style.display = 'none';
-      el('cs-sync').click();
-    });
-
-    el('cs-file').addEventListener('change', function () {
-      var f = this.files && this.files[0];
-      if (!f) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        OC.parentGate(function () {
-          try {
-            ChampSync.applyBackupText(String(reader.result || ''), {
-              getOc: function () { return OC.STATE; },
-              onMerged: function (sq, oc) { if (oc && oc.attempts) { OC.STATE = oc; OC.save(); } }
-            });
-            csNote('Backup loaded — maths + science updated on this device!', 4000);
-            setTimeout(function () { location.reload(); }, 1500);
-          } catch (e) {
-            alert('Could not load that backup: ' + e.message);
-          }
-        });
-      };
-      reader.readAsText(f);
-    });
 
     /* ---------- reset (parent PIN required) ---------- */
     el('reset-btn').addEventListener('click', function () {

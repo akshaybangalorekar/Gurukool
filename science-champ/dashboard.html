@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science-Champ — Dashboard</title>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:'Nunito','Segoe UI',system-ui,sans-serif;font-size:16.5px;line-height:1.6;color:#2b2620;background-color:#faf5ea;background-image:radial-gradient(ellipse at 15% -5%,rgba(194,65,12,.06) 0%,transparent 45%),radial-gradient(ellipse at 90% 5%,rgba(15,118,110,.07) 0%,transparent 40%),radial-gradient(circle,rgba(43,38,32,.10) 1px,transparent 1px);background-size:auto,auto,26px 26px;min-height:100vh}
+h1,h2,h3,.btn,.pill{font-family:'Baloo 2','Comic Sans MS',cursive,system-ui,sans-serif}
+.app{max-width:880px;margin:0 auto;padding:0 14px 40px}
+.top{position:sticky;top:0;z-index:10;background:rgba(255,253,247,.92);backdrop-filter:blur(8px);padding:10px 12px 12px;border-radius:0 0 20px 20px;border:1px solid rgba(43,38,32,.12);border-top:none;margin:0 -14px 16px}
+.pills{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#fffdf7;border:1.5px solid rgba(43,38,32,.15);border-radius:999px;padding:5px 12px;font-weight:800;font-size:13.5px;color:#2b2620;text-decoration:none}
+.pill.on{background:linear-gradient(135deg,#c2410c,#e0722c);color:#fff;border-color:transparent}
+.pill.pl{background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;border-color:transparent}
+h1{font-size:clamp(26px,4.5vw,38px);margin:14px 0 6px}
+.muted{color:#7a6f60}
+.card{background:#fffdf7;border:1.5px solid rgba(43,38,32,.12);border-radius:18px;padding:16px 18px;margin:16px 0}
+.slabel{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#0f766e;margin:0 0 10px;font-family:'Baloo 2',cursive}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+.kpi{background:#fffdf7;border:1.5px solid rgba(43,38,32,.12);border-top:4px solid #0f766e;border-radius:16px;padding:14px 10px;text-align:center}
+.kpi .v{font-family:'Baloo 2',cursive;font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.1}
+.kpi .l{font-size:12px;font-weight:700;color:#7a6f60;margin-top:3px}
+.pbar{height:14px;background:rgba(43,38,32,.12);border-radius:8px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,#0f766e,#14b8a6);border-radius:8px;transition:width .5s}
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.wcard{border:1.5px solid rgba(43,38,32,.12);border-radius:14px;padding:10px 12px;background:#fbf4e4}
+.wcard .nm{display:flex;gap:6px;align-items:center;font-weight:800;font-size:14px}
+.wcard .st{font-size:12.5px;color:#7a6f60;margin:4px 0 6px;display:flex;justify-content:space-between}
+.gold{color:#d97706}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.bcard{border:1.5px solid rgba(43,38,32,.12);border-radius:14px;padding:10px;text-align:center;background:#fbf4e4}
+.bcard.on{border-color:#d97706;background:#fdf3e3}
+.bcard.off{opacity:.45;filter:grayscale(1)}
+.bcard .bi{font-size:24px;line-height:1}
+.bcard .bn{font-weight:800;font-size:13px;margin:4px 0 2px;font-family:'Baloo 2',cursive}
+.bcard .bd{font-size:11px;color:#7a6f60;line-height:1.35}
+.btn{display:inline-block;border:none;border-radius:12px;padding:9px 16px;font-weight:800;font-size:14px;cursor:pointer;background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff;text-decoration:none}
+.btn.ghost{background:#fffdf7;color:#2b2620;border:1.5px solid rgba(43,38,32,.25)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.note{display:none;margin-top:10px;background:#e7f6ef;border:1px solid #14b8a6;border-radius:10px;padding:8px 12px;font-size:13.5px;font-weight:700;color:#0f5132}
+textarea{width:100%;border:1.5px solid rgba(43,38,32,.25);border-radius:12px;padding:10px;font-family:monospace;font-size:12px;background:#fffdf7}
+footer{text-align:center;color:#7a6f60;font-size:13px;padding:14px 0 8px}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="pills">
+      <a class="pill" href="../index.html">🏠 Gurukool</a>
+      <a class="pill" href="index.html">⚡ Science-Champ</a>
+      <span class="pill pl on">📊 Dashboard</span>
+      <span class="pill" id="who" style="border-style:dashed"></span>
+    </div>
+  </div>
+
+  <h1>Proof of how far you have come</h1>
+  <p class="muted" style="margin:0 0 8px">Every lesson opened, every quiz star, every badge — recorded here for <b id="who2"></b>. The numbers only go one direction for champions who keep showing up: <b>up and to the right</b>.</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="k-xp">0</div><div class="l">Total XP</div></div>
+    <div class="kpi"><div class="v" id="k-rank">Curious Kid</div><div class="l">Rank</div></div>
+    <div class="kpi"><div class="v" id="k-streak">0</div><div class="l">Day streak</div></div>
+  </div>
+  <div class="kpis" style="margin-top:0">
+    <div class="kpi" style="border-top-color:#c2410c"><div class="v" id="k-worlds">0 / 29</div><div class="l">Worlds explored</div></div>
+    <div class="kpi" style="border-top-color:#c2410c"><div class="v" id="k-lessons">0 / 0</div><div class="l">Lessons opened</div></div>
+    <div class="kpi" style="border-top-color:#c2410c"><div class="v" id="k-stars">0 / 87</div><div class="l">Quiz stars</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;font-weight:800;margin-bottom:8px"><span id="rank-line">Rank progress</span><span id="rank-next" style="color:#0f766e"></span></div>
+    <div class="pbar"><div class="pfill" id="rank-bar" style="width:0%"></div></div>
+    <div class="muted" style="font-size:13.5px;margin-top:8px" id="rank-hint"></div>
+  </div>
+
+  <div class="card">
+    <p class="slabel">World by world</p>
+    <div class="wgrid" id="wgrid"></div>
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Lessons opened + quiz stars per world · ★ = quiz score on that world (3 stars = perfect)</p>
+  </div>
+
+  <div class="card">
+    <p class="slabel">Badge shelf</p>
+    <div class="bgrid" id="bgrid"></div>
+  </div>
+
+  <div class="card">
+    <p class="slabel">☁️ Cloud sync — automatic, no buttons</p>
+    <p class="muted" style="font-size:14px">Progress saves to this device instantly on every XP, star and badge, and both champs <b>auto-sync to the family cloud locker every 10 minutes</b> while any Gurukool page is open — no save button anywhere, nothing to press. Cloud is set up and managed in ONE place, the <b>Admin Console</b> (from the Gurukool home page, parent PIN needed) — one setup powers every champ, including future ones.</p>
+    <div class="btnrow">
+        <a class="btn ghost" href="../admin.html">⚙️ Admin console</a>
+      <a class="btn ghost" href="../parent-guide.html">📖 Parent guide</a>
+    </div>
+    <div class="note" id="cs-note"></div>
+  </div>
+
+  <div class="card">
+    <p class="slabel">Progress passport — same XP on every device</p>
+    <p class="muted" style="font-size:14px">Progress is stored inside each browser, so a new device starts with an empty logbook. The passport moves it: on the device he just used, press <b>Copy progress code</b>; then on any other device, open this Dashboard and paste the code below. Codes from the game (the ones that start with SQ1. / SQ2. / SQ3.) also work here.</p>
+    <div class="btnrow">
+      <button class="btn" id="pp-copy" type="button">📋 Copy progress code</button>
+      <button class="btn ghost" id="pp-download" type="button">💾 Download as file</button>
+    </div>
+    <div class="note" id="pp-note">Copied! Now paste it on the other device.</div>
+    <p class="muted" style="margin:14px 0 6px"><b>Have a code to load?</b> Paste it here:</p>
+    <textarea id="pp-in" rows="3" placeholder="Paste a Save Code here — it starts with SQ1. / SQ2. / SQ3. …"></textarea>
+    <div class="btnrow"><button class="btn" id="pp-load" type="button">⬇️ Load onto this device</button></div>
+  </div>
+
+  <div class="card">
+    <p class="slabel">Reset progress</p>
+    <p class="muted" style="font-size:14px">Progress lives in this browser (use the passport above to move it between devices). Resetting starts a clean logbook — the science he learned stays in his head, where it counts. Protected by the parent PIN, so nobody resets his hard work by accident.</p>
+    <div class="btnrow"><button class="btn ghost" id="rs-btn" type="button" style="color:#c0392b;border-color:#c0392b">♻️ Reset all progress</button></div>
+  </div>
+
+  <footer>Science-Champ · Dashboard · keep showing up, champion</footer>
+</div>
+
+<script>
+window.ChampSync = (function () {
+  'use strict';
+  var CFG_KEY = 'sq_gh';     /* shared cloud config — set once per device on any champ page */
+  var SQ_KEY = 'sq_v3';      /* ScienceQuest state */
+  var OC_KEY = 'oc_state';   /* Math-Champ state */
+
+  function ghCfg() {
+    try { var c = JSON.parse(localStorage.getItem(CFG_KEY)); if (c && c.owner && c.repo && c.token) return c; } catch (e) {}
+    return null;
+  }
+  function saveGhCfg(c) { try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+  function ghUrl(c) { return 'https://api.github.com/repos/' + c.owner + '/' + c.repo + '/contents/' + encodeURIComponent(c.path && c.path.length ? c.path : 'progress.json'); }
+  function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+  function writeLS(k, v) { if (v == null) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  /* ---- science merge: faithful port of ScienceQuest's own mergeProfile/mergeS ---- */
+  function mergeProfile(a, b) {
+    a.xp = Math.max(a.xp || 0, b.xp || 0);
+    ['lessons', 'practice'].forEach(function (k) { var src = b[k] || {}; a[k] = a[k] || {}; for (var key in src) { if (src[key]) a[k][key] = src[key]; } });
+    var q = b.quiz || {};
+    for (var w in q) { if (q[w] && q[w].t) { a.quiz = a.quiz || {}; if (!a.quiz[w] || !a.quiz[w].t || q[w].s > a.quiz[w].s) a.quiz[w] = q[w]; } }
+    var lvB = b.levels || {};
+    for (var wL in lvB) { a.levels = a.levels || {}; var mL = a.levels[wL] || { c: 1, b1: 0, b2: 0, arena: 0 }; mL.c = Math.max(mL.c || 1, lvB[wL].c || 1); mL.b1 = Math.max(mL.b1 || 0, lvB[wL].b1 || 0); mL.b2 = Math.max(mL.b2 || 0, lvB[wL].b2 || 0); mL.arena = Math.max(mL.arena || 0, lvB[wL].arena || 0); a.levels[wL] = mL; }
+    ['badges', 'visited'].forEach(function (k) { a[k] = a[k] || []; (b[k] || []).forEach(function (x) { if (a[k].indexOf(x) < 0) a[k].push(x); }); });
+    if ((b.streak || 0) > (a.streak || 0)) { a.streak = b.streak; a.lastDay = b.lastDay || a.lastDay; }
+    (b.doubts || []).forEach(function (x) { a.doubts = a.doubts || []; if (!a.doubts.some(function (y) { return y.t === x.t && y.d === x.d; })) a.doubts.push(x); });
+  }
+  function mergeSQ(S, o) {
+    if (o.pin && !S.pin) S.pin = o.pin;
+    for (var k in o.profiles) { if (!S.profiles[k]) S.profiles[k] = o.profiles[k]; else mergeProfile(S.profiles[k], o.profiles[k]); }
+    return S;
+  }
+
+  /* ---- maths merge: union of attempts/journal/badges, max XP, newest streak ---- */
+  function mergeOC(a, b) {
+    if (!b || typeof b !== 'object' || !b.attempts) return a;
+    if (!a || !a.attempts) return b;
+    var out = { name: '', xp: 0, attempts: [], journal: [], streak: { last: null, count: 0 }, badges: {}, pin: '' };
+    out.xp = Math.max(a.xp || 0, b.xp || 0);
+    out.name = ((b.xp || 0) > (a.xp || 0)) ? (b.name || a.name || '') : (a.name || b.name || '');
+    var seen = {}, list = [];
+    (a.attempts || []).concat(b.attempts || []).forEach(function (t) {
+      var k = (t.kind || '') + '|' + (t.id || '') + '|' + (t.ts || '');
+      if (!seen[k]) { seen[k] = 1; list.push(t); }
+    });
+    list.sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+    out.attempts = list.slice(-400);
+    var jseen = {}, jl = [];
+    (a.journal || []).concat(b.journal || []).forEach(function (j) {
+      var k = (j.ts || 0) + '|' + (j.note || '');
+      if (!jseen[k]) { jseen[k] = 1; jl.push(j); }
+    });
+    jl.sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+    out.journal = jl.slice(-100);
+    [a.badges || {}, b.badges || {}].forEach(function (src) {
+      Object.keys(src).forEach(function (id) { if (!out.badges[id] || src[id] < out.badges[id]) out.badges[id] = src[id]; });
+    });
+    var sa = a.streak || { last: null, count: 0 }, sb = b.streak || { last: null, count: 0 };
+    out.streak = { last: (String(sb.last || '') > String(sa.last || '') ? sb.last : sa.last), count: Math.max(sa.count || 0, sb.count || 0) };
+    out.pin = a.pin || b.pin || '';
+    return out;
+  }
+
+  function payload(sq, oc) { return { champSync: 2, sq: sq || null, oc: oc || null }; }
+
+  /* understands the current format plus every older one */
+  function parseRemote(txt) {
+    var o = JSON.parse(txt);
+    if (o && o.champSync === 2) return { sq: (o.sq && o.sq.profiles) ? o.sq : null, oc: (o.oc && o.oc.attempts) ? o.oc : null };
+    if (o && o.profiles) return { sq: o, oc: null };
+    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null };
+    if (o && o.attempts) return { sq: null, oc: o };
+    return null;
+  }
+
+  function backupName() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    return 'gurukool-progress-' + d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '.txt';
+  }
+
+  function downloadBackup(pl) {
+    try {
+      var blob = new Blob([JSON.stringify(pl, null, 2)], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = backupName();
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 1000);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function mergeInto(pr, getSq, getOc) {
+    var sq = getSq ? getSq() : readLS(SQ_KEY);
+    var oc = getOc ? getOc() : readLS(OC_KEY);
+    if (pr) {
+      if (pr.legacy && sq && sq.profiles) mergeProfile(sq.profiles[sq.current || 'p1'], pr.legacy);
+      else if (pr.sq && sq && sq.profiles) mergeSQ(sq, pr.sq);
+      else if (pr.sq && !sq) sq = pr.sq;
+      if (pr.oc && oc && oc.attempts) oc = mergeOC(oc, pr.oc);
+      else if (pr.oc && !oc) oc = pr.oc;
+    }
+    return { sq: sq, oc: oc };
+  }
+
+  /* one tap: pull cloud -> merge -> push merged -> download local backup.
+     opts: { silent, getSq, getOc, onMerged(sq,oc), toast(msg), onNeedSetup() }
+     returns a Promise resolving to 'setup' | 'ok' | 'error'. */
+  function sync(opts) {
+    opts = opts || {};
+    var c = ghCfg();
+    if (!c) { if (!opts.silent && opts.onNeedSetup) opts.onNeedSetup(); return Promise.resolve('setup'); }
+    if (!opts.silent && opts.toast) opts.toast('☁️ Syncing…');
+    var sha = null, merged = null;
+    return fetch(ghUrl(c), { headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' } })
+      .then(function (r) {
+        if (r.status === 200) return r.json();
+        if (r.status !== 404 && r.status !== 451) throw new Error('GitHub says ' + r.status);
+        return null;
+      })
+      .then(function (j) {
+        if (!j) return null;
+        sha = j.sha;
+        try { return decodeURIComponent(escape(atob((j.content || '').replace(/\n/g, '')))); } catch (e) { return null; }
+      })
+      .then(function (txt) {
+        var pr = null;
+        if (txt) { try { pr = parseRemote(txt); } catch (e) { pr = null; } }
+        merged = mergeInto(pr, opts.getSq, opts.getOc);
+        writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc);
+        if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc); } catch (e) {} }
+        var pl = payload(merged.sq, merged.oc);
+        return fetch(ghUrl(c), {
+          method: 'PUT',
+          headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' },
+          body: JSON.stringify(Object.assign({ message: 'Gurukool progress sync', content: btoa(unescape(encodeURIComponent(JSON.stringify(pl)))) }, sha ? { sha: sha } : {}))
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) throw new Error('GitHub says ' + r.status);
+        if (!opts.silent && opts.toast) opts.toast('✅ Synced — maths + science safe!');
+        return 'ok';
+      })
+      .catch(function (err) {
+        if (!opts.silent && opts.toast) opts.toast('⚠️ ' + (err && err.message ? err.message : 'Sync problem'));
+        return 'error';
+      })
+      .then(function (status) {
+        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY)));
+        return status;
+      });
+  }
+
+  /* restore a local backup file's text (same merge rules, no cloud) */
+  function applyBackupText(txt, opts) {
+    opts = opts || {};
+    var pr = null;
+    try { pr = parseRemote(txt); } catch (e) { pr = null; }
+    if (!pr) throw new Error('this does not look like a Gurukool backup');
+    var merged = mergeInto(pr, opts.getSq, opts.getOc);
+    writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc);
+    if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc); } catch (e) {} }
+    return merged;
+  }
+
+  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
+})();
+
+var WORLD_META=[['physics','⚡','Physics Lab',5,0],['flight','✈️','Flight & Space',4,0],['chem','🧪','Chemistry Corner',5,0],['bio','🌿','The Living World',5,0],['logic','🧩','Logic Dojo',5,0],['elec','🔌','Electricity & Magnetism',5,0],['light','🌈','Light & Sound',5,0],['heat','🌡️','Heat & Energy Flow',5,0],['body','🫀','Human Body Factory',5,0],['earth','🌏','Earth & Weather',5,0],['ai','🌐','Internet & AI',5,0],['materials','💎','Materials Lab',5,0],['sky','🔭','Skywatcher\'s Guide',5,0],['scientists','👨‍🔬','Great Scientists\' Hall',5,0],['kitchen','🍳','Kitchen Science',5,0],['coding','💻','Coding Camp',5,0],['robotics','🤖','Robots & Drones',5,0],['quantum','⚛️','Quantum Realm',5,0],['genetics','🧬','Genetics Gateway',5,0],['vedic','🕉️','Vedic Science',6,0],['acid','🧫','Acids & Bases',4,0],['float','🚢','Sinking & Floating',4,0],['isro','🚀','ISRO & Space Missions',4,0],['cosmos','🌌','Stars & Black Holes',4,0],['eco','🌳','Eco Web',4,0],['terra','🌋','Restless Earth',4,0],['optics','🔍','Light Machines',4,0],['micro','🦠','Micro World',4,0],['trivia','🏆','Trivia Arena',0,0]];
+var BADGE_META=[['first','🌱','First Steps','Complete your first lesson'],['bullseye','🎯','Bullseye','Get 3 stars in any quiz'],['streak3','🔥','Streak Spark','Learn 3 days in a row'],['explorer','🧭','World Explorer','Visit 8 different worlds'],['olymp','🏅','Olympiad Contender','3 stars in Physics, Electricity AND Logic'],['anatomy','🫀','Body Expert','Finish all Human Body lessons'],['stargazer','🔭','Skywatcher','Finish all Skywatcher lessons'],['dronepilot','🛸','Drone Pilot','Finish all Robots & Drones lessons'],['quantum','⚛️','Quantum Curious','Finish all Quantum Realm lessons'],['vedic','🕉️','Vedic Scholar','Finish all Vedic Science lessons'],['perfect3','💯','Perfect Ten','Score 100% in 3 different quizzes'],['grand','🏆','Grand Scientist','2+ stars in every world']];
+
+var LEVELS=[[0,'Curious Kid'],[150,'Explorer'],[400,'Investigator'],[800,'Inventor'],[1400,'Scientist'],[2200,'Olympiad Star'],[3200,'Grand Scientist']];
+
+function readState(){try{var s=JSON.parse(localStorage.getItem('sq_v3'));if(s&&s.profiles&&s.profiles[s.current||'p1'])return s;}catch(e){}return null;}
+var S=readState();
+function prof(){return S?S.profiles[S.current||'p1']:null;}
+
+function stars(q){if(!q||!q.t)return 0;var p=q.s/q.t;return p>=1?3:(p>=0.7?2:(p>=0.5?1:0));}
+function lessonsDone(wid,nl,P){var c=0;for(var i=0;i<nl;i++){if(P.lessons[wid+':'+i])c++;}return c;}
+function pracDone(wid,np,P){var c=0;for(var i=0;i<np;i++){if(P.practice[wid+':'+i])c++;}return c;}
+
+function render(){
+  var P=prof();
+  var who=document.getElementById('who'),who2=document.getElementById('who2');
+  if(!P){who.textContent='No progress yet';who2.textContent='this champion';}
+  else{
+    who.textContent=(P.av||'🦁')+' '+(P.name||'Champion');
+    who2.textContent=(P.name||'Champion');
+    var k=0;for(var j=0;j<LEVELS.length;j++){if(P.xp>=LEVELS[j][0])k=j;}
+    var cur=LEVELS[k],nx=LEVELS[k+1]||null;
+    document.getElementById('k-xp').textContent=P.xp;
+    document.getElementById('k-rank').textContent=cur[1];
+    document.getElementById('k-streak').textContent=P.streak||0;
+    document.getElementById('rank-line').textContent='Rank: '+cur[1];
+    if(nx){
+      var pct=Math.min(100,Math.round((P.xp-cur[0])/(nx[0]-cur[0])*100));
+      document.getElementById('rank-bar').style.width=pct+'%';
+      document.getElementById('rank-next').textContent=(nx[0]-P.xp)+' XP to '+nx[1];
+      document.getElementById('rank-hint').textContent='Earn '+(nx[0]-P.xp)+' more XP to reach '+nx[1]+'. A lesson is 10 XP and quiz stars are worth 15 each — two lessons and a quiz get you there.';
+    }else{
+      document.getElementById('rank-bar').style.width='100%';
+      document.getElementById('rank-next').textContent='MAX';
+      document.getElementById('rank-hint').textContent='Top rank reached. Grand Scientist — legendary!';
+    }
+  }
+  var totL=0,totS=0,doneL=0,html='',vis=0;
+  var visited=(P&&P.visited)||[];
+  WORLD_META.forEach(function(w){
+    totL+=w[3];totS+=3;
+    var d=P?lessonsDone(w[0],w[3],P):0,pd=P?pracDone(w[0],w[4],P):0;
+    doneL+=d;
+    var st=P?stars((P.quiz||{})[w[0]]):0;
+    var units=w[3]+3+w[4];var done=d+st+pd;
+    var pct=units?Math.round(done/units*100):0;
+    if(visited.indexOf(w[0])>=0||(P&&Object.keys(P.lessons||{}).some(function(k){return k.indexOf(w[0]+':')===0;})))vis++;
+    html+='<div class="wcard"><div class="nm"><span>'+w[1]+'</span><span>'+w[2]+'</span></div><div class="st"><span>📘 '+d+'/'+w[3]+' lessons</span><span class="gold">'+'★'.repeat(st)+'☆'.repeat(3-st)+'</span></div><div class="pbar" style="height:8px"><div class="pfill" style="width:'+pct+'%"></div></div></div>';
+  });
+  document.getElementById('k-worlds').textContent=vis+' / '+WORLD_META.length;
+  document.getElementById('k-lessons').textContent=doneL+' / '+totL;
+  var starsGot=0,t=0,sc=0;
+  if(P){Object.keys(P.quiz||{}).forEach(function(w){var q=P.quiz[w];if(q&&q.t){t+=q.t;sc+=q.s;starsGot+=stars(q);}});}
+  document.getElementById('k-stars').textContent=starsGot+' / '+(WORLD_META.length*3);
+  document.getElementById('wgrid').innerHTML=html;
+  var earned=(P&&P.badges)||[];
+  var bh='';
+  BADGE_META.forEach(function(b){
+    var on=earned.indexOf(b[0])>=0;
+    bh+='<div class="bcard '+(on?'on':'off')+'"><div class="bi">'+b[1]+'</div><div class="bn">'+b[2]+'</div><div class="bd">'+(on?'EARNED':b[3])+'</div></div>';
+  });
+  document.getElementById('bgrid').innerHTML=bh;
+  var nd=(P&&P.doubts)?P.doubts.length:0;
+  if(nd>0){var s=document.createElement('div');s.className='card';s.innerHTML='<p class="slabel">Doubt jar 🫙</p><p style="margin:0">'+nd+' doubt'+(nd===1?'':'s')+' saved — open Science-Champ and check the Doubt Jar to review them.</p>';document.getElementById('bgrid').parentNode.parentNode.insertBefore(s,document.getElementById('bgrid').parentNode.nextSibling);}
+}
+
+/* ---- cloud sync wiring ---- */
+
+/* ---- passport: SQ codes (same format as the game) ---- */
+function exportCode(){return 'SQ3.'+btoa(unescape(encodeURIComponent(JSON.stringify(S||readState()||{v:3,current:'p1',profiles:{}}))));}
+function mergeProfile(a,b){
+  a.xp=Math.max(a.xp||0,b.xp||0);
+  a.streak=Math.max(a.streak||0,b.streak||0);
+  ['lessons','practice'].forEach(function(k){var src=b[k]||{};a[k]=a[k]||{};for(var key in src){if(src[key])a[k][key]=src[key];}});
+  var q=b.quiz||{};for(var w in q){if(q[w]&&q[w].t){a.quiz=a.quiz||{};if(!a.quiz[w]||!a.quiz[w].t||q[w].s>a.quiz[w].s)a.quiz[w]=q[w];}}
+  var lv=b.levels||{};for(var wl in lv){a.levels=a.levels||{};var m=a.levels[wl]||{c:1,b1:0,b2:0,arena:0};m.c=Math.max(m.c||1,lv[wl].c||1);m.b1=Math.max(m.b1||0,lv[wl].b1||0);m.b2=Math.max(m.b2||0,lv[wl].b2||0);m.arena=Math.max(m.arena||0,lv[wl].arena||0);a.levels[wl]=m;}
+  ['badges','visited'].forEach(function(k){a[k]=a[k]||[];(b[k]||[]).forEach(function(x){if(a[k].indexOf(x)<0)a[k].push(x);});});
+  (b.doubts||[]).forEach(function(x){a.doubts=a.doubts||[];if(a.doubts.indexOf(x)<0)a.doubts.push(x);});
+  return a;
+}
+function importCode(c){
+  c=(c||'').trim();var pref=null;
+  if(c.indexOf('SQ3.')===0)pref='SQ3.';else if(c.indexOf('SQ2.')===0)pref='SQ2.';else if(c.indexOf('SQ1.')===0)pref='SQ1.';
+  if(!pref)return false;
+  var o;try{o=JSON.parse(decodeURIComponent(escape(atob(c.slice(pref.length)))));}catch(e){return false;}
+  if(!o)return false;
+  var st=readState();
+  if(!st){st={v:3,current:'p1',profiles:{p1:{name:'Champion',av:'🦁',xp:0,lessons:{},quiz:{},practice:{},badges:[],streak:0,lastDay:'',visited:[],doubts:[],recent:[],missionN:0,levels:{}}}};}
+  if(pref==='SQ3.'&&o.profiles){
+    for(var pid in o.profiles){if(!st.profiles[pid])st.profiles[pid]=o.profiles[pid];else mergeProfile(st.profiles[pid],o.profiles[pid]);}
+    if(o.pin&&!st.pin)st.pin=o.pin;
+  }else if(o&&typeof o.xp==='number'){mergeProfile(st.profiles[st.current||'p1'],o);}
+  else return false;
+  localStorage.setItem('sq_v3',JSON.stringify(st));S=st;
+  return true;
+}
+document.getElementById('pp-copy').addEventListener('click',function(){
+  var code=exportCode();
+  var n=document.getElementById('pp-note');
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(function(){n.textContent='Copied! Now paste it on the other device.';n.style.display='block';}).catch(function(){fallbackShow(code);});}
+  else fallbackShow(code);
+});
+function fallbackShow(code){var n=document.getElementById('pp-note');n.textContent='Tap the box below, select all and copy: ';n.style.display='block';var ta=document.getElementById('pp-in');ta.value=code;ta.focus();}
+document.getElementById('pp-download').addEventListener('click',function(){
+  var blob=new Blob([exportCode()],{type:'text/plain'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  var d=new Date();
+  a.download='science-champ-code-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.txt';
+  a.click();URL.revokeObjectURL(a.href);
+});
+document.getElementById('pp-load').addEventListener('click',function(){
+  var v=document.getElementById('pp-in').value;
+  if(importCode(v)){render();var n=document.getElementById('pp-note');n.textContent='Progress merged! 🎉 Nothing was overwritten.';n.style.display='block';}
+  else{alert('That code does not look right. Copy the FULL Save Code (it starts with SQ1. / SQ2. / SQ3.) and try again.');}
+});
+
+/* ---- reset (parent PIN gate, same shared cc_pin as everywhere) ---- */
+function pinGate(cb){
+  var pin='';
+  try{pin=localStorage.getItem('cc_pin')||'';}catch(e){}
+  if(!pin){try{var st=JSON.parse(localStorage.getItem('sq_v3'));if(st&&st.pin){pin=st.pin;localStorage.setItem('cc_pin',pin);}}catch(e){}}
+  if(!pin){pin=prompt('Set a parent PIN (4-6 digits) to protect progress:')||'';if(pin){try{localStorage.setItem('cc_pin',pin);}catch(e){}}cb();return;}
+  var p=prompt('Enter the parent PIN:');
+  if(p===pin)cb();else alert('Wrong PIN');
+}
+document.getElementById('rs-btn').addEventListener('click',function(){
+  pinGate(function(){
+    if(confirm('Really reset ALL Science-Champ progress? XP, badges, worlds and the doubt jar will be erased from this browser. OK to continue?')){
+      try{localStorage.removeItem('sq_v3');}catch(e){}
+      location.reload();
+    }
+  });
+});
+
+render();
+</script>
+</body>
+</html>

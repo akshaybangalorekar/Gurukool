@@ -592,3 +592,21 @@ window.ChampSync = (function () {
 
   return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
 })();
+
+/* ---------- AUTO-SAVE — silent cloud sync every 10 minutes ----------
+   No buttons, no file downloads, nothing for the child to press.
+   Cloud settings are managed ONLY in the Admin Console (admin.html).
+   Local progress saves instantly on every answer (localStorage above);
+   this timer silently pushes + pulls the combined maths+science progress
+   to the family GitHub locker while any Math-Champ page is open. */
+(function () {
+  function autoSync() {
+    try {
+      if (!ChampSync.ghCfg()) return;
+      ChampSync.sync({ silent: true, getSq: null, getOc: null, onMerged: null });
+    } catch (e) { /* offline or storage blocked — retry on the next cycle */ }
+  }
+  setTimeout(autoSync, 20000);            /* first quiet sync shortly after open */
+  setInterval(autoSync, 600000);           /* then every 10 minutes */
+})();
+
