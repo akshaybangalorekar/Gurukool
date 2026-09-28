@@ -1440,6 +1440,8 @@ let S=loadState();
 if(!S.profiles[S.current]){S.current=Object.keys(S.profiles)[0];}
 S.profiles[S.current]=S.profiles[S.current]||freshProfile();
 let state=S.profiles[S.current];
+/* one shared champion name — set once on the Gurukool home page (cc_name) */
+try{var ccName=(localStorage.getItem('cc_name')||'').trim();if(ccName&&state&&state.name==='Champion'){state.name=ccName;save();}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 const LEVELS=[[0,'Curious Kid'],[150,'Explorer'],[400,'Investigator'],[800,'Inventor'],[1400,'Scientist'],[2200,'Olympiad Star'],[3200,'Grand Scientist']];

@@ -301,6 +301,8 @@ var LEVELS=[[0,'Curious Kid'],[150,'Explorer'],[400,'Investigator'],[800,'Invent
 
 function readState(){try{var s=JSON.parse(localStorage.getItem('sq_v3'));if(s&&s.profiles&&s.profiles[s.current||'p1'])return s;}catch(e){}return null;}
 var S=readState();
+/* one shared champion name — adopt it if the science profile still has its default */
+try{var ccn=(localStorage.getItem('cc_name')||'').trim();if(ccn){var pid=S&&S.current||'p1';if(S&&S.profiles&&S.profiles[pid]){if(S.profiles[pid].name==='Champion'){S.profiles[pid].name=ccn;localStorage.setItem('sq_v3',JSON.stringify(S));}}else{S={v:3,current:'p1',profiles:{p1:{name:ccn,av:'\u{1F982}',xp:0,lessons:{},quiz:{},practice:{},badges:[],streak:0,lastDay:'',visited:[],doubts:[],recent:[],missionN:0,levels:{}}}};localStorage.setItem('sq_v3',JSON.stringify(S));}}}catch(e){}
 function prof(){return S?S.profiles[S.current||'p1']:null;}
 
 function stars(q){if(!q||!q.t)return 0;var p=q.s/q.t;return p>=1?3:(p>=0.7?2:(p>=0.5?1:0));}

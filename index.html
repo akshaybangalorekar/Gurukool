@@ -155,6 +155,14 @@
     <p class="hero__hello" id="hub-hello">WELCOME, CHAMPION</p>
     <h1 class="hero__title">Pick today's <em>mission</em>.</h1>
     <p class="hero__sub">Three training worlds — one goal: a sharper, faster, braver brain.</p>
+    <div id="hub-namebox" style="display:none; margin:20px auto 0; max-width:440px;">
+      <p style="font-size:15px; color:var(--ink-dim); margin:0 0 10px;"><b style="color:var(--ink);">Who is training today?</b> Type your name once — every champ will use it. (Asked only once — you can change it any time.)</p>
+      <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+        <input type="text" id="hub-name" placeholder="Type your name…" maxlength="20" style="padding:10px 14px; border-radius:12px; border:1.5px solid var(--border); font-size:16px; max-width:240px; font-family:inherit;">
+        <button id="hub-name-save" type="button" style="padding:10px 18px; border:none; border-radius:12px; background:linear-gradient(135deg,#c2410c,#e0722c); color:#fff; font-weight:800; font-size:15px; cursor:pointer;">That's me! 🚀</button>
+      </div>
+    </div>
+    <p id="hub-change" style="display:none; margin:10px 0 0;"><button id="hub-change-btn" type="button" style="background:none; border:none; color:var(--ink-dim); font-size:13px; text-decoration:underline; cursor:pointer; padding:0;">✏️ change name</button></p>
     <div class="stat-strip" id="hub-stats" style="display:none;">
       <span class="stat-pill">Total XP <b id="hs-xp">0</b></span>
       <span class="stat-pill">Maths rank <b id="hs-rank">Rookie</b></span>
@@ -279,8 +287,50 @@
         if (a.kind === 'drill' && a.correct > bestDrill) bestDrill = a.correct;
       });
       document.getElementById('ms-solved').textContent = Object.keys(solved).length;
-      document.getElementById('ms-drill').textContent = bestDrill ? bestDrill + '/10' : '\u2013';
+      document.getElementById('ms-drill').textContent = bestDrill ? bestDrill + '/10' : '–';
     }
+
+    /* ---------- ONE shared champion name (asked once, right here) ---------- */
+    function hubGetName() { try { return (localStorage.getItem('cc_name') || '').trim(); } catch (e) { return ''; } }
+    function hubSetName(v) {
+      v = (v || '').trim().slice(0, 20);
+      if (!v) return;
+      try { localStorage.setItem('cc_name', v); } catch (e) {}
+      S.name = v; try { OC.save(); } catch (e) {}            /* Math-Champ uses it immediately */
+      try {                                                      /* Science: give it the name too */
+        var sq = null; try { sq = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) {}
+        if (sq && sq.profiles && sq.profiles[sq.current || 'p1']) {
+          if (sq.profiles[sq.current || 'p1'].name === 'Champion') {
+            sq.profiles[sq.current || 'p1'].name = v;
+            localStorage.setItem('sq_v3', JSON.stringify(sq));
+          }
+        } else {
+          sq = { v: 3, current: 'p1', profiles: { p1: { name: v, av: '\u{1F982}', xp: 0, lessons: {}, quiz: {}, practice: {}, badges: [], streak: 0, lastDay: '', visited: [], doubts: [], recent: [], missionN: 0, levels: {} } } };
+          localStorage.setItem('sq_v3', JSON.stringify(sq));
+        }
+      } catch (e) {}
+      hubRefreshName();
+    }
+    function hubRefreshName() {
+      var n = hubGetName() || (S.name || '').trim() || (sp && sp.name && sp.name !== 'Champion' ? sp.name : '');
+      var box = document.getElementById('hub-namebox');
+      var chg = document.getElementById('hub-change');
+      if (n) {
+        document.getElementById('hub-hello').textContent = 'WELCOME, ' + n.toUpperCase() + ' \u2014 READY FOR TODAY\u2019S MISSION?';
+        box.style.display = 'none'; chg.style.display = 'block';
+      } else {
+        document.getElementById('hub-hello').textContent = 'WELCOME \u2014 WHO IS TRAINING TODAY?';
+        box.style.display = 'block'; chg.style.display = 'none';
+      }
+    }
+    document.getElementById('hub-name-save').addEventListener('click', function () { hubSetName(document.getElementById('hub-name').value); });
+    document.getElementById('hub-name').addEventListener('keydown', function (e) { if (e.key === 'Enter') document.getElementById('hub-name-save').click(); });
+    document.getElementById('hub-change-btn').addEventListener('click', function () {
+      document.getElementById('hub-namebox').style.display = 'block';
+      document.getElementById('hub-change').style.display = 'none';
+      var inp = document.getElementById('hub-name'); inp.value = hubGetName(); inp.focus();
+    });
+    hubRefreshName();
   })();
   </script>
 </body>

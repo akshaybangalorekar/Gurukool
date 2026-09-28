@@ -14,10 +14,13 @@ admin.html                ADMIN CONSOLE — behind the parent PIN: the ONE
                           place to set up cloud sync (applies to every
                           coach on the device), sync, restore backups,
                           change the PIN, and see both champs at a glance.
-index.html                GURUKOOL — the main page. Shows both open
-                          champs, greets the champion by name, and shows
-                          combined XP, maths rank, science level and best
-                          day streak.
+index.html                GURUKOOL — the main page. Asks the child's
+                          name ONCE (stored under "cc_name", changeable
+                          any time via the pencil link) and both champs
+                          adopt it automatically. Shows both open champs,
+                          greets the champion by name, and shows combined
+                          XP, maths rank, science level and best day
+                          streak.
 math-champ/               MATHS — THE COMPLETE TRAINER.
     index.html           Home — greeting, daily warm-up, missions,
                          Ramanujan & Shakuntala Devi stories

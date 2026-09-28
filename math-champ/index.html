@@ -197,8 +197,11 @@
     OC.buildNav('home');
     var S = OC.STATE;
 
-    /* name card */
+    /* name card — one shared name (set once on the Gurukool home page) */
     var nameInput = OC.$('#name-input');
+    var sharedName = ''; try { sharedName = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
+    if (sharedName && !(S.name || '').trim()) { S.name = sharedName; OC.save(); }
+    if ((S.name || '').trim()) nameInput.value = S.name;
     function applyName() {
       var n = (S.name || '').trim();
       var hello = OC.$('#hero-hello');
@@ -209,6 +212,7 @@
       var v = nameInput.value.trim();
       if (!v) return;
       S.name = v;
+      try { localStorage.setItem('cc_name', v); } catch (e) {}
       OC.save();
       applyName();
       nameInput.blur();
