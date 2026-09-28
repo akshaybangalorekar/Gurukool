@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Science-Champ — Dashboard</title>
 <link rel="icon" href="../icon.png" type="image/png">
 <link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
 <meta name="apple-mobile-web-app-title" content="Gurukool">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800&display=swap" rel="stylesheet">
@@ -49,6 +53,11 @@ h1{font-size:clamp(26px,4.5vw,38px);margin:14px 0 6px}
 textarea{width:100%;border:1.5px solid rgba(43,38,32,.25);border-radius:12px;padding:10px;font-family:monospace;font-size:12px;background:#fffdf7}
 footer{text-align:center;color:#7a6f60;font-size:13px;padding:14px 0 8px}
 @media (max-width:560px){.kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+<style>
+  /* home-screen full-screen mode: keep content clear of the iPad status bar */
+  body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .topnav, .top { top: env(safe-area-inset-top); }
 </style>
 </head>
 <body>

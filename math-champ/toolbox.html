@@ -3,9 +3,13 @@
 <head>
 <link rel="icon" href="../icon.png" type="image/png">
 <link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
 <meta name="apple-mobile-web-app-title" content="Gurukool">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Math-Champ — Champion's Toolbox</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -25,6 +29,11 @@
     .arrow-down { text-align: center; color: var(--ink-dim); font-size: 20px; margin: 4px 0; }
     .fx { font-family: var(--font-mono); font-weight: 700; background: var(--teal-dim); color: var(--teal); padding: 1px 7px; border-radius: 6px; white-space: nowrap; }
   </style>
+<style>
+  /* home-screen full-screen mode: keep content clear of the iPad status bar */
+  body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .topnav, .top { top: env(safe-area-inset-top); }
+</style>
 </head>
 <body>
   <header class="topnav" id="topnav"></header>

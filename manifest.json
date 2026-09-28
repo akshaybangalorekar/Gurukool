@@ -1,0 +1,24 @@
+{
+  "name": "Gurukool",
+  "short_name": "Gurukool",
+  "description": "Maths, science and logic training champs for young Olympians",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf5ea",
+  "theme_color": "#faf5ea",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
