@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parent Guide — Gurukool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf5ea; --ink: #2b2620; --ink-dim: #6b635a;
+    --terracotta: #c2410c; --terracotta-dim: #fdeee2;
+    --teal: #0f766e; --teal-dim: #e4f2f0;
+    --amber: #b45309; --amber-dim: #fdf3e0;
+    --green: #15803d; --green-dim: #e8f4ea;
+    --line: #e8e0d2; --card: #fffdf8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Nunito', system-ui, sans-serif; font-size: 16px; line-height: 1.65; }
+  h1, h2, h3 { font-family: 'Baloo 2', 'Nunito', sans-serif; line-height: 1.2; }
+  .topbar { background: var(--teal); color: #fff; padding: 14px 22px; display: flex; align-items: center; gap: 12px; }
+  .topbar h1 { font-size: 22px; margin: 0; }
+  .topbar a.back { color: #fff; text-decoration: none; font-weight: 800; font-size: 14px; background: rgba(255,255,255,.15); padding: 8px 14px; border-radius: 999px; margin-left: auto; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 22px 18px 60px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; margin: 18px 0; box-shadow: 0 2px 10px rgba(43,38,32,.05); }
+  .card h2 { margin: 0 0 6px; font-size: 21px; display: flex; align-items: center; gap: 10px; }
+  .card > p { margin: 8px 0; }
+  .steps { counter-reset: step; margin: 14px 0; padding: 0; list-style: none; }
+  .steps li { counter-increment: step; position: relative; padding: 10px 0 10px 52px; border-bottom: 1px dashed var(--line); }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 10px; width: 34px; height: 34px; border-radius: 50%; background: var(--teal); color: #fff; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 17px; display: flex; align-items: center; justify-content: center; }
+  .tag { display: inline-block; font-size: 12.5px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase; padding: 3px 10px; border-radius: 999px; }
+  .tag--teal { background: var(--teal-dim); color: var(--teal); }
+  .tag--amber { background: var(--amber-dim); color: var(--amber); }
+  .tag--green { background: var(--green-dim); color: var(--green); }
+  .callout { border-radius: 12px; padding: 14px 16px; margin: 14px 0; font-size: 15px; }
+  .callout--teal { background: var(--teal-dim); border-left: 4px solid var(--teal); }
+  .callout--amber { background: var(--amber-dim); border-left: 4px solid var(--amber); }
+  .callout--green { background: var(--green-dim); border-left: 4px solid var(--green); }
+  .btn { display: inline-block; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; border-radius: 10px; padding: 11px 20px; text-decoration: none; }
+  .btn--teal { background: var(--teal); color: #fff; }
+  .btn--ghost { background: transparent; color: var(--terracotta); border: 2px solid var(--terracotta); }
+  .two { display: flex; gap: 12px; flex-wrap: wrap; }
+  kbd { background: var(--ink); color: var(--bg); border-radius: 6px; padding: 1px 8px; font-family: 'Space Mono', monospace; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; margin: 10px 0; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: 'Baloo 2', sans-serif; color: var(--ink-dim); font-size: 14px; }
+  /* lock screen */
+  #lock-panel { text-align: center; padding: 70px 20px; }
+  #lock-panel .lock-emoji { font-size: 54px; }
+  #lock-panel h1 { font-size: 26px; margin: 12px 0 4px; }
+  #lock-panel p { color: var(--ink-dim); max-width: 460px; margin: 8px auto 24px; }
+  .hidden { display: none; }
+  @media (max-width: 560px) { .card { padding: 18px 16px; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span>🔒</span>
+  <h1>Parent Guide</h1>
+  <a class="back" href="index.html">← Back to Gurukool</a>
+</header>
+
+<div class="wrap">
+
+  <!-- ============ LOCK SCREEN ============ -->
+  <div id="lock-panel">
+    <div class="lock-emoji">🔐</div>
+    <h1>This page is for parents</h1>
+    <p>It holds the instructions for everything — the PIN, cloud sync, backups and the house rules.
+       Enter the parent PIN to continue.</p>
+    <button class="btn btn--teal" id="unlock-btn" onclick="guideUnlock()">🔓 Enter parent PIN</button>
+    <p style="font-size:13px; margin-top:22px;">First time here and no PIN yet? The button above will help you set one —
+       it becomes the single PIN for <b>both</b> champs.</p>
+  </div>
+
+  <!-- ============ GUIDE CONTENT ============ -->
+  <div id="guide-content" class="hidden">
+
+    <div class="card">
+      <h2>👋 What is this website?</h2>
+      <p>A personal training universe for your child, built to work <b>completely offline</b> — no accounts,
+         no server, nothing tracked. It has two games today:</p>
+      <table>
+        <tr><th>🧮 Math-Champ</th><td>13 olympiad-style word problems taught step by step (Understand → Plan → Solve), timed calculation drills, a cheat-sheet toolbox and a progress dashboard.</td></tr>
+        <tr><th>🔬 Science-Champ</th><td>29 science worlds (Physics Lab to ISRO missions) with 132 animated diagrams, a villain story mode (Professor Chaos), 1-hour mission sessions, quizzes and an arena.</td></tr>
+        <tr><th>🧩 LR-Champ</th><td>Coming later — logic puzzles.</td></tr>
+      </table>
+      <p>All progress (XP, badges, streaks, journals) is saved <b>inside the browser</b> of the device being used.</p>
+    </div>
+
+    <div class="card">
+      <h2>🔒 Your ONE parent PIN</h2>
+      <p>There is a single 4–6 digit PIN that protects <b>both champs on this device</b>. It is asked before anything
+         that could change or erase progress:</p>
+      <ul>
+        <li>Maths: <b>Reset all progress</b>, loading a progress code or file, cloud sync <b>settings</b></li>
+        <li>Science: the Doubt Jar's parent view, cloud sync settings, disconnecting sync</li>
+        <li>Everywhere: loading a backup file</li>
+      </ul>
+      <p>Your child can freely play, learn and tap the sync button — the PIN only guards the adult controls.
+         The PIN lives on this device (it is not synced, not emailed, not stored anywhere else).</p>
+      <div class="two" style="margin-top:14px;">
+        <button class="btn btn--ghost" onclick="guideChangePin()">🔑 Change the PIN</button>
+      </div>
+      <div class="callout callout--amber">
+        <b>Forgot the PIN?</b> The honest escape hatch: clear this website's data in the browser settings
+        (Safari → Settings → this site → Clear data). That erases the PIN — and the local progress with it —
+        so restore afterwards from the cloud (tap ☁️) or from your newest backup file. Keep a backup file
+        somewhere safe and this is never more than a five-minute fix.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧠 How your child trains</h2>
+      <p><b>Maths</b> — every word problem is solved in three guided stages: he first types what the problem
+         <i>tells</i> him, then writes the <i>equation</i>, then solves it. His work is shown side-by-side with the
+         expert's method, there are 3 hints per problem, and a timer with an "Olympian target" to beat.
+         Speed Lab has 10-question timed drills.</p>
+      <p><b>Science</b> — he picks a world, reads short story-driven lessons (with Sanskrit twin-words like
+         <i>vega वेग</i> for speed), then proves it in the quiz ladder: Level 1 Foundation, Level 2 Olympiad
+         Challenge (needs a perfect score), Level 3 Chaos Arena. The 1-hour Mission button mixes a recap, a story
+         episode and a boss battle automatically.</p>
+      <div class="callout callout--teal">
+        <b>The house rules (already built in):</b> in Maths, problems unlock one by one — no skipping ahead, and
+        Level 2 opens only after all of Level 1 is solved. The "next problem" button works only after solving
+        the current one. He can always revisit solved problems to beat his time.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>☁️ Cloud sync — one tap saves both champs</h2>
+      <span class="tag tag--teal">Set up once per device · a parent's 5-minute job</span>
+      <p style="margin-top:12px;">This stores your child's maths <b>and</b> science progress in a private file in your own
+         GitHub account — your family's locker. After setup, one tap on <b>☁️</b> (Science home page or Maths
+         Dashboard) does three things: pulls the latest progress, merges it (nothing is ever lost — best scores and
+         badges are kept from every device), and saves a dated backup file to this device.</p>
+      <ol class="steps">
+        <li>On <b>github.com</b>, create a new repository: any name (for example <i>champs-progress</i>), and choose <b>Private</b>. You don't need to add anything to it.</li>
+        <li>Still on GitHub: click your profile picture → <b>Settings</b> → <b>Developer settings</b> (bottom of the left menu) → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
+        <li>Name it anything (e.g. <i>champ-sync</i>). Under <b>Repository access</b> choose <b>Only select repositories</b> and pick the repo you just made. Under <b>Permissions → Repository permissions → Contents</b>, choose <b>Read and write</b>. For <b>Expiration</b>, choose <b>No expiration</b> — then it never runs out.</li>
+        <li>Generate, then <b>copy the token</b> (it starts with <i>github_pat_</i>). GitHub shows it only once — paste it temporarily in your notes or email it to yourself.</li>
+        <li>In the game: tap <b>☁️</b> (Science home) or Math-Champ <b>Dashboard → ⚙️ Settings (parent)</b>, enter your GitHub username, the repo name and the token. Then tap <b>Sync now</b>.</li>
+      </ol>
+      <div class="callout callout--green">
+        <b>Day-to-day:</b> no routine needed — progress saves on the device automatically. Just tap <b>☁️</b>
+        once at the end of a session if you want it in the locker too. On a <b>new device</b>: open the site, set up
+        the ☁️ once (same steps 2–5 — the same token works everywhere), tap Sync, and everything arrives.
+      </div>
+      <p><b>If a token ever stops working</b> (expired or revoked): nothing is lost. Progress stays on each device
+         and in the repo. Just make a new token and paste it into the ☁️ settings.</p>
+    </div>
+
+    <div class="card">
+      <h2>📁 No cloud? Use the email route</h2>
+      <p>Works with zero setup, forever:</p>
+      <ol class="steps">
+        <li>Tap <b>☁️ Sync</b> anywhere — along with syncing it downloads a file named <code>gurukool-progress-DATE.txt</code> that holds both champs.</li>
+        <li>Email that file to yourself or to whoever holds the other device.</li>
+        <li>On the other device: open the site → Science <b>☁️ → 📂 Load a backup file</b> (or Maths Dashboard → <b>Load backup file</b>) → choose the attachment → enter the parent PIN.</li>
+        <li>Both champs' progress merges onto that device. The date in the filename tells you which copy is newest.</li>
+      </ol>
+      <p>The old copy-paste codes still work too: the Maths "progress passport" (codes starting <b>OC1.</b>) and
+         Science "Save Codes" — both merge, both are safe.</p>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ A gentle weekly routine (5 minutes, Sunday evening is perfect)</h2>
+      <ul>
+        <li>Science home → <b>🫙 Doubt Jar</b> (behind the PIN): anything your child found confusing sits here. Pick one or two to chat about — that conversation is worth more than an hour of drills.</li>
+        <li>Maths <b>Dashboard</b>: glance at the speed curve, badges and journal. Celebrate something specific.</li>
+        <li>Tap <b>☁️</b> once. Done.</li>
+      </ul>
+      <p>Small and steady beats long and rare: 20–30 minutes a day with the mission timer is the sweet spot.</p>
+    </div>
+
+    <div class="card">
+      <h2>🛠️ Troubleshooting</h2>
+      <table>
+        <tr><th>"GitHub says 404"</th><td>The repo name or username is mistyped in ☁️ settings, or the token doesn't include that repo.</td></tr>
+        <tr><th>"GitHub says 401/403"</th><td>The token is expired or missing the <b>Contents: Read and write</b> permission. Make a new one.</td></tr>
+        <tr><th>"Could not save"</th><td>Usually no internet, or the token lost write access. Local progress is unaffected — nothing is at risk.</td></tr>
+        <tr><th>Wrong device has newer progress</th><td>Just tap ☁️ on that device first, then on this one — merging always keeps the best of both.</td></tr>
+        <tr><th>Fresh device looks empty</th><td>Set up ☁️ on it once, tap Sync — everything arrives.</td></tr>
+      </table>
+    </div>
+
+    <div class="card" style="text-align:center;">
+      <h2 style="justify-content:center;">🏠 That's everything</h2>
+      <p style="color:var(--ink-dim);">No accounts. No tracking. His progress lives in this browser and in your own private GitHub locker.</p>
+      <a class="btn btn--teal" href="index.html">Back to Gurukool</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function getPin() { try { return localStorage.getItem('cc_pin') || ''; } catch (e) { return ''; } }
+
+  window.guideUnlock = function () {
+    var p = getPin();
+    if (!p) {
+      var np = window.prompt('No parent PIN is set yet.\nSet one now (4-6 digits). This ONE PIN will protect BOTH champs on this device.');
+      if (!np) return;
+      if (!/^[0-9]{4,6}$/.test(np)) { window.alert('The PIN must be 4-6 digits. Try again.'); return; }
+      var c = window.prompt('Re-enter the PIN to confirm:');
+      if (np !== c) { window.alert('The PINs did not match. Try again.'); return; }
+      try { localStorage.setItem('cc_pin', np); } catch (e) {}
+      unlock();
+      return;
+    }
+    var e = window.prompt('Enter the parent PIN:');
+    if (e === p) unlock();
+    else if (e !== null) window.alert('Wrong PIN.');
+  };
+
+  window.guideChangePin = function () {
+    var cur = getPin();
+    if (cur) {
+      var old = window.prompt('Enter the current parent PIN:');
+      if (old !== cur) { window.alert('Wrong PIN.'); return; }
+    }
+    var np = window.prompt('Set a new parent PIN (4-6 digits). It applies to BOTH champs.');
+    if (!np) return;
+    if (!/^[0-9]{4,6}$/.test(np)) { window.alert('The PIN must be 4-6 digits.'); return; }
+    var c = window.prompt('Re-enter the new PIN to confirm:');
+    if (np === c) {
+      try { localStorage.setItem('cc_pin', np); } catch (e) {}
+      window.alert('Parent PIN updated — it now works for both champs on this device.');
+    } else { window.alert('The PINs did not match.'); }
+  };
+
+  function unlock() {
+    document.getElementById('lock-panel').style.display = 'none';
+    document.getElementById('guide-content').classList.remove('hidden');
+    document.getElementById('guide-content').style.display = 'block';
+  }
+})();
+</script>
+</body>
+</html>

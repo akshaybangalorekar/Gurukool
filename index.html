@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gurukool — Pick Your Mission</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-display: 'Baloo 2', 'Comic Sans MS', cursive, system-ui, sans-serif;
+      --font-body: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'Space Mono', 'SF Mono', Consolas, monospace;
+      --bg: #faf5ea; --surface: #fffdf7; --surface-2: #fbf4e4;
+      --ink: #2b2620; --ink-dim: #7a6f60;
+      --border: rgba(43,38,32,0.12); --border-bright: rgba(43,38,32,0.25);
+      --accent: #c2410c; --teal: #0f766e; --amber: #b45309; --green: #047857;
+      --teal-dim: rgba(15,118,110,0.10); --amber-dim: rgba(180,83,9,0.12);
+      --accent-dim: rgba(194,65,12,0.10); --green-dim: rgba(4,120,87,0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font-body); font-size: 16.5px; line-height: 1.65;
+      color: var(--ink); background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 15% -5%, rgba(194,65,12,0.06) 0%, transparent 45%),
+        radial-gradient(ellipse at 90% 5%, rgba(15,118,110,0.07) 0%, transparent 40%),
+        radial-gradient(circle, var(--border) 1px, transparent 1px);
+      background-size: auto, auto, 26px 26px;
+      min-height: 100vh; display: flex; flex-direction: column; overflow-wrap: break-word;
+    }
+    .brandbar {
+      background: rgba(255,253,247,0.92); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brandbar__inner {
+      max-width: 1080px; margin: 0 auto; padding: 12px 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .brandbar__mark {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--teal), #139489);
+      display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(60,40,10,0.12);
+    }
+    .brandbar__mark svg { width: 24px; height: 24px; }
+    .brandbar__name { font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1; }
+    .brandbar__name span { color: var(--teal); }
+    .tag {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+    }
+    .hero { text-align: center; padding: 52px 20px 26px; max-width: 1080px; margin: 0 auto; }
+    .hero__hello {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--teal); margin: 0 0 12px;
+    }
+    .hero__title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(38px, 6.5vw, 60px); line-height: 1.05; margin: 0 0 14px;
+    }
+    .hero__title em { font-style: normal; color: var(--accent); }
+    .hero__sub { font-size: 19px; color: var(--ink-dim); max-width: 620px; margin: 0 auto; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 10px 20px 60px; width: 100%; }
+    .champ-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    .champ-grid > * { min-width: 0; }
+    /* tablets: Math + Science side by side, LR as a full-width banner below */
+    @media (min-width: 620px) {
+      .champ-grid { grid-template-columns: repeat(2, 1fr); }
+      .champ-card--lr { grid-column: 1 / -1; }
+    }
+    /* desktop: all three across */
+    @media (min-width: 1000px) {
+      .champ-grid { grid-template-columns: repeat(3, 1fr); }
+      .champ-card--lr { grid-column: auto; }
+    }
+    .champ-card {
+      text-decoration: none; color: inherit; display: flex; flex-direction: column;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 26px 24px 22px; position: relative; overflow: hidden;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 10px rgba(60,40,10,0.07);
+    }
+    .champ-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(60,40,10,0.14); }
+    .champ-card--math { border-top: 5px solid var(--accent); }
+    .champ-card--science { border-top: 5px solid var(--teal); }
+    .champ-card--lr { border-top: 5px solid var(--amber); }
+    .champ-card__badge {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 999px; align-self: flex-start;
+    }
+    .badge--open { background: var(--green-dim); color: var(--green); }
+    .badge--soon { background: var(--amber-dim); color: var(--amber); }
+    .champ-card__icon {
+      width: 54px; height: 54px; border-radius: 15px; display: flex; align-items: center;
+      justify-content: center; margin: 16px 0 12px;
+    }
+    .champ-card__icon svg { width: 30px; height: 30px; }
+    .icon--math { background: var(--accent-dim); color: var(--accent); }
+    .icon--science { background: var(--teal-dim); color: var(--teal); }
+    .icon--lr { background: var(--amber-dim); color: var(--amber); }
+    .champ-card__name { font-family: var(--font-display); font-weight: 800; font-size: 27px; line-height: 1.1; margin: 0 0 8px; }
+    .champ-card__desc { color: var(--ink-dim); font-size: 14.5px; flex: 1; }
+    .champ-card__desc b { color: var(--ink); }
+    .champ-card__stats {
+      font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-dim);
+      border-top: 1px dashed var(--border-bright); margin-top: 16px; padding-top: 12px;
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+    .champ-card__stats b { color: var(--ink); }
+    .champ-card__go {
+      margin-top: 14px; font-weight: 800; font-size: 15.5px;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .champ-card--math .champ-card__go { color: var(--accent); }
+    .champ-card--lr .champ-card__go { color: var(--ink-dim); }
+    .champ-card__go svg { width: 16px; height: 16px; }
+    .stat-strip {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px;
+    }
+    .stat-pill {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 700;
+      background: var(--surface); border: 1px dashed var(--border-bright);
+      border-radius: 999px; padding: 7px 16px; color: var(--ink-dim);
+    }
+    .stat-pill b { color: var(--ink); }
+    .story {
+      margin-top: 46px; padding: 26px 28px; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: 16px; text-align: center;
+    }
+    .story p { margin: 0 auto; max-width: 640px; }
+    .story b { font-family: var(--font-display); font-size: 18px; display: block; margin-bottom: 8px; }
+    footer {
+      border-top: 1px solid var(--border); padding: 24px 20px 32px; text-align: center;
+      font-size: 13px; color: var(--ink-dim);
+    }
+    footer q { font-style: italic; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeUp 0.45s ease-out both; animation-delay: calc(var(--i, 0) * 0.08s); }
+    @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; } }
+  </style>
+</head>
+<body>
+  <header class="brandbar">
+    <div class="brandbar__inner">
+      <span class="brandbar__mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 6.3 6.8.5-5.2 4.4 1.6 6.6L12 16.2l-5.8 3.6 1.6-6.6L2.6 8.8l6.8-.5L12 2z"/></svg></span>
+      <span class="brandbar__name">Guru<span>kool</span></span>
+      <span class="tag badge--open" style="margin-left:auto;">2 worlds open · 1 launching soon</span>
+    </div>
+  </header>
+
+  <section class="hero fade-in">
+    <p class="hero__hello" id="hub-hello">WELCOME, CHAMPION</p>
+    <h1 class="hero__title">Pick today's <em>mission</em>.</h1>
+    <p class="hero__sub">Three training worlds — one goal: a sharper, faster, braver brain.</p>
+    <div class="stat-strip" id="hub-stats" style="display:none;">
+      <span class="stat-pill">Total XP <b id="hs-xp">0</b></span>
+      <span class="stat-pill">Maths rank <b id="hs-rank">Rookie</b></span>
+      <span class="stat-pill">Science level <b id="hs-sqlv">–</b></span>
+      <span class="stat-pill">Day streak <b id="hs-streak">0</b></span>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="champ-grid">
+
+      <a class="champ-card champ-card--math fade-in" style="--i:1;" href="math-champ/index.html">
+        <span class="champ-card__badge badge--open">Open — start now</span>
+        <span class="champ-card__icon icon--math">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v2a2 2 0 0 1-2 2H4zM4 8v11a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V8"/><path d="M9 12h6"/><path d="M8 5V3h3l-.5 2M13.5 5 14 3h3v2"/></svg>
+        </span>
+        <h2 class="champ-card__name">Math-Champ</h2>
+        <p class="champ-card__desc">
+          Crack word problems into equations, become a <b>lightning calculator</b>, catch
+          divisible numbers, patrol the primes. 13 problems, timed drills, badges and a
+          progress dashboard.
+        </p>
+        <span class="champ-card__stats" id="math-stats">
+          <span>Solved <b id="ms-solved">0</b>/13</span>
+          <span>Best drill <b id="ms-drill">–</b></span>
+        </span>
+        <span class="champ-card__go">Enter Math-Champ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+      <a class="champ-card champ-card--science fade-in" style="--i:2;" href="science-champ/index.html">
+        <span class="champ-card__badge badge--open">Open — 29 worlds</span>
+        <span class="champ-card__icon icon--science">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6.5L4.8 18a2 2 0 0 0 1.7 3h11a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7 15h10"/></svg>
+        </span>
+        <h2 class="champ-card__name">Science-Champ</h2>
+        <p class="champ-card__desc">
+          Become a <b>Science Detective</b> and stop Professor Chaos from un-teaching the
+          universe! 29 worlds from Physics Lab to ISRO missions, story mode, boss battles and an arena.
+        </p>
+        <span class="champ-card__stats">
+          <span>XP <b id="ss-xp">0</b></span>
+          <span>Level <b id="ss-level">Curious Kid</b></span>
+          <span>Worlds <b id="ss-worlds">0</b>/29</span>
+        </span>
+        <span class="champ-card__go">Enter Science-Champ
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+      <a class="champ-card champ-card--lr fade-in" style="--i:3;" href="lr-champ/index.html">
+        <span class="champ-card__badge badge--soon">Coming soon</span>
+        <span class="champ-card__icon icon--lr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M4 12h16"/></svg>
+        </span>
+        <h2 class="champ-card__name">LR-Champ</h2>
+        <p class="champ-card__desc">
+          Logic puzzles, patterns, sequences and brain teasers — the art of <b>thinking
+          step by step</b> and outsmarting tricky questions. Train the detective in you.
+        </p>
+        <span class="champ-card__stats"><span>Under construction</span></span>
+        <span class="champ-card__go">Peek inside
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
+    </div>
+
+    <section class="story fade-in" style="--i:4;">
+      <p>
+        <b>Why three worlds?</b>
+        Because maths, science and logic are three muscles of the same brain. A short
+        session in each beats one long grind in one — and champions cross-train.
+        (Psst — ask your coach to open the next world when you're ready.)
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <q>The important thing is not to stop questioning.</q> — Albert Einstein<br>
+    Gurukool · your personal training universe<br>
+    <a href="parent-guide.html" style="color:inherit; opacity:.75; font-size:12.5px;">📖 For parents — the guide</a>
+  </footer>
+
+  <script src="math-champ/assets/app.js"></script>
+  <script>
+  (function () {
+    var S = OC.STATE;
+    var lv = OC.levelOf(S.xp);
+
+    if (S.name && S.name.trim()) {
+      document.getElementById('hub-hello').textContent = 'WELCOME BACK, ' + S.name.trim().toUpperCase() + ' — READY FOR TODAY\u2019S MISSION?';
+    }
+    var SQ = null;
+    try { var v = JSON.parse(localStorage.getItem('sq_v3')); if (v && v.profiles) SQ = v; } catch (e) {}
+    var sp = SQ ? (SQ.profiles[SQ.current || 'p1'] || null) : null;
+    var sqXp = sp ? (sp.xp || 0) : 0;
+    var sqLevel = 'Curious Kid';
+    var SQ_LEVELS = [[0, 'Curious Kid'], [150, 'Explorer'], [400, 'Investigator'], [800, 'Inventor'], [1400, 'Scientist'], [2200, 'Olympiad Star'], [3200, 'Grand Scientist']];
+    for (var si = 0; si < SQ_LEVELS.length; si++) if (sqXp >= SQ_LEVELS[si][0]) sqLevel = SQ_LEVELS[si][1];
+    if (sp && sp.name && sp.name !== 'Champion' && (!S.name || !S.name.trim())) {
+      document.getElementById('hub-hello').textContent = 'WELCOME BACK, ' + sp.name.trim().toUpperCase() + ' — READY FOR TODAY\u2019S MISSION?';
+    }
+    document.getElementById('ss-xp').textContent = sqXp;
+    document.getElementById('ss-level').textContent = sqLevel;
+    document.getElementById('ss-worlds').textContent = sp && sp.visited ? sp.visited.length : 0;
+    document.getElementById('hs-sqlv').textContent = sqXp > 0 ? sqLevel : '\u2013';
+    if (sqXp > 0) document.getElementById('hs-xp').textContent = (S.xp || 0) + sqXp;
+    var hasProgress = (S.attempts && S.attempts.length) || sqXp > 0;
+    if (hasProgress) {
+      var stats = document.getElementById('hub-stats');
+      stats.style.display = 'flex';
+      document.getElementById('hs-xp').textContent = (S.xp || 0) + sqXp;
+      document.getElementById('hs-rank').textContent = lv.level.name;
+      document.getElementById('hs-streak').textContent = Math.max(S.streak.count || 0, sp ? (sp.streak || 0) : 0);
+
+      var solved = {}, bestDrill = 0;
+      S.attempts.forEach(function (a) {
+        if (a.kind === 'word' && a.correct) solved[a.id] = true;
+        if (a.kind === 'drill' && a.correct > bestDrill) bestDrill = a.correct;
+      });
+      document.getElementById('ms-solved').textContent = Object.keys(solved).length;
+      document.getElementById('ms-drill').textContent = bestDrill ? bestDrill + '/10' : '\u2013';
+    }
+  })();
+  </script>
+</body>
+</html>
