@@ -444,7 +444,7 @@ window.ChampSync = (function () {
   /* champions at a glance */
   function glance() {
     var MATH_LEVELS = [[0, 'Rookie'], [120, 'Explorer'], [300, 'Challenger'], [550, 'Bronze Olympian'], [900, 'Silver Olympian'], [1350, 'Gold Olympian'], [2000, 'Maths Champion']];
-    var SCI_LEVELS = [[0, 'Curious Kid'], [150, 'Explorer'], [400, 'Investigator'], [800, 'Inventor'], [1400, 'Scientist'], [2200, 'Olympiad Star'], [3200, 'Grand Scientist']];
+    var SCI_LEVELS = [[0, 'Rookie'], [120, 'Explorer'], [300, 'Challenger'], [550, 'Bronze Olympian'], [900, 'Silver Olympian'], [1350, 'Gold Olympian'], [2000, 'Gurukool Champion']];
     function lv(arr, xp) { var n = arr[0][1]; for (var i = 0; i < arr.length; i++) if (xp >= arr[i][0]) n = arr[i][1]; return n; }
     try {
       var oc = JSON.parse(localStorage.getItem('oc_state') || 'null');

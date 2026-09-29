@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — Training Mission</title>
+  <link rel="icon" href="../icon.png">
+  <link rel="apple-touch-icon" href="../icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .mi-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+    .mi-clock { font-family: var(--font-display, inherit); font-size: 30px; font-weight: 800; }
+    .mi-phase { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal, #2a9d8f); }
+    .mi-strip { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 15px; margin: 10px 0 4px; }
+    .mi-topic-chip { display: inline-block; background: var(--bg, #faf5ea); border: 1.5px solid var(--border, #e8dfcc); border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size: 14px; margin-bottom: 12px; }
+    .mi-question { font-size: 24px; font-weight: 700; line-height: 1.5; margin: 0 0 18px; }
+    .mi-answer-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+    .mi-answer-row input { max-width: 240px; }
+    .mi-feedback { margin-top: 16px; border-radius: 12px; padding: 14px 16px; display: none; }
+    .mi-feedback.ok { display: block; background: rgba(42, 157, 143, 0.12); border: 1.5px solid rgba(42, 157, 143, 0.5); }
+    .mi-feedback.hint { display: block; background: rgba(217, 119, 6, 0.10); border: 1.5px solid rgba(217, 119, 6, 0.45); }
+    .mi-feedback.solve { display: block; background: rgba(192, 57, 43, 0.08); border: 1.5px solid rgba(192, 57, 43, 0.4); }
+    .mi-feedback b { font-size: 16px; }
+    .mi-report-num { font-family: var(--font-display, inherit); font-size: 34px; font-weight: 800; }
+    .mi-tbar { height: 12px; background: var(--bg, #faf5ea); border-radius: 999px; overflow: hidden; margin: 6px 0 2px; }
+    .mi-tbar i { display: block; height: 100%; background: linear-gradient(90deg, #2a9d8f, #58bfae); }
+    .dur-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 18px 0 8px; }
+    .dur-btn { text-align: left; padding: 18px; border-radius: 14px; border: 2px solid var(--border, #e8dfcc); background: var(--bg, #faf5ea); cursor: pointer; font-family: inherit; }
+    .dur-btn:hover { border-color: var(--teal, #2a9d8f); }
+    .dur-btn .t { font-size: 22px; font-weight: 800; display: block; margin-bottom: 4px; }
+    .dur-btn .d { font-size: 13.5px; color: var(--ink-dim, #7a6f60); }
+    .mi-shake { animation: mishake 0.35s; }
+    @keyframes mishake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+    .streak-pop { display: inline-block; animation: mipop 0.5s; }
+    @keyframes mipop { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
+  </style>
+  <style>
+    /* home-screen full-screen mode: keep content clear of the iPad status bar */
+    body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+    .topnav, .top { top: env(safe-area-inset-top); }
+  </style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+
+  <!-- ============ start screen ============ -->
+  <main class="wrap" id="start-screen">
+    <section class="card card--hero fade-in" style="--i:1;">
+      <p class="section-label">Adaptive practice engine</p>
+      <h2 style="font-family:var(--font-display); font-size:30px; margin:0 0 10px;">🎯 Training Mission</h2>
+      <p class="muted" style="margin:0 0 6px; font-size:16px; max-width:640px;">
+        A mission keeps posing questions and <b>watches how you answer</b> — right or wrong, and how fast.
+        Cruise through and it quietly climbs to tougher questions. Stumble, and it practises the same
+        kind with you until you crack it. By the end, it tells you exactly what got stronger.
+      </p>
+      <p class="muted small" style="margin:0 0 8px;">XP counts toward your rank and badges, same as everywhere in Math-Champ.</p>
+      <div id="last-mission" class="callout callout--green" style="display:none; margin:14px 0 0; max-width:640px;"></div>
+      <div class="dur-grid">
+        <button class="dur-btn" id="dur-10" type="button">
+          <span class="t">⚡ Quick warm-up</span>
+          <span class="d">10 minutes — a sharp daily practice</span>
+        </button>
+        <button class="dur-btn" id="dur-30" type="button">
+          <span class="t">🚀 Standard mission</span>
+          <span class="d">30 minutes — warm-up, training, final sprint</span>
+        </button>
+        <button class="dur-btn" id="dur-60" type="button">
+          <span class="t">🏆 Full mission</span>
+          <span class="d">60 minutes — the complete session, like Science</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ running screen ============ -->
+  <main class="wrap" id="run-screen" style="display:none;">
+    <section class="card card--elevated">
+      <div class="mi-head">
+        <div>
+          <span class="mi-phase" id="m-phase">WARM-UP</span><br>
+          <span class="mi-clock" id="m-clock">10:00</span>
+        </div>
+        <div class="pbar" style="flex:1 1 160px; min-width:140px;"><div class="pbar__fill" id="m-bar" style="width:100%;"></div></div>
+        <div class="mi-strip" style="margin:0;">
+          <span>🔥 <b id="m-streak">0</b> in a row</span>
+          <span>⭐ <b id="m-xp">0</b> XP</span>
+          <span>❓ <b id="m-count">0</b></span>
+          <button class="btn btn--small btn--ghost" id="m-end" type="button">End mission</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--elevated" id="m-qcard">
+      <span class="mi-topic-chip" id="m-chip">✖️ Multiplication · Level 3</span>
+      <p class="mi-question" id="m-question">…</p>
+      <div class="mi-answer-row">
+        <div style="flex:1 1 200px;">
+          <p class="field-label">My answer</p>
+          <input type="number" id="m-answer" step="any" placeholder="?" autocomplete="off">
+        </div>
+        <button class="btn btn--teal" id="m-submit" type="button">Check</button>
+      </div>
+      <div class="mi-feedback" id="m-feedback"></div>
+    </section>
+  </main>
+
+  <!-- ============ report screen ============ -->
+  <main class="wrap" id="report-screen" style="display:none;">
+    <section class="card card--hero fade-in" style="--i:1; text-align:center;">
+      <p class="section-label">Mission complete</p>
+      <h2 style="font-family:var(--font-display); font-size:30px; margin:0 0 6px;" id="r-title">Well trained, champion! 🎉</h2>
+      <div class="kpi-row" style="max-width:640px; margin:16px auto;">
+        <div class="kpi"><div class="kpi__value" id="r-xp">0</div><div class="kpi__label">XP earned</div></div>
+        <div class="kpi"><div class="kpi__value" id="r-acc">0%</div><div class="kpi__label">Accuracy</div></div>
+        <div class="kpi"><div class="kpi__value" id="r-avg">–</div><div class="kpi__label">Avg vs target</div></div>
+        <div class="kpi"><div class="kpi__value" id="r-qs">0</div><div class="kpi__label">Questions</div></div>
+      </div>
+      <p class="muted" id="r-line" style="max-width:560px; margin:0 auto 10px;"></p>
+    </section>
+    <section class="card">
+      <p class="section-label">What got stronger</p>
+      <div id="r-topics" style="max-width:640px;"></div>
+    </section>
+    <section class="card" style="text-align:center;">
+      <a class="btn btn--teal" href="mission.html" style="text-decoration:none;">🎯 New mission</a>
+      <a class="btn btn--ghost" href="index.html" style="text-decoration:none;">Back to home</a>
+    </section>
+  </main>
+
+  <script src="assets/app.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var $ = function (id) { return document.getElementById(id); };
+    var S = OC.STATE;
+
+    /* ================= topics & generators ================= */
+
+    function ri(a, b) { return OC.randInt(a, b); }
+    function pick(arr) { return arr[ri(0, arr.length - 1)]; }
+    function money(n) { return n.toFixed(2); }
+
+    var TOPICS = [
+      { id: 'add',  icon: '➕', name: 'Addition & Subtraction' },
+      { id: 'mult', icon: '✖️', name: 'Multiplication' },
+      { id: 'div',  icon: '➗', name: 'Division' },
+      { id: 'frac', icon: '🍕', name: 'Fractions' },
+      { id: 'pct',  icon: '％', name: 'Percentages' },
+      { id: 'word', icon: '📖', name: 'Word Problems' },
+      { id: 'sense', icon: '🧠', name: 'Number Sense' },
+      { id: 'pattern', icon: '🔎', name: 'Pattern Detective' },
+      { id: 'time', icon: '⏰', name: 'Time, Speed & Money' }
+    ];
+
+    var GEN = {
+      pattern: function (L) {
+        var A, S, n, N, t, r, c1, s1, cs, ss, C, Q, pick2;
+        function seq(a, s, k) { var o = []; for (var i = 0; i < k; i++) o.push(a + i * s); return o; }
+        function shapeTable(c1v, csv, s1v, ssv) {
+          var c = seq(c1v, csv, 3), q = seq(s1v, ssv, 3);
+          return 'A sequence of shapes is made from circles and squares. Shape number 1 has ' + c[0] + ' circles and ' + q[0] + ' squares; shape number 2 has ' + c[1] + ' circles and ' + q[1] + ' squares; shape number 3 has ' + c[2] + ' circles and ' + q[2] + ' squares. The sequence continues in the same way.';
+        }
+        if (L === 1) {
+          A = ri(2, 6); S = ri(2, 5); n = ri(3, 5);
+          return { q: 'A rangoli pattern starts with ' + A + ' dots and every new step adds ' + S + ' dots. How many dots are in step number ' + n + '?', a: A + (n - 1) * S, target: 30,
+            hint: 'From step 1 to step ' + n + ' there are only ' + (n - 1) + ' jumps of +' + S + '.',
+            work: A + ' + ' + (n - 1) + ' \u00D7 ' + S + ' = ' + (A + (n - 1) * S) + ' dots' };
+        }
+        if (L === 2) {
+          A = ri(3, 9); S = ri(3, 7); n = ri(6, 10);
+          return { q: 'Shape number 1 in a pattern has ' + A + ' squares. Each next shape adds ' + S + ' more squares. How many squares does shape number ' + n + ' have?', a: A + (n - 1) * S, target: 40,
+            hint: 'Start at ' + A + ', then add ' + S + ' for every step AFTER shape 1 \u2014 that is ' + (n - 1) + ' steps.',
+            work: A + ' + ' + (n - 1) + ' \u00D7 ' + S + ' = ' + (A + (n - 1) * S) + ' squares' };
+        }
+        if (L === 3) {
+          A = ri(2, 9); S = ri(3, 8); n = ri(6, 15); N = A + (n - 1) * S; t = seq(A, S, 3);
+          return { q: 'A pattern of tiles starts: ' + t.join(', ') + ', \u2026 and continues in the same way. Which term number is ' + N + '?', a: n, target: 55,
+            hint: 'Each step adds ' + S + '. First find how far ' + N + ' is from the start ' + A + '.',
+            work: N + ' \u2212 ' + A + ' = ' + (N - A) + '; ' + (N - A) + ' \u00F7 ' + S + ' = ' + (n - 1) + ' steps after the first \u2192 term ' + n };
+        }
+        if (L === 4 || L === 5 || L === 6) {
+          c1 = ri(2, 6); cs = ri(2, 4); s1 = ri(2, 6); ss = ri(1, 3);
+          if (ss === cs) ss += 1;
+          var intro = shapeTable(c1, cs, s1, ss);
+          C = seq(c1, cs, 3); Q = seq(s1, ss, 3);
+          if (L === 4) {
+            n = ri(8, 16); N = c1 + (n - 1) * cs;
+            return { q: intro + ' Which shape number has ' + N + ' circles?', a: n, target: 80,
+              hint: 'Watch ONLY the circles: ' + C.join(', ') + ', \u2026 adding ' + cs + ' each time. How far is ' + N + ' from ' + c1 + '?',
+              work: N + ' \u2212 ' + c1 + ' = ' + (N - c1) + '; \u00F7 ' + cs + ' = ' + (n - 1) + ' steps after shape 1 \u2192 shape ' + n };
+          }
+          if (L === 5) {
+            n = ri(9, 18);
+            return { q: intro + ' How many squares does shape number ' + n + ' have?', a: s1 + (n - 1) * ss, target: 70,
+              hint: 'The squares column starts at ' + s1 + ' and adds ' + ss + ' each shape (' + Q.join(', ') + ', \u2026).',
+              work: s1 + ' + ' + (n - 1) + ' \u00D7 ' + ss + ' = ' + (s1 + (n - 1) * ss) + ' squares' };
+          }
+          n = ri(10, 20); N = s1 + (n - 1) * ss;
+          return { q: intro + ' Which shape number has ' + N + ' squares?', a: n, target: 80,
+            hint: 'This time it is the SQUARES: ' + Q.join(', ') + ', \u2026 adding ' + ss + '. Do not let the circles distract you!',
+            work: N + ' \u2212 ' + s1 + ' = ' + (N - s1) + '; \u00F7 ' + ss + ' = ' + (n - 1) + ' steps after shape 1 \u2192 shape ' + n };
+        }
+        if (L === 7) {
+          pick2 = ri(0, 1);
+          if (pick2 === 0) {
+            r = ri(5, 12);
+            return { q: 'Dots form growing triangles: triangle number 1 has 1 dot, triangle number 2 has 3 dots, triangle number 3 has 6, triangle number 4 has 10 \u2014 each triangle adds one more row than the one before. How many dots are in triangle number ' + r + '?', a: r * (r + 1) / 2, target: 75,
+              hint: 'Each jump grows by 1: +2, +3, +4, +5 \u2026 keep adding.',
+              work: r + ' \u00D7 ' + (r + 1) + ' \u00F7 2 = ' + (r * (r + 1) / 2) + ' dots' };
+          }
+          n = ri(6, 14);
+          return { q: 'A row of joined squares needs 4 sticks for the first square and 3 extra sticks for every extra square after it. How many sticks are needed for ' + n + ' squares?', a: 4 + (n - 1) * 3, target: 70,
+            hint: 'First square: 4 sticks. Every square after that shares a side, so only +3.',
+            work: '4 + ' + (n - 1) + ' \u00D7 3 = ' + (4 + (n - 1) * 3) + ' sticks' };
+        }
+        pick2 = ri(0, 1);
+        if (pick2 === 0) {
+          n = ri(15, 30); N = 4 + (n - 1) * 3;
+          return { q: 'A row of joined squares needs 4 sticks for the first square and 3 extra sticks for every extra square after it. Which number of squares needs exactly ' + N + ' sticks?', a: n, target: 80,
+            hint: 'Remove the first square (4 sticks), then see how many +3 steps remain.',
+            work: N + ' \u2212 4 = ' + (N - 4) + '; \u00F7 3 = ' + (n - 1) + ' extra squares after the first \u2192 ' + n + ' squares' };
+        }
+        r = ri(8, 15); N = r * r;
+        return { q: 'A pattern of square grids: shape number 1 has 1 small square, shape number 2 has 4, shape number 3 has 9 \u2014 shape number k has k \u00D7 k small squares. Which shape number has ' + N + ' small squares?', a: r, target: 75,
+          hint: '1, 4, 9, 16, 25 \u2026 these are the perfect squares. Which number times itself gives ' + N + '?',
+          work: r + ' \u00D7 ' + r + ' = ' + N };
+      },
+      add: function (L) {
+        var a, b, c, op, ans;
+        if (L === 1) { a = ri(10, 45); b = ri(10, 45); return { q: a + ' + ' + b + ' = ?', a: a + b, target: 20, hint: 'Add the tens, then the ones.', work: a + ' + ' + b + ' = ' + (a + b) }; }
+        if (L === 2) { a = ri(17, 89); b = ri(14, 79); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 25, hint: 'Carry (or borrow) between the columns.', work: a + op + b + ' = ' + ans }; }
+        if (L === 3) { a = ri(120, 899); b = ri(110, 780); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 30, hint: 'Work column by column, right to left.', work: 'Column by column gives ' + ans }; }
+        if (L === 4) { a = ri(1200, 8999); b = ri(1100, 7800); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 40, hint: 'Same columns as always \u2014 just more of them.', work: 'Take it one column at a time: ' + ans }; }
+        if (L === 5) { a = ri(1500, 4999) / 100; b = ri(950, 3899) / 100; return { q: '\u20B9' + money(a) + ' + \u20B9' + money(b) + ' = \u20B9?', a: a + b, target: 45, hint: 'Line up the paise (the two decimals) under each other.', work: 'Add rupees and paise separately, then join: \u20B9' + money(a + b) }; }
+        if (L === 6) { a = ri(18, 89); c = a + ri(15, 60); return { q: a + ' + ? = ' + c, a: c - a, target: 35, hint: 'Ask: what goes with ' + a + ' to reach ' + c + '?', work: c + ' \u2212 ' + a + ' = ' + (c - a) }; }
+        if (L === 7) { a = ri(120, 680); b = ri(110, 590); c = ri(90, 400); return { q: a + ' + ' + b + ' \u2212 ' + c + ' = ?', a: a + b - c, target: 40, hint: 'Left to right: first the plus, then the minus.', work: a + ' + ' + b + ' = ' + (a + b) + '; \u2212 ' + c + ' = ' + (a + b - c) }; }
+        a = ri(2100, 9800); b = ri(1800, 8900); c = ri(100, 900);
+        return { q: a + ' \u2212 ' + b + ' + ' + c + ' = ?', a: a - b + c, target: 50, hint: 'Two careful steps, left to right.', work: a + ' \u2212 ' + b + ' = ' + (a - b) + '; + ' + c + ' = ' + (a - b + c) };
+      },
+      mult: function (L) {
+        var a, b;
+        if (L === 1) { a = ri(2, 9); b = ri(2, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 12, hint: 'Think of ' + a + ' groups of ' + b + '.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
+        if (L === 2) { a = ri(3, 12); b = ri(3, 12); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 15, hint: 'Split it if needed: ' + a + ' \u00D7 ' + (b - 1) + ' plus one more ' + a + '.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
+        if (L === 3) { a = ri(12, 29); b = ri(3, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 25, hint: 'Split ' + a + ' into tens and ones, multiply each by ' + b + ', then add.', work: (Math.floor(a / 10) * 10) + ' \u00D7 ' + b + ' = ' + (Math.floor(a / 10) * 10 * b) + '; ' + (a % 10) + ' \u00D7 ' + b + ' = ' + (a % 10 * b) + '; total ' + (a * b) }; }
+        if (L === 4) { a = ri(13, 39); b = ri(13, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 45, hint: 'Split one number: ' + a + ' \u00D7 ' + (Math.floor(b / 10) * 10) + ' + ' + a + ' \u00D7 ' + (b % 10) + '.', work: 'Two products, then add: ' + (a * b) }; }
+        if (L === 5) { a = ri(112, 899); b = ri(3, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 50, hint: 'Hundreds, tens, ones \u2014 multiply each by ' + b + ' and add.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
+        if (L === 6) { a = ri(12, 48); b = pick([25, 50, 99]); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 40, hint: b === 99 ? '\u00D7 99 = \u00D7 100 minus ' + a + '.' : ('\u00D7 ' + b + ' = half of \u00D7 ' + (b * 2) + '.'), work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
+        if (L === 7) { a = ri(15, 95); b = ri(2, 9) * 10; return { q: (a / 10) + ' \u00D7 ' + b + ' = ?', a: a * b / 10, target: 40, hint: '\u00D7 ' + b + ' is \u00D7 ' + (b / 10) + ' then \u00D7 10.', work: (a / 10) + ' \u00D7 ' + (b / 10) + ' = ' + (a * b / 100) + ', \u00D7 10 = ' + (a * b / 10) }; }
+        a = ri(112, 499); b = ri(12, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 90, hint: 'Split ' + b + ' into tens and ones and take it in two products.', work: 'Two products, then add: ' + (a * b) };
+      },
+      div: function (L) {
+        var a, b, q;
+        if (L === 1) { b = ri(2, 9); q = ri(2, 9); return { q: (b * q) + ' \u00F7 ' + b + ' = ?', a: q, target: 12, hint: 'Which times-table fact is this?', work: b + ' \u00D7 ' + q + ' = ' + (b * q) }; }
+        if (L === 2) { b = ri(3, 9); a = b * ri(3, 12) + ri(1, b - 1); return { q: 'What is the remainder when ' + a + ' is divided by ' + b + '?', a: a % b, target: 25, hint: 'Find the biggest multiple of ' + b + ' under ' + a + ', then see what is left.', work: a + ' = ' + b + ' \u00D7 ' + Math.floor(a / b) + ' + ' + (a % b) }; }
+        if (L === 3) { b = ri(3, 9); q = ri(12, 29); return { q: (b * q) + ' \u00F7 ' + b + ' = ?', a: q, target: 25, hint: 'Split the number into parts that ' + b + ' divides nicely.', work: b + ' \u00D7 ' + q + ' = ' + (b * q) }; }
+        if (L === 4) { b = ri(3, 9); q = ri(102, 299); return { q: (b * q) + ' \u00F7 ' + b + ' = ?', a: q, target: 40, hint: 'Long division, or split into friendly chunks.', work: b + ' \u00D7 ' + q + ' = ' + (b * q) }; }
+        if (L === 5) { b = ri(11, 19); q = ri(6, 19); return { q: (b * q) + ' \u00F7 ' + b + ' = ?', a: q, target: 50, hint: 'Estimate first: about how many ' + b + 's fit?', work: b + ' \u00D7 ' + q + ' = ' + (b * q) }; }
+        if (L === 6) { b = ri(3, 12); q = ri(6, 14); return { q: b + ' \u00D7 ? = ' + (b * q), a: q, target: 30, hint: 'It is a hidden division: ' + (b * q) + ' \u00F7 ' + b + '.', work: (b * q) + ' \u00F7 ' + b + ' = ' + q }; }
+        if (L === 7) { b = ri(6, 12); a = b * ri(5, 25) + ri(1, b - 1); return { q: a + ' pens go into boxes of ' + b + '. How many FULL boxes?', a: Math.floor(a / b), target: 45, hint: 'Divide and keep only the whole boxes \u2014 the remainder is left over.', work: a + ' \u00F7 ' + b + ' = ' + Math.floor(a / b) + ' remainder ' + (a % b) }; }
+        b = ri(12, 25); q = ri(21, 89); return { q: (b * q) + ' \u00F7 ' + b + ' = ?', a: q, target: 80, hint: 'Long division: how many ' + b + 's in each chunk?', work: b + ' \u00D7 ' + q + ' = ' + (b * q) };
+      },
+      frac: function (L) {
+        var n, k, m, m2, N;
+        if (L === 1) { k = pick([2, 4, 10]); N = k * ri(4, 20); return { q: 'What is 1/' + k + ' of ' + N + '?', a: N / k, target: 25, hint: 'Divide by the bottom number.', work: N + ' \u00F7 ' + k + ' = ' + (N / k) }; }
+        if (L === 2) { k = ri(3, 8); N = k * ri(3, 16); return { q: 'What is 1/' + k + ' of ' + N + '?', a: N / k, target: 30, hint: 'One-' + k + 'th means \u00F7 ' + k + '.', work: N + ' \u00F7 ' + k + ' = ' + (N / k) }; }
+        if (L === 3) { k = ri(3, 10); m = ri(2, k - 1); N = k * ri(4, 20); return { q: 'What is ' + m + '/' + k + ' of ' + N + '?', a: N / k * m, target: 40, hint: 'Find 1/' + k + ' first (' + (N / k) + '), then take ' + m + ' of them.', work: N + ' \u00F7 ' + k + ' = ' + (N / k) + '; \u00D7 ' + m + ' = ' + (N / k * m) }; }
+        if (L === 4) { n = ri(5, 19); k = pick([2, 3, 4, 5]); return { q: 'How many ' + k + '-ths make ' + n + ' whole ones?', a: n * k, target: 30, hint: 'Each whole one is ' + k + ' pieces.', work: n + ' \u00D7 ' + k + ' = ' + (n * k) }; }
+        if (L === 5) { k = ri(5, 12); m = ri(2, k - 1); m2 = ri(1, k - m); N = k * ri(6, 20); return { q: m + '/' + k + ' of ' + N + ' + ' + m2 + '/' + k + ' of ' + N + ' = ?', a: N / k * (m + m2), target: 45, hint: 'Same bottom number \u2014 add the top numbers first.', work: '(' + m + ' + ' + m2 + ')/' + k + ' of ' + N + ' = ' + (N / k * (m + m2)) }; }
+        if (L === 6) { k = ri(3, 9); m = ri(2, k - 1); N = k * ri(5, 18); return { q: 'A ribbon is ' + N + ' cm long. ' + m + '/' + k + ' of it is used. How many cm are used?', a: N / k * m, target: 45, hint: 'One ' + k + 'th of ' + N + ' is ' + (N / k) + ' cm.', work: (N / k) + ' \u00D7 ' + m + ' = ' + (N / k * m) + ' cm' }; }
+        if (L === 7) { N = ri(8, 24) * 4; return { q: 'A water tank holds ' + N + ' litres. 3/4 is used, then half of the REST is used. How many litres are left?', a: N / 8, target: 60, hint: 'After 3/4 is used, ' + (N / 4) + ' litres remain. Then half of THAT goes.', work: N + ' \u2212 ' + (3 * N / 4) + ' = ' + (N / 4) + '; half of ' + (N / 4) + ' = ' + (N / 8) + ' left' }; }
+        N = ri(12, 30) * 6; return { q: 'Atharv read ' + (2 * N / 3) + ' pages \u2014 exactly 2/3 of a book. How many pages does the book have?', a: N, target: 70, hint: 'If 2/3 is ' + (2 * N / 3) + ', then 1/3 is half of that.', work: '1/3 = ' + (N / 3) + ', so the whole book = ' + N };
+      },
+      pct: function (L) {
+        var N, P, x;
+        if (L === 1) { N = ri(2, 20) * 100; P = pick([10, 50]); return { q: 'What is ' + P + '% of ' + N + '?', a: N * P / 100, target: 25, hint: P === 50 ? 'Half of it.' : 'One tenth of it.', work: N + ' \u00D7 ' + P / 100 + ' = ' + (N * P / 100) }; }
+        if (L === 2) { N = ri(4, 40) * 100; P = pick([25, 75]); return { q: 'What is ' + P + '% of ' + N + '?', a: N * P / 100, target: 30, hint: P === 25 ? 'Divide by 4.' : 'Three quarters.', work: N + ' \u00D7 ' + P / 100 + ' = ' + (N * P / 100) }; }
+        if (L === 3) { N = ri(10, 90) * 10; P = pick([5, 20]); return { q: 'What is ' + P + '% of ' + N + '?', a: N * P / 100, target: 40, hint: 'Find 10% (' + (N / 10) + ') first, then scale.', work: N + ' \u00D7 ' + P / 100 + ' = ' + (N * P / 100) }; }
+        if (L === 4) { N = ri(2, 20) * 100; P = ri(2, 9) * 5; return { q: 'What is ' + P + '% of ' + N + '?', a: N * P / 100, target: 50, hint: '10% of ' + N + ' is ' + (N / 10) + ' \u2014 build from there.', work: N + ' \u00D7 ' + P + '/100 = ' + (N * P / 100) }; }
+        if (L === 5) { N = ri(5, 20) * 20; P = pick([15, 20, 30]); return { q: 'A cricket bat costs \u20B9' + N + '. Its price rises by ' + P + '%. What is the new price in \u20B9?', a: N * (100 + P) / 100, target: 60, hint: 'First find ' + P + '% (' + (N * P / 100) + '), then ADD it.', work: N + ' + ' + (N * P / 100) + ' = \u20B9' + (N * (100 + P) / 100) }; }
+        if (L === 6) { N = ri(3, 12) * 40; P = pick([10, 20, 25]); return { q: 'A jersey costs \u20B9' + N + '. In a sale it is ' + P + '% OFF. What is the sale price in \u20B9?', a: N * (100 - P) / 100, target: 60, hint: 'You pay ' + (100 - P) + '% of the price.', work: N + ' \u2212 ' + (N * P / 100) + ' = \u20B9' + (N * (100 - P) / 100) }; }
+        if (L === 7) { P = pick([10, 20]); x = (P === 10 ? ri(2, 9) * 9 : ri(2, 9) * 8); return { q: 'After a ' + P + '% discount, a kit bag costs \u20B9' + x + '. What was the original price in \u20B9?', a: x * 100 / (100 - P), target: 70, hint: '\u20B9' + x + ' is ' + (100 - P) + '% of the original. Find 1% first.', work: x + ' \u00F7 ' + (100 - P) + ' = 1%, \u00D7 100 = \u20B9' + (x * 100 / (100 - P)) }; }
+        N = ri(2, 10) * 100; P = 10;
+        return { q: 'A shop raises a \u20B9' + N + ' price by ' + P + '%, then offers ' + P + '% off the NEW price. What is the final price in \u20B9?', a: N * (100 + P) / 100 * (100 - P) / 100, target: 80, hint: 'Two separate steps \u2014 do them one at a time.', work: '\u20B9' + (N * 1.1) + ' after the rise; then \u221210% gives \u20B9' + (N * 0.99) };
+      },
+      word: function (L) {
+        var a, b, t, s, u, P;
+        if (L === 1) { a = ri(14, 40); b = ri(12, 38); return { q: 'Ravi has ' + a + ' marbles and wins ' + b + ' more in a game. How many marbles does he have now?', a: a + b, target: 35, hint: 'Winning more means adding.', work: a + ' + ' + b + ' = ' + (a + b) }; }
+        if (L === 2) { a = ri(2, 8) * 10 + 5; b = ri(2, 7) * 10 + 3; return { q: 'You buy a comic for \u20B9' + b + ' and pay with a \u20B9' + a + ' note. How much change do you get in \u20B9?', a: a - b, target: 40, hint: 'Change = what you paid \u2212 the price.', work: a + ' \u2212 ' + b + ' = \u20B9' + (a - b) }; }
+        if (L === 3) { a = ri(3, 8); b = a + ri(1, 5); t = (a + b) * ri(2, 6); return { q: t + ' sweets are shared between two friends in the ratio ' + a + ' : ' + b + '. How many sweets does the friend with the BIGGER share get?', a: t / (a + b) * b, target: 60, hint: 'One part = ' + t + ' \u00F7 ' + (a + b) + '. The bigger friend takes ' + b + ' parts.', work: '1 part = ' + (t / (a + b)) + '; bigger share = ' + (t / (a + b)) + ' \u00D7 ' + b + ' = ' + (t / (a + b) * b) }; }
+        if (L === 4) { s = ri(4, 12); u = ri(6, 18); return { q: 'A batsman scores ' + (s * u) + ' runs in ' + s + ' overs. How many runs per over is that?', a: u, target: 60, hint: 'Share the runs equally among the overs.', work: (s * u) + ' \u00F7 ' + s + ' = ' + u + ' runs per over' }; }
+        if (L === 5) { b = ri(4, 12); a = 3 * b; return { q: 'Meera is 3 times as old as her brother. Together they are ' + (a + b) + '. How old is the brother?', a: b, target: 70, hint: 'Together they are 4 equal parts (1 for him + 3 for her).', work: (a + b) + ' \u00F7 4 = ' + b }; }
+        if (L === 6) { s = ri(45, 90); t = ri(2, 5); return { q: 'A train covers ' + (s * t) + ' km in ' + t + ' hours. What is its speed in km/h?', a: s, target: 60, hint: 'Speed = distance \u00F7 time.', work: (s * t) + ' \u00F7 ' + t + ' = ' + s + ' km/h' }; }
+        if (L === 7) { a = ri(12, 40) * 10; P = pick([5, 10, 20, 25, 50]); b = a + a * P / 100; return { q: 'A shopkeeper buys a bag for \u20B9' + a + ' and sells it for \u20B9' + b + '. What is the profit as a PERCENT of the cost?', a: P, target: 75, hint: 'Profit first (\u20B9' + (b - a) + '), then compare it to the cost.', work: (b - a) + ' \u00F7 ' + a + ' \u00D7 100 = ' + P + '%' }; }
+        a = ri(10, 30) * 5; var need = a * ri(10, 14); var have = a * ri(2, 5);
+        return { q: 'A tap fills a tank at ' + a + ' litres per hour. The tank needs ' + need + ' litres and already has ' + have + ' litres. How many HOURS until it is full?', a: (need - have) / a, target: 80, hint: 'How many litres are still missing? Then divide by the rate.', work: (need - have) + ' \u00F7 ' + a + ' = ' + ((need - have) / a) + ' hours' };
+      },
+      sense: function (L) {
+        var a, b, d, seq, i, n;
+        if (L === 1) { a = ri(2, 9) * 2; b = ri(1, 5) * 2 + 1; return { q: 'How many ODD numbers are there between ' + a + ' and ' + (a + 2 * b + 2) + '?', a: b + 1, target: 30, hint: 'Odd numbers end in 1, 3, 5, 7 or 9 \u2014 list them.', work: 'List and count them: ' + (b + 1) }; }
+        if (L === 2) { a = ri(12, 96); return { q: 'Round ' + a + ' to the nearest 10.', a: Math.round(a / 10) * 10, target: 25, hint: 'Look at the ones digit: ' + (a % 10) + '.', work: Math.round(a / 10) * 10 }; }
+        if (L === 3) { a = ri(120, 9899); return { q: 'Round ' + a + ' to the nearest 100.', a: Math.round(a / 100) * 100, target: 30, hint: 'The tens digit decides: 0\u20134 round down, 5\u20139 round up.', work: Math.round(a / 100) * 100 }; }
+        if (L === 4) { d = ri(3, 9); b = ri(20, 60) * d; a = b - ri(1, d - 1); return { q: 'Which is divisible by ' + d + ': ' + a + ' or ' + b + '? Type the correct number.', a: b, target: 35, hint: 'Test each with the division rule for ' + d + '.', work: b + ' = ' + d + ' \u00D7 ' + (b / d) }; }
+        if (L === 5) { a = ri(10, 40); n = 0; for (i = a; i <= a + 20; i++) { if (isPrime(i)) n++; } return { q: 'How many PRIME numbers are there between ' + a + ' and ' + (a + 20) + ' (both included)?', a: n, target: 45, hint: 'A prime has exactly two factors: 1 and itself.', work: 'Check each candidate for small factors (2, 3, 5, 7).' }; }
+        if (L === 6) { a = ri(2, 9); d = ri(3, 12); seq = []; for (i = 0; i < 4; i++) seq.push(a + d * i); return { q: 'What comes next? ' + seq.join(', ') + ', ?', a: a + d * 4, target: 40, hint: 'How much does it jump each time?', work: 'Each step adds ' + d + ': ' + (a + d * 3) + ' + ' + d + ' = ' + (a + d * 4) }; }
+        if (L === 7) { a = ri(2, 4); seq = []; for (i = 0; i < 4; i++) seq.push(Math.pow(a, i + 1) + i); return { q: 'What comes next? ' + seq.join(', ') + ', ?', a: Math.pow(a, 5) + 4, target: 50, hint: 'Each term is roughly \u00D7 ' + a + ', plus a growing little bit.', work: 'Pattern: ' + a + ' to the next power, plus 0, 1, 2, 3\u2026 next is ' + (Math.pow(a, 5) + 4) }; }
+        d = ri(6, 12); var base = ri(100, 300); a = Math.floor(base / d) * d + d;
+        return { q: 'What is the smallest multiple of ' + d + ' that is greater than ' + base + '?', a: a, target: 50, hint: 'Count up in ' + d + 's past ' + base + '.', work: base + ' is between ' + (a - d) + ' and ' + a + ' \u2014 so ' + a };
+      },
+      time: function (L) {
+        var h, m, d, s, t, q, mins;
+        if (L === 1) { h = ri(2, 9); return { q: 'How many minutes are there in ' + h + ' hours?', a: h * 60, target: 20, hint: 'One hour is 60 minutes.', work: h + ' \u00D7 60 = ' + (h * 60) }; }
+        if (L === 2) { h = ri(1, 8); m = ri(1, 4) * 15; mins = ri(20, 55); return { q: 'A movie starts at ' + fmt(h, m) + ' and runs for ' + mins + ' minutes. How many minutes past ' + fmt(h, 0) + ' does it end?', a: m + mins, target: 45, hint: 'Turn the start into minutes past ' + h + ':00 (' + m + '), then add.', work: m + ' + ' + mins + ' = ' + (m + mins) + ' minutes past ' + h + ':00' }; }
+        if (L === 3) { d = ri(2, 8); return { q: 'How many days are there in ' + d + ' weeks?', a: d * 7, target: 30, hint: 'One week is 7 days.', work: d + ' \u00D7 7 = ' + (d * 7) }; }
+        if (L === 4) { s = ri(40, 90); t = ri(2, 6); return { q: 'A rickshaw travels ' + (s * t) + ' km in ' + t + ' hours. What is its speed in km/h?', a: s, target: 60, hint: 'Speed = distance \u00F7 time.', work: (s * t) + ' \u00F7 ' + t + ' = ' + s + ' km/h' }; }
+        if (L === 5) { s = ri(10, 20) * 4; q = pick([15, 30, 45, 75, 105]); return { q: 'A car drives at ' + s + ' km/h for ' + q + ' minutes. How far does it go in km?', a: s * q / 60, target: 60, hint: q + ' minutes is ' + (q / 60) + ' hours \u2014 distance = speed \u00D7 time.', work: s + ' \u00D7 ' + (q / 60) + ' = ' + (s * q / 60) + ' km' }; }
+        if (L === 6) { s = ri(40, 80); t = ri(2, 9); return { q: 'A bus must cover ' + (s * t) + ' km at ' + s + ' km/h. How many HOURS does the trip take?', a: t, target: 60, hint: 'Time = distance \u00F7 speed.', work: (s * t) + ' \u00F7 ' + s + ' = ' + t + ' hours' }; }
+        if (L === 7) { s = ri(10, 20) * 4; q = pick([15, 30, 45]); return { q: 'A car covers ' + (s * q / 60) + ' km at ' + s + ' km/h. How many MINUTES does the trip take?', a: q, target: 80, hint: 'Distance \u00F7 speed gives hours; \u00D7 60 gives minutes.', work: (s * q / 60) + ' \u00F7 ' + s + ' = ' + (q / 60) + ' h = ' + q + ' min' }; }
+        m = ri(1, 9) * 5; return { q: 'How many seconds are there in 1 hour and ' + m + ' minutes?', a: 3600 + m * 60, target: 60, hint: 'Hours \u2192 minutes \u2192 seconds, two steps.', work: '65 min would be 3900; here it is 3600 + ' + (m * 60) + ' = ' + (3600 + m * 60) + ' seconds' };
+      }
+    };
+
+    function isPrime(n) {
+      if (n < 2) return false;
+      for (var i = 2; i * i <= n; i++) if (n % i === 0) return false;
+      return true;
+    }
+    function fmt(h, m) { return h + ':' + (m < 10 ? '0' : '') + m; }
+
+    /* ================= adaptive engine ================= */
+
+    var M = {
+      running: false, totalSec: 0, endAt: 0, tick: null,
+      qCount: 0, xp: 0, streak: 0, bestStreak: 0,
+      correctFirstTry: 0, solved: 0, slowCorrect: 0, fastCorrect: 0,
+      topicStats: {}, retestQueue: [], lastTopic: null,
+      cur: null, curTopic: null, curLevel: 1, firstTry: true, qStart: 0, retryMode: false
+    };
+
+    function skillOf(t) {
+      var v = S.skills && S.skills[t];
+      return (typeof v === 'number' && v >= 0) ? v : 20;
+    }
+    function levelOf(t) {
+      var l = 1 + Math.floor(skillOf(t) / 13);
+      return Math.max(1, Math.min(8, l));
+    }
+    function bumpSkill(t, delta) {
+      if (!S.skills) S.skills = {};
+      S.skills[t] = Math.max(0, Math.min(100, skillOf(t) + delta));
+    }
+
+    function pickTopic() {
+      if (M.retryMode) return M.curTopic;
+      if (M.retestQueue.length && M.retestQueue[0].notBefore <= M.qCount) {
+        var r = M.retestQueue.shift();
+        return r.topic;
+      }
+      var best = null, bestW = -1, i, t, w;
+      for (i = 0; i < TOPICS.length; i++) {
+        t = TOPICS[i].id;
+        if (t === M.lastTopic && TOPICS.length > 1) continue;
+        w = 12 + (100 - skillOf(t)) * 0.7 + ri(0, 25);
+        if (w > bestW) { bestW = w; best = t; }
+      }
+      return best || TOPICS[0].id;
+    }
+
+    function phaseName() {
+      if (M.qCount < 3) return 'WARM-UP';
+      var remain = (M.endAt - Date.now()) / 1000;
+      if (M.totalSec >= 600 && remain < M.totalSec * 0.15) return 'FINAL SPRINT';
+      return 'TRAINING';
+    }
+
+    function nextQuestion() {
+      if (!M.running) return;
+      M.curTopic = pickTopic();
+      M.curLevel = levelOf(M.curTopic);
+      var gen = GEN[M.curTopic];
+      var q = null;
+      try { q = gen(M.curLevel); } catch (e) { q = null; }
+      if (!q || typeof q.a !== 'number' || !isFinite(q.a)) { q = GEN.mult(2); M.curTopic = 'mult'; }
+      M.cur = q;
+      M.firstTry = true;
+      M.qStart = Date.now();
+      var T = topById(M.curTopic);
+      $('m-chip').textContent = T.icon + ' ' + T.name + ' · Level ' + M.curLevel;
+      $('m-question').textContent = q.q;
+      $('m-answer').value = '';
+      $('m-answer').disabled = false;
+      $('m-submit').disabled = false;
+      $('m-submit').textContent = 'Check';
+      var fb = $('m-feedback');
+      fb.className = 'mi-feedback';
+      fb.innerHTML = M.retryMode ? '<b>One more go — you have got this! 💪</b> Remember: ' + (q.hint || 'think it through step by step.') : '';
+      if (M.retryMode) fb.classList.add('hint');
+      $('m-phase').textContent = phaseName();
+      try { $('m-answer').focus(); } catch (e) {}
+    }
+
+    function topById(id) {
+      for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return TOPICS[i];
+      return TOPICS[0];
+    }
+
+    function recordAttempt(correct, timeSec, xp, id) {
+      var T = topById(M.curTopic);
+      OC.record({
+        kind: 'mission', id: id || (M.curTopic + '-L' + M.curLevel),
+        title: T.name + ' · Level ' + M.curLevel,
+        correct: correct, timeSec: Math.max(1, Math.round(timeSec)), targetSec: M.cur.target, xp: xp
+      });
+    }
+
+    function submit() {
+      if (!M.running || !M.cur) return;
+      var v = parseFloat($('m-answer').value);
+      if (isNaN(v)) { $('m-answer').focus(); return; }
+      var secs = Math.max(0.5, (Date.now() - M.qStart) / 1000);
+      var right = Math.abs(v - M.cur.a) < 0.001;
+      var fb = $('m-feedback');
+      var T = topById(M.curTopic);
+
+      if (right) {
+        var lvl = M.curLevel;
+        var fast = secs <= M.cur.target * 0.6, ok = secs <= M.cur.target;
+        var xp = (phaseName() === 'FINAL SPRINT' ? 2 : 1) * (10 + lvl + (ok ? 4 : 0));
+        if (!M.firstTry) xp = Math.max(4, Math.floor(xp / 3));
+        M.xp += xp; M.qCount++; M.solved++;
+        if (M.firstTry) {
+          M.correctFirstTry++; M.streak++;
+          if (M.streak > M.bestStreak) M.bestStreak = M.streak;
+          bumpSkill(M.curTopic, fast ? 10 : ok ? 7 : 4);
+          if (fast) M.fastCorrect++; else if (ok) M.slowCorrect++;
+          recordAttempt(true, secs, xp);
+        } else {
+          bumpSkill(M.curTopic, 3);
+          recordAttempt(true, secs, xp);
+          M.retryMode = false;
+        }
+        var st = (M.topicStats[M.curTopic] = M.topicStats[M.curTopic] || { right: 0, wrong: 0 });
+        st.right++;
+        fb.className = 'mi-feedback ok';
+        fb.innerHTML = '<b>✅ Correct' + (M.firstTry ? '' : ' — nicely fixed!') + ' +' + xp + ' XP</b>' +
+          (fast ? ' <span class="streak-pop">⚡ lightning!</span>' : '') +
+          (M.streak >= 3 ? ' <span class="streak-pop">🔥 ' + M.streak + ' in a row!</span>' : '');
+        $('m-answer').disabled = true;
+        $('m-submit').disabled = true;
+        M.lastTopic = M.curTopic;
+        refreshHud();
+        setTimeout(function () { if (M.running) nextQuestion(); }, 1100);
+      } else if (M.firstTry) {
+        M.firstTry = false;
+        M.qCount++;
+        M.streak = 0;
+        bumpSkill(M.curTopic, -5);
+        recordAttempt(false, secs, 2);
+        var st2 = (M.topicStats[M.curTopic] = M.topicStats[M.curTopic] || { right: 0, wrong: 0 });
+        st2.wrong++;
+        fb.className = 'mi-feedback hint';
+        fb.innerHTML = '<b>🤔 Not yet — try once more.</b> ' + (M.cur.hint || 'Read the question again, slowly.');
+        $('m-answer').value = '';
+        $('m-answer').classList.add('mi-shake');
+        setTimeout(function () { $('m-answer').classList.remove('mi-shake'); }, 400);
+        $('m-answer').focus();
+        refreshHud();
+      } else {
+        M.retryMode = false;
+        M.streak = 0;
+        M.qCount++;
+        bumpSkill(M.curTopic, -8);
+        var st3 = (M.topicStats[M.curTopic] = M.topicStats[M.curTopic] || { right: 0, wrong: 0 });
+        st3.wrong++;
+        M.retestQueue.push({ topic: M.curTopic, notBefore: M.qCount + 4 });
+        fb.className = 'mi-feedback solve';
+        fb.innerHTML = '<b>Let us solve it together:</b> ' + (M.cur.work || M.cur.hint || 'Break it into smaller steps.') +
+          '<div style="margin-top:10px;"><button class="btn btn--small btn--teal" id="m-next" type="button">Next question →</button></div>';
+        $('m-answer').disabled = true;
+        $('m-submit').disabled = true;
+        $('m-next').addEventListener('click', function () { M.lastTopic = M.curTopic; nextQuestion(); });
+        refreshHud();
+      }
+    }
+
+    function refreshHud() {
+      $('m-streak').textContent = M.streak;
+      $('m-xp').textContent = M.xp;
+      $('m-count').textContent = M.qCount;
+    }
+
+    function renderClock() {
+      var remain = Math.max(0, (M.endAt - Date.now()) / 1000);
+      var mm = Math.floor(remain / 60), ss = Math.floor(remain % 60);
+      $('m-clock').textContent = mm + ':' + (ss < 10 ? '0' : '') + ss;
+      $('m-bar').style.width = (100 * remain / M.totalSec) + '%';
+      if (remain <= 0) { finish(true); return; }
+    }
+
+    function start(minutes) {
+      M.running = true; M.totalSec = minutes * 60; M.endAt = Date.now() + minutes * 60000; M.tick = null;
+      M.qCount = 0; M.xp = 0; M.streak = 0; M.bestStreak = 0;
+      M.correctFirstTry = 0; M.solved = 0; M.slowCorrect = 0; M.fastCorrect = 0;
+      M.topicStats = {}; M.retestQueue = []; M.lastTopic = null;
+      M.cur = null; M.curTopic = null; M.curLevel = 1; M.firstTry = true; M.qStart = 0; M.retryMode = false;
+      $('start-screen').style.display = 'none';
+      $('report-screen').style.display = 'none';
+      $('run-screen').style.display = 'block';
+      renderClock();
+      M.tick = setInterval(renderClock, 500);
+      nextQuestion();
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+
+    function finish(natural) {
+      if (!M.running) return;
+      M.running = false;
+      if (M.tick) { clearInterval(M.tick); M.tick = null; }
+      $('run-screen').style.display = 'none';
+      var minutes = Math.round(M.totalSec / 60);
+      var acc = M.qCount ? Math.round(100 * M.correctFirstTry / M.qCount) : 0;
+
+      var grew = [], weak = [];
+      Object.keys(M.topicStats).forEach(function (t) {
+        var st = M.topicStats[t];
+        var T = topById(t);
+        if (st.right >= st.wrong && st.right > 0) grew.push({ T: T, right: st.right, wrong: st.wrong });
+        else weak.push({ T: T, right: st.right, wrong: st.wrong });
+      });
+      grew.sort(function (a, b) { return (b.right - b.wrong) - (a.right - a.wrong); });
+
+      $('r-title').textContent = acc >= 80 ? 'Outstanding mission! 🏆' : acc >= 50 ? 'Well trained, champion! 🎉' : 'Good effort — every rep counts 💪';
+      $('r-xp').textContent = M.xp;
+      $('r-acc').textContent = acc + '%';
+      $('r-qs').textContent = M.qCount;
+      var timed = M.correctFirstTry + M.slowCorrect + M.fastCorrect;
+      $('r-avg').textContent = timed ? Math.round(100 * (M.fastCorrect + 0.5 * M.slowCorrect) / timed) + '% pace' : '–';
+      $('r-line').innerHTML = M.bestStreak >= 3
+        ? 'Best run: <b>' + M.bestStreak + ' correct in a row</b>. '
+        : '';
+      $('r-line').innerHTML += weak.length
+        ? 'Next mission will give <b>' + weak.map(function (w) { return w.T.name; }).slice(0, 2).join(' and ') + '</b> some extra attention — that is how this works.'
+        : 'Nothing looks weak today — the mission will climb to tougher questions next time.';
+
+      var rows = '', i;
+      for (i = 0; i < grew.length; i++) {
+        var g = grew[i];
+        rows += '<p style="margin:10px 0 2px; font-weight:700;">' + g.T.icon + ' ' + g.T.name + ' <span class="small muted">' + g.right + ' solved' + (g.wrong ? ' · ' + g.wrong + ' wobbled' : '') + '</span></p><div class="mi-tbar"><i style="width:' + Math.round(100 * g.right / (g.right + g.wrong)) + '%;"></i></div>';
+      }
+      for (i = 0; i < weak.length; i++) {
+        var w = weak[i];
+        rows += '<p style="margin:10px 0 2px; font-weight:700;">' + w.T.icon + ' ' + w.T.name + ' <span class="small muted">' + w.right + ' solved · ' + w.wrong + ' wobbled</span></p><div class="mi-tbar"><i style="width:' + (w.right ? Math.round(100 * w.right / (w.right + w.wrong)) : 4) + '%; background:linear-gradient(90deg,#d97706,#f59e0b);"></i></div>';
+      }
+      $('r-topics').innerHTML = rows || '<p class="muted">No questions answered this time — try a quick warm-up!</p>';
+
+      S.missionLast = {
+        date: Date.now(), minutes: minutes, questions: M.qCount,
+        accuracy: acc, xp: M.xp
+      };
+      OC.save();
+      $('report-screen').style.display = 'block';
+      try { window.scrollTo(0, 0); } catch (e) {}
+    }
+
+    /* ================= wiring ================= */
+
+    OC.buildNav('mission');
+    $('dur-10').addEventListener('click', function () { start(10); });
+    $('dur-30').addEventListener('click', function () { start(30); });
+    $('dur-60').addEventListener('click', function () { start(60); });
+    $('m-submit').addEventListener('click', submit);
+    $('m-answer').addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
+    $('m-end').addEventListener('click', function () {
+      if (M.qCount < 1) { finish(false); return; }
+      if (window.confirm('End the mission now? The report shows what you earned so far.')) finish(false);
+    });
+
+    if (S.missionLast && S.missionLast.date) {
+      var lm = S.missionLast;
+      var box = $('last-mission');
+      box.style.display = 'block';
+      box.innerHTML = '📋 <b>Last mission:</b> ' + lm.minutes + ' minutes · ' + lm.questions + ' questions · ' +
+        lm.accuracy + '% accuracy · +' + lm.xp + ' XP. The engine remembers where you were — it starts from there.';
+    }
+
+    window.MISSION = { start: start, finish: finish, submit: submit, next: nextQuestion, M: M, gen: GEN,
+      current: function () { return M.cur; }, topic: function () { return M.curTopic; } };
+  })();
+  </script>
+
+  <!-- ============ Kid Keypad: on-screen number pad (touch devices only) ============ -->
+  <style>
+    #kidpad { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; display: none;
+      max-width: 560px; margin: 0 auto; padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(43, 38, 32, 0.97); border-radius: 18px 18px 0 0;
+      box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3); }
+    #kidpad.show { display: block; }
+    #kidpad .kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    #kidpad button { min-height: 54px; font-size: 24px; font-weight: 800; border: 0; border-radius: 12px;
+      background: #faf5ea; color: #2b2620; font-family: inherit; cursor: pointer;
+      touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+    #kidpad button:active { transform: translateY(2px); background: #f2d8a7; }
+    #kidpad .kw { background: #e9e2d4; font-size: 21px; }
+    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size: 20px; letter-spacing: 0.4px; }
+  </style>
+  <div id="kidpad" aria-hidden="true">
+    <div class="kgrid">
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="back" class="kw" aria-label="Backspace">⌫</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="." class="kw">.</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="-" class="kw">&minus;</button>
+      <button data-k="0">0</button><button data-k="go" class="kgo" style="grid-column: span 3;">✓ Check</button>
+    </div>
+  </div>
+  <script>
+  (function () {
+    var INPUT_SEL = '#m-answer';
+    var GO_ID = 'm-submit';
+    var pad = document.getElementById('kidpad'), target = null;
+    var coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    if (!pad || !coarse) { if (pad) pad.remove(); return; }
+
+    var inp = document.querySelector(INPUT_SEL);
+    if (inp) {
+      inp.setAttribute('type', 'text');
+      inp.setAttribute('inputmode', 'none');
+    }
+
+    document.addEventListener('focusin', function (e) {
+      var t = e.target;
+      if (t && t.matches && t.matches(INPUT_SEL)) {
+        target = t; pad.classList.add('show'); pad.setAttribute('aria-hidden', 'false');
+        setTimeout(function () { try { t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (err) {} }, 60);
+      } else if (!(t && t.closest && t.closest('#kidpad'))) {
+        target = null; pad.classList.remove('show'); pad.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    function caret(t) {
+      try { var s = t.selectionStart; if (typeof s === 'number') return s; } catch (err) {}
+      return t.value.length;
+    }
+
+    pad.addEventListener('pointerdown', function (e) {
+      var b = e.target.closest ? e.target.closest('button') : null;
+      if (!b) return;
+      e.preventDefault();
+      if (!target) target = document.querySelector(INPUT_SEL);
+      if (!target) return;
+      var k = b.getAttribute('data-k'), v = target.value;
+      if (k === 'back') {
+        target.value = v.slice(0, Math.max(0, caret(target) - 1)) + v.slice(caret(target) + ((v.length > caret(target)) ? 1 : 0));
+      } else if (k === 'go') {
+        var go = document.getElementById(GO_ID);
+        if (go) go.click();
+        return;
+      } else if (k === '-') {
+        target.value = (v.charAt(0) === '-') ? v.slice(1) : (v === '' ? '-' : '-' + v);
+      } else if (k === '.') {
+        if (v.indexOf('.') === -1) target.value = (v === '' || v === '-') ? v + '0.' : v + '.';
+      } else {
+        var c = caret(target);
+        target.value = v.slice(0, c) + k + v.slice(c);
+      }
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  })();
+  </script>
+</body>
+</html>

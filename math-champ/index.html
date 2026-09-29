@@ -46,9 +46,10 @@
     <section class="card card--hero fade-in" style="--i:1; display:flex; gap:22px; align-items:center; flex-wrap:wrap; margin-bottom:34px;">
       <div style="flex:1 1 340px; min-width:0;">
         <p class="section-label">Your journey starts now</p>
-        <h2 style="font-family:var(--font-display); font-size:26px; margin:0 0 8px;">What should I call you, champion?</h2>
-        <p class="muted" style="margin:0 0 14px; font-size:15px;">Your name goes on this logbook. Everything you do here is saved on this computer only — just for you.</p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <h2 id="name-ask-title" style="font-family:var(--font-display); font-size:26px; margin:0 0 8px;">What should I call you, champion?</h2>
+        <p class="muted" id="name-ask-sub" style="margin:0 0 14px; font-size:15px;">Your name goes on this logbook. Everything you do here is saved on this computer only — just for you.</p>
+        <p id="name-greet" style="display:none; margin:0 0 10px; font-size:24px; font-family:var(--font-display);"><span id="name-greet-text"></span> <button id="name-edit" type="button" style="background:none; border:none; color:var(--teal, #2a9d8f); font-size:13px; text-decoration:underline; cursor:pointer; padding:0 0 0 6px; vertical-align:middle;">✏️ change name</button></p>
+        <div id="name-entry-row" style="display:flex; gap:10px; flex-wrap:wrap;">
           <input type="text" id="name-input" placeholder="Type your name…" style="max-width:260px;" maxlength="20">
           <button class="btn btn--teal" id="name-save" type="button">That's me!</button>
         </div>
@@ -62,6 +63,17 @@
           <div class="pbar"><div class="pbar__fill" id="hp-bar"></div></div>
           <p class="timer-target" style="margin:8px 0 2px;" id="hp-next">Next rank: Explorer at 120 XP</p>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ training mission ============ -->
+    <section class="card card--elevated fade-in" style="--i:1; margin-bottom:34px; display:flex; gap:22px; align-items:center; flex-wrap:wrap;">
+      <div style="flex:1 1 340px; min-width:0;">
+        <p class="section-label">Adaptive practice engine — new</p>
+        <h2 style="font-family:var(--font-display); font-size:26px; margin:0 0 8px;">🎯 Training Mission</h2>
+        <p class="muted" style="margin:0 0 14px; font-size:15px; max-width:520px;">The mission keeps posing questions and watches <b>how</b> you answer — right or wrong, and how fast. Cruise and it quietly climbs to tougher ones. Stumble and it practises the same kind until you crack it.</p>
+        <a class="btn btn--teal" href="mission.html" style="text-decoration:none;">🎯 Start a mission</a>
+        <span class="small muted" style="margin-left:10px;">pick 10, 30 or 60 minutes</span>
       </div>
     </section>
 
@@ -206,11 +218,19 @@
     OC.buildNav('home');
     var S = OC.STATE;
 
-    /* name card — one shared name (set once on the Gurukool home page) */
+    /* name card — one shared name (asked once, remembered; changeable via the pencil) */
     var nameInput = OC.$('#name-input');
     var sharedName = ''; try { sharedName = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
     if (sharedName && !(S.name || '').trim()) { S.name = sharedName; OC.save(); }
-    if ((S.name || '').trim()) nameInput.value = S.name;
+    function nameMode() {
+      var named = !!(localStorage.getItem('cc_name') || '').trim();
+      if (named) OC.$('#name-greet-text').textContent = 'Hello, ' + (localStorage.getItem('cc_name') || '').trim() + '! 👋';
+      OC.$('#name-greet').style.display = named ? 'block' : 'none';
+      OC.$('#name-entry-row').style.display = named ? 'none' : 'flex';
+      OC.$('#name-ask-title').style.display = named ? 'none' : 'block';
+      OC.$('#name-ask-sub').style.display = named ? 'none' : 'block';
+    }
+    nameMode();
     function applyName() {
       var n = (S.name || '').trim();
       var hello = OC.$('#hero-hello');
@@ -223,10 +243,14 @@
       S.name = v;
       try { localStorage.setItem('cc_name', v); } catch (e) {}
       OC.save();
-      applyName();
-      nameInput.blur();
+      location.reload();
     });
     nameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') OC.$('#name-save').click(); });
+    OC.$('#name-edit').addEventListener('click', function () {
+      nameInput.value = (localStorage.getItem('cc_name') || '').trim();
+      OC.$('#name-entry-row').style.display = 'flex';
+      nameInput.focus();
+    });
 
     /* progress snapshot */
     var lv = OC.levelOf(S.xp);

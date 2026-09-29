@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gurukool — Progress Passport</title>
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="math-champ/assets/style.css">
+  <style>
+    body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    .top, .topnav { top: env(safe-area-inset-top); }
+    .pp-half { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 760px) { .pp-half { grid-template-columns: 1fr; } }
+    .pp-champ { border-radius: 16px; padding: 18px; border: 2px solid var(--border, #e8dfcc); }
+    .pp-champ h3 { font-family: var(--font-display, inherit); margin: 0 0 8px; font-size: 20px; }
+    .pp-stat { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--border, #e8dfcc); font-size: 15px; }
+    .pp-stat b { font-size: 15px; }
+  </style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+
+  <main class="wrap">
+    <section class="card card--hero fade-in" style="--i:1;">
+      <p class="section-label">One page · both champs</p>
+      <h2 style="font-family:var(--font-display); font-size:30px; margin:0 0 8px;" id="pp-title">🏅 Progress Passport</h2>
+      <p class="muted" style="margin:0 0 6px; max-width:640px;">Everything <span id="pp-name">the champion</span> has done in Math-Champ and Science-Champ, on one page — with a single code that moves it all to a new device.</p>
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi__value" id="pp-total-xp">0</div><div class="kpi__label">Total XP (both champs)</div></div>
+        <div class="kpi"><div class="kpi__value" id="pp-badges">0</div><div class="kpi__label">Badges</div></div>
+        <div class="kpi"><div class="kpi__value" id="pp-streak">0</div><div class="kpi__label">Best streak (days)</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <p class="section-label">Champ by champ</p>
+      <div class="pp-half">
+        <div class="pp-champ" style="background:rgba(224, 114, 44, 0.06); border-color:rgba(224, 114, 44, 0.35);">
+          <h3>➗ Math-Champ</h3>
+          <div id="math-kpis"></div>
+        </div>
+        <div class="pp-champ" style="background:rgba(42, 157, 143, 0.06); border-color:rgba(42, 157, 143, 0.35);">
+          <h3>🔬 Science-Champ</h3>
+          <div id="sci-kpis"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="pp-move-card">
+      <p class="section-label">Move to a new device</p>
+      <p class="muted" style="margin:0 0 14px; font-size:15px; max-width:640px;">Copy the combined code below and keep it somewhere safe (a note, an email to yourself). On the new device, open this page and load it. <b>Loading never destroys progress</b> — it merges the best of both.</p>
+      <div id="pp-export-zone">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+          <div style="flex:1 1 300px;">
+            <p class="field-label">Combined progress code (Math + Science)</p>
+            <textarea id="pp-code" readonly rows="4" style="width:100%; font-family:monospace; font-size:12px;"></textarea>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button class="btn btn--teal" id="pp-copy" type="button">📋 Copy code</button>
+            <button class="btn btn--ghost" id="pp-download" type="button">⬇ Download as file</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:22px; border-top:1px dashed var(--border, #e8dfcc); padding-top:18px;">
+        <p class="field-label">Load a code on this device</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+          <div style="flex:1 1 300px;">
+            <input type="text" id="pp-in" placeholder="Paste a GK1. / OC1. / SQ1. / SQ2. / SQ3. code here" autocomplete="off" style="width:100%;">
+          </div>
+          <button class="btn btn--teal" id="pp-load" type="button">Load</button>
+          <label class="btn btn--ghost" style="margin:0;">📂 From file<input type="file" id="pp-file" accept=".txt,.json" style="display:none;"></label>
+        </div>
+        <p class="small muted" style="margin:8px 0 0;">Loading asks for the parent PIN and merges — the best of both is kept.</p>
+      </div>
+    </section>
+
+    <section class="card" style="text-align:center;">
+      <a class="btn btn--ghost" href="index.html" style="text-decoration:none;">← Back to the hub</a>
+    </section>
+  </main>
+
+  <script src="math-champ/assets/app.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var $ = function (id) { return document.getElementById(id); };
+    var S = OC.STATE;
+    OC.buildNav('passport');
+
+    var name = (localStorage.getItem('cc_name') || '').trim();
+    if (name) {
+      $('pp-name').textContent = name;
+      $('pp-title').textContent = '🏅 ' + name + "'s Progress Passport";
+    }
+
+    /* ---------- science side ---------- */
+    var sq = null;
+    try { sq = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) { sq = null; }
+    var sqp = null, sqv = { xp: 0, lessons: 0, badges: 0, streak: 0, worlds: 0, curLevel: 'Rookie' };
+    if (sq && sq.profiles && sq.current) {
+      sqp = sq.profiles[sq.current] || null;
+      if (sqp) {
+        sqv.xp = sqp.xp || 0;
+        sqv.lessons = Object.keys(sqp.lessons || {}).length;
+        sqv.badges = (sqp.badges || []).length;
+        sqv.streak = sqp.streak || 0;
+        sqv.worlds = (sqp.visited || []).length;
+        try {
+          var SL = [[0,'Rookie'],[120,'Explorer'],[300,'Challenger'],[550,'Bronze Olympian'],[900,'Silver Olympian'],[1350,'Gold Olympian'],[2000,'Gurukool Champion']];
+          for (var i = 0; i < SL.length; i++) if (sqv.xp >= SL[i][0]) sqv.curLevel = SL[i][1];
+        } catch (e) {}
+      }
+    }
+
+    /* ---------- math side ---------- */
+    var m = { xp: S.xp || 0, correct: 0, tried: 0, badges: 0, streak: S.streak ? (S.streak.count || 0) : 0, rank: 'Rookie' };
+    S.attempts.forEach(function (a) {
+      m.tried++; if (a.correct) m.correct++;
+    });
+    m.badges = Object.keys(S.badges || {}).length;
+    var RL = OC.LEVELS || [];
+    for (var r = 0; r < RL.length; r++) if (m.xp >= RL[r].min) m.rank = RL[r].name;
+
+    /* ---------- render ---------- */
+    $('pp-total-xp').textContent = m.xp + sqv.xp;
+    $('pp-badges').textContent = m.badges + sqv.badges;
+    $('pp-streak').textContent = Math.max(m.streak, sqv.streak);
+
+    $('math-kpis').innerHTML =
+      stat('XP earned', m.xp) + stat('Rank', m.rank) +
+      stat('Questions solved (first try)', m.correct + '/' + m.tried) +
+      stat('Badges', m.badges) + stat('Practice streak', m.streak + ' days');
+    $('sci-kpis').innerHTML = sqp
+      ? stat('XP earned', sqv.xp) + stat('Rank', sqv.curLevel) +
+        stat('Worlds visited', sqv.worlds + ' / 29') +
+        stat('Lessons read', sqv.lessons) + stat('Badges', sqv.badges) +
+        stat('Daily streak', sqv.streak + ' days')
+      : '<p class="muted" style="margin:8px 0 0;">No science progress on this device yet.</p>';
+
+    function stat(k, v) {
+      return '<div class="pp-stat"><span class="muted">' + k + '</span><b>' + OC.esc(String(v)) + '</b></div>';
+    }
+
+    /* ---------- codes ---------- */
+    function ocCode() {
+      return 'OC1.' + btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+    }
+    function sqCode() {
+      if (!sq) return '';
+      return 'SQ3.' + btoa(unescape(encodeURIComponent(JSON.stringify(sq))));
+    }
+    function exportCode() {
+      var payload = { oc: ocCode(), sq: sqCode() };
+      return 'GK1.' + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    }
+    function parseGK(code) {
+      code = (code || '').trim();
+      if (code.indexOf('GK1.') === 0) {
+        try {
+          var p = JSON.parse(decodeURIComponent(escape(atob(code.slice(4)))));
+          return { oc: p.oc || '', sq: p.sq || '' };
+        } catch (e) { return null; }
+      }
+      if (code.indexOf('OC1.') === 0) return { oc: code, sq: '' };
+      if (code.indexOf('SQ1.') === 0 || code.indexOf('SQ2.') === 0 || code.indexOf('SQ3.') === 0) return { oc: '', sq: code };
+      return null;
+    }
+
+    $('pp-code').value = exportCode();
+
+    $('pp-copy').addEventListener('click', function () {
+      var t = $('pp-code');
+      t.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      if (navigator.clipboard) navigator.clipboard.writeText(t.value).catch(function () {});
+      $('pp-copy').textContent = '✅ Copied!';
+      setTimeout(function () { $('pp-copy').textContent = '📋 Copy code'; }, 1600);
+    });
+
+    $('pp-download').addEventListener('click', function () {
+      var blob = new Blob([$('pp-code').value], { type: 'text/plain' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'gurukool-passport.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+    });
+
+    /* real science import: parse SQ1/SQ2/SQ3 -> v3 shape -> merge into sq_v3 */
+    function sqImport(code) {
+      var data = null;
+      try { data = JSON.parse(decodeURIComponent(escape(atob(code.slice(code.indexOf('.') + 1))))); }
+      catch (e) { return false; }
+      if (!data || typeof data !== 'object') return false;
+      var incoming;
+      if (data.profiles) incoming = data;
+      else incoming = { v: 3, current: 'p1', profiles: { p1: data } };
+      if (!incoming.profiles || !Object.keys(incoming.profiles).length) return false;
+      incoming.v = 3;
+      var base = null;
+      try { base = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) { base = null; }
+      if (!base || !base.profiles) base = { v: 3, current: incoming.current || Object.keys(incoming.profiles)[0], profiles: {} };
+      var merged = window.ChampSync ? window.ChampSync.mergeSQ(base, incoming) : (function () { for (var k in incoming.profiles) base.profiles[k] = base.profiles[k] ? base.profiles[k] : incoming.profiles[k]; return base; })();
+      merged.current = merged.current || base.current || incoming.current;
+      merged.v = 3;
+      try { localStorage.setItem('sq_v3', JSON.stringify(merged)); return true; } catch (e) { return false; }
+    }
+    window.SQ_IMPORT = sqImport;
+
+    function doImport(code) {
+      var parsed = parseGK(code);
+      if (!parsed) { window.alert('That does not look like a Gurukool progress code.'); return; }
+      var done = false;
+      OC.parentGate(function () {
+        var notes = [];
+        if (parsed.oc) {
+          var ok = OC.importCode(parsed.oc);
+          notes.push(ok ? 'Math: loaded ✓' : 'Math: cancelled');
+        }
+        if (parsed.sq) {
+          notes.push(sqImport(parsed.sq) ? 'Science: loaded ✓' : 'Science: could not load');
+        }
+        window.alert(notes.join('\n') + '\n\nReload the page to see the fresh numbers.');
+        done = notes.join('').indexOf('cancelled') === -1;
+      });
+      if (done) setTimeout(function () { location.reload(); }, 400);
+    }
+
+    $('pp-load').addEventListener('click', function () { doImport($('pp-in').value); });
+
+    $('pp-file').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      var rd = new FileReader();
+      rd.onload = function () { $('pp-in').value = String(rd.result || ''); doImport(String(rd.result || '')); };
+      rd.readAsText(f);
+    });
+
+    /* test + reuse hooks */
+    window.PP = {
+      exportCode: exportCode,
+      parseGK: parseGK,
+      sqImport: sqImport
+    };
+  })();
+  </script>
+</body>
+</html>

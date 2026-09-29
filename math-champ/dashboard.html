@@ -118,56 +118,21 @@
       </div></div>
     </section>
 
-    <!-- cloud sync -->
-    <section class="card card--elevated card--teal" style="margin-bottom:16px;">
-      <p class="section-label section-label--teal">☁️ Cloud sync — automatic, no buttons</p>
-      <p class="small muted" style="margin:0 0 16px;">
-        Progress saves to this device instantly on every answer, and both champs now <b>auto-sync to the
-        family cloud locker every 10 minutes</b> while any Gurukool page is open — there is nothing to
-        press and no save button anywhere. Cloud is set up and managed in ONE place, the <b>Admin
-        Console</b> (from the Gurukool home page, parent PIN needed) — one setup powers every champ,
-        including future ones.
+    
+    
+    <!-- moving device pointer -->
+    <section class="card card--elevated" style="margin-bottom:16px; text-align:center;">
+      <p class="section-label section-label--teal">Moving to a new device?</p>
+      <p class="small muted" style="margin:0 0 14px;">
+        Cloud backup, save codes and the combined Progress Passport now live in <b>one place</b> — the central Admin Console.
       </p>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <a class="btn btn--small btn--ghost" href="../admin.html" style="text-decoration:none;">⚙️ Admin console</a>
-        <a class="btn btn--small btn--ghost" href="../parent-guide.html" style="text-decoration:none;">📖 Parent guide</a>
-      </div>
-      </section>
-
-    <!-- progress passport -->
-    <section class="card card--elevated card--teal" style="margin-bottom:16px;">
-      <p class="section-label section-label--teal">Progress passport — same XP on every device</p>
-      <p class="small muted" style="margin:0 0 16px;">
-        Progress is stored inside each browser, so a new device starts with an empty logbook. The passport moves it:
-        on the device he just used, press <b>Copy progress code</b>; then on any other device, open this Dashboard and paste
-        the code below. Do it at the end of each session, on whichever device he used last.
-      </p>
-      <div class="pp-grid">
-        <div class="pp-col">
-          <p class="field-label" style="color:var(--teal); margin:0 0 8px;">From this device</p>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn btn--small btn--teal" id="pp-copy" type="button">Copy progress code</button>
-            <button class="btn btn--small btn--ghost" id="pp-download" type="button">Download as file</button>
-          </div>
-          <div id="pp-copy-note" class="tag tag--green" style="display:none; margin-top:10px;">Copied! Now paste it on the other device.</div>
-          <div id="pp-fallback" style="display:none; margin-top:10px;">
-            <p class="small muted" style="margin:0 0 6px;">Tap the box, then select all and copy:</p>
-            <textarea id="pp-code" rows="4" readonly></textarea>
-          </div>
-        </div>
-        <div class="pp-col">
-          <p class="field-label" style="color:var(--teal); margin:0 0 8px;">From another device</p>
-          <textarea id="pp-import" rows="4" placeholder="Paste a progress code here — it starts with OC1. …"></textarea>
-          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-            <button class="btn btn--small btn--primary" id="pp-load" type="button">Load onto this device</button>
-            <label class="btn btn--small btn--ghost" for="pp-file" style="cursor:pointer;">…or choose a progress file</label>
-            <input type="file" id="pp-file" accept=".txt,text/plain" style="display:none;">
-          </div>
-        </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+        <a class="btn btn--small btn--ghost" href="../admin.html" style="text-decoration:none;">☁️ Open the Admin Console</a>
+        <a class="btn btn--small btn--teal" href="../passport.html" style="text-decoration:none;">🏅 My Progress Passport</a>
       </div>
     </section>
 
-    <section class="card card--recessed" style="text-align:center;">
+<section class="card card--recessed" style="text-align:center;">
       <p class="small muted" style="margin:0 0 10px;">
         Progress is stored in this browser (use the passport above to move it between devices). Resetting starts a clean training log — the skill you built stays in your head, where it counts.
       </p>
@@ -332,95 +297,22 @@
     /* ---------- history ---------- */
     var rows = '';
     S.attempts.slice(-15).reverse().forEach(function (a) {
+      var qk = (a.kind === 'word' || a.kind === 'mission');
       var activity = a.kind === 'word'
         ? 'Word Problem: ' + OC.esc(a.title || '')
+        : a.kind === 'mission'
+        ? 'Mission: ' + OC.esc(a.title || '')
         : 'Drill: ' + OC.esc(a.title || a.drill || '');
-      var result = a.kind === 'word'
+      var result = qk
         ? (a.correct ? '<span class="tag tag--green">correct</span>' : '<span class="tag tag--red">revisit</span>')
         : (a.correct >= 8 ? '<span class="tag tag--green">' + a.correct + '/' + a.total + '</span>' : '<span class="tag tag--amber">' + a.correct + '/' + a.total + '</span>');
-      var vs = a.kind === 'word'
+      var vs = qk
         ? (a.timeSec < a.targetSec ? '<span style="color:var(--green); font-weight:700;">−' + (a.targetSec - a.timeSec) + 's</span>' : '<span style="color:var(--amber); font-weight:700;">+' + (a.timeSec - a.targetSec) + 's</span>')
         : '–';
       rows += '<tr><td>' + OC.fmtDate(a.ts) + '</td><td>' + activity + '</td><td>' + result + '</td><td class="num">' + OC.fmtTime(a.timeSec) + '</td><td class="num">' + vs + '</td><td class="num">+' + a.xp + '</td></tr>';
     });
     if (!rows) rows = '<tr><td colspan="6" class="empty-note" style="padding:26px;"><b>Nothing logged yet</b>Your training log fills up as you practise — head to the Word Problem Lab or Speed Lab.</td></tr>';
     el('history-body').innerHTML = rows;
-
-    /* ---------- progress passport ---------- */
-
-    el('pp-copy').addEventListener('click', function () {
-      var code = OC.exportCode();
-      var showFallback = function () {
-        var fb = el('pp-fallback');
-        fb.style.display = 'block';
-        var ta = el('pp-code');
-        ta.value = code;
-        ta.focus();
-        ta.select();
-      };
-      var done = function () {
-        var note = el('pp-copy-note');
-        note.style.display = 'inline-block';
-        setTimeout(function () { note.style.display = 'none'; }, 4000);
-      };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(code).then(done, showFallback);
-      } else {
-        showFallback();
-      }
-    });
-
-    el('pp-download').addEventListener('click', function () {
-      var code = OC.exportCode();
-      try {
-        var blob = new Blob([code], { type: 'text/plain' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        var today = new Date();
-        var pad = function (n) { return String(n).padStart(2, '0'); };
-        a.download = 'math-champ-progress-' + today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate()) + '.txt';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 1000);
-        var note = el('pp-copy-note');
-        note.textContent = 'Downloaded! Email this file to yourself — on the other device, open it and load it below.';
-        note.style.display = 'inline-block';
-        setTimeout(function () {
-          note.style.display = 'none';
-          note.textContent = 'Copied! Now paste it on the other device.';
-        }, 5000);
-      } catch (e) {
-        alert('Could not download the file — use "Copy progress code" instead.');
-      }
-    });
-
-    el('pp-load').addEventListener('click', function () {
-      OC.parentGate(function () {
-        var val = el('pp-import').value;
-        if (!val.trim()) { el('pp-import').focus(); return; }
-        try {
-          if (OC.importCode(val)) {
-            alert('Progress loaded onto this device!');
-            location.reload();
-          }
-        } catch (e) {
-          alert(e.message);
-        }
-      });
-    });
-
-    el('pp-file').addEventListener('change', function () {
-      var f = this.files && this.files[0];
-      if (!f) return;
-      var reader = new FileReader();
-      reader.onload = function () {
-        el('pp-import').value = String(reader.result || '');
-        el('pp-load').click();
-      };
-      reader.readAsText(f);
-    });
-
 
     /* ---------- reset (parent PIN required) ---------- */
     el('reset-btn').addEventListener('click', function () {

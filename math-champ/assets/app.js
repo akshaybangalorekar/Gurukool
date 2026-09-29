@@ -19,6 +19,8 @@
       journal: [],       // { ts, problemTitle, note }
       streak: { last: null, count: 0 },
       badges: {},        // badgeId -> ts earned
+      skills: {},        // Training Mission: per-topic skill estimate 0-100
+      missionLast: null, // last Training Mission summary (shown on the mission start screen)
       pin: ''            // parent PIN — gates reset / import / sync settings
     };
   }
@@ -51,7 +53,7 @@
     { name: 'Bronze Olympian', min: 550, icon: 'medal-b' },
     { name: 'Silver Olympian', min: 900, icon: 'medal-s' },
     { name: 'Gold Olympian', min: 1350, icon: 'medal-g' },
-    { name: 'Maths Champion', min: 2000, icon: 'trophy' }
+    { name: 'Gurukool Champion', min: 2000, icon: 'trophy' }
   ];
 
   function levelOf(xp) {
@@ -74,7 +76,9 @@
     { id: 'perfect',    name: 'Perfect 10',         desc: 'Score 10/10 in any drill',                        test: function (s) { return s.attempts.some(function (a) { return a.kind === 'drill' && a.correct === a.total && a.total >= 10; }); } },
     { id: 'streak3',    name: '3-Day Streak',       desc: 'Practise 3 days in a row',                       test: function (s) { return s.streak.count >= 3; } },
     { id: 'journal5',   name: 'Diary Keeper',      desc: 'Write 5 learning notes in your journal',          test: function (s) { return s.journal.length >= 5; } },
-    { id: 'champ500',   name: 'Rising Champion',    desc: 'Earn 500 XP',                                     test: function (s) { return s.xp >= 500; } }
+    { id: 'champ500',   name: 'Rising Champion',    desc: 'Earn 500 XP',                                     test: function (s) { return s.xp >= 500; } },
+    { id: 'mission1',   name: 'Mission Rookie',     desc: 'Complete a Training Mission',                     test: function (s) { return countKind(s, 'mission') >= 1; } },
+    { id: 'mission40',  name: 'Mission Marathon',   desc: 'Answer 40 mission questions correctly',           test: function (s) { return countKind(s, 'mission', 'correct') >= 40; } }
   ];
 
   function countKind(s, kind, mode) {
@@ -188,6 +192,7 @@
     var links = [
       { href: '../index.html', label: '\u2039 Gurukool', key: 'hub' },
       { href: 'index.html', label: 'Home', key: 'home' },
+      { href: 'mission.html', label: 'Mission', key: 'mission' },
       { href: 'word-problems.html', label: 'Word Problems', key: 'word' },
       { href: 'speed-lab.html', label: 'Speed Lab', key: 'speed' },
       { href: 'toolbox.html', label: 'Toolbox', key: 'toolbox' },

@@ -57,17 +57,34 @@ footer{text-align:center;color:#7a6f60;font-size:13px;padding:14px 0 8px}
 <style>
   /* home-screen full-screen mode: keep content clear of the iPad status bar */
   body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+.topnav { position: sticky; top: 0; z-index: 50; background: rgba(255, 253, 247, 0.92);
+  backdrop-filter: blur(8px); border-bottom: 1px solid rgba(43, 38, 32, 0.12); padding: 10px 20px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.topnav .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #2b2620; }
+.topnav .brand .mark { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, #c2410c, #e0722c);
+  display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 6px 20px rgba(43,38,32,.10); }
+.topnav .brand .name { font-family: 'Baloo 2', 'Comic Sans MS', cursive, system-ui, sans-serif; font-weight: 800; font-size: 21px; }
+.topnav .gap { flex: 1 1 auto; }
+.topnav .navlink { color: #2b2620; text-decoration: none; font-weight: 700; font-size: 14.5px; opacity: 0.78; padding: 6px 2px; }
+.topnav .navlink:hover { opacity: 1; }
+@media (max-width: 620px) { .topnav { gap: 8px; padding: 8px 14px; } .topnav .brand .name { font-size: 18px; } }
+.card { box-shadow: 0 6px 20px rgba(43, 38, 32, 0.10); }
   .topnav, .top { top: env(safe-area-inset-top); }
 </style>
 </head>
 <body>
+<nav class="topnav">
+  <a class="brand" href="index.html"><span class="mark">🔬</span><span class="name">Science-Champ</span></a>
+  <span class="gap"></span>
+  <a class="navlink" href="../index.html">🏠 Gurukool</a>
+  <a class="navlink" href="index.html">⚡ Play the game</a>
+  <a class="navlink" href="../parent-guide.html">📖 For parents</a>
+</nav>
 <div class="app">
-  <div class="top">
+  <div class="top" style="border-radius:0; border-left:none; border-right:none; border-bottom:none; margin:0 -14px 16px; padding:10px 12px 4px;">
     <div class="pills">
-      <a class="pill" href="../index.html">🏠 Gurukool</a>
-      <a class="pill" href="index.html">⚡ Science-Champ</a>
       <span class="pill pl on">📊 Dashboard</span>
-      <span class="pill" id="who" style="border-style:dashed"></span>
+      <span class="pill" id="who" style="border-style:dashed;"></span>
     </div>
   </div>
 
@@ -76,7 +93,7 @@ footer{text-align:center;color:#7a6f60;font-size:13px;padding:14px 0 8px}
 
   <div class="kpis">
     <div class="kpi"><div class="v" id="k-xp">0</div><div class="l">Total XP</div></div>
-    <div class="kpi"><div class="v" id="k-rank">Curious Kid</div><div class="l">Rank</div></div>
+    <div class="kpi"><div class="v" id="k-rank">Rookie</div><div class="l">Rank</div></div>
     <div class="kpi"><div class="v" id="k-streak">0</div><div class="l">Day streak</div></div>
   </div>
   <div class="kpis" style="margin-top:0">
@@ -102,30 +119,19 @@ footer{text-align:center;color:#7a6f60;font-size:13px;padding:14px 0 8px}
     <div class="bgrid" id="bgrid"></div>
   </div>
 
-  <div class="card">
-    <p class="slabel">☁️ Cloud sync — automatic, no buttons</p>
-    <p class="muted" style="font-size:14px">Progress saves to this device instantly on every XP, star and badge, and both champs <b>auto-sync to the family cloud locker every 10 minutes</b> while any Gurukool page is open — no save button anywhere, nothing to press. Cloud is set up and managed in ONE place, the <b>Admin Console</b> (from the Gurukool home page, parent PIN needed) — one setup powers every champ, including future ones.</p>
-    <div class="btnrow">
-        <a class="btn ghost" href="../admin.html">⚙️ Admin console</a>
-      <a class="btn ghost" href="../parent-guide.html">📖 Parent guide</a>
     </div>
-    <div class="note" id="cs-note"></div>
+
+  
+  <div class="card" style="text-align:center;">
+    <p class="slabel">Moving to a new device?</p>
+    <p class="muted" style="font-size:14px">Cloud backup, save codes and the combined Progress Passport now live in <b>one place</b> — the central Admin Console.</p>
+    <div class="btnrow">
+      <a class="btn ghost" href="../admin.html">☁️ Open the Admin Console</a>
+      <a class="btn" href="../passport.html">🏅 My Progress Passport</a>
+    </div>
   </div>
 
-  <div class="card">
-    <p class="slabel">Progress passport — same XP on every device</p>
-    <p class="muted" style="font-size:14px">Progress is stored inside each browser, so a new device starts with an empty logbook. The passport moves it: on the device he just used, press <b>Copy progress code</b>; then on any other device, open this Dashboard and paste the code below. Codes from the game (the ones that start with SQ1. / SQ2. / SQ3.) also work here.</p>
-    <div class="btnrow">
-      <button class="btn" id="pp-copy" type="button">📋 Copy progress code</button>
-      <button class="btn ghost" id="pp-download" type="button">💾 Download as file</button>
-    </div>
-    <div class="note" id="pp-note">Copied! Now paste it on the other device.</div>
-    <p class="muted" style="margin:14px 0 6px"><b>Have a code to load?</b> Paste it here:</p>
-    <textarea id="pp-in" rows="3" placeholder="Paste a Save Code here — it starts with SQ1. / SQ2. / SQ3. …"></textarea>
-    <div class="btnrow"><button class="btn" id="pp-load" type="button">⬇️ Load onto this device</button></div>
-  </div>
-
-  <div class="card">
+<div class="card">
     <p class="slabel">Reset progress</p>
     <p class="muted" style="font-size:14px">Progress lives in this browser (use the passport above to move it between devices). Resetting starts a clean logbook — the science he learned stays in his head, where it counts. Protected by the parent PIN, so nobody resets his hard work by accident.</p>
     <div class="btnrow"><button class="btn ghost" id="rs-btn" type="button" style="color:#c0392b;border-color:#c0392b">♻️ Reset all progress</button></div>
@@ -306,7 +312,7 @@ window.ChampSync = (function () {
 var WORLD_META=[['physics','⚡','Physics Lab',5,0],['flight','✈️','Flight & Space',4,0],['chem','🧪','Chemistry Corner',5,0],['bio','🌿','The Living World',5,0],['logic','🧩','Logic Dojo',5,0],['elec','🔌','Electricity & Magnetism',5,0],['light','🌈','Light & Sound',5,0],['heat','🌡️','Heat & Energy Flow',5,0],['body','🫀','Human Body Factory',5,0],['earth','🌏','Earth & Weather',5,0],['ai','🌐','Internet & AI',5,0],['materials','💎','Materials Lab',5,0],['sky','🔭','Skywatcher\'s Guide',5,0],['scientists','👨‍🔬','Great Scientists\' Hall',5,0],['kitchen','🍳','Kitchen Science',5,0],['coding','💻','Coding Camp',5,0],['robotics','🤖','Robots & Drones',5,0],['quantum','⚛️','Quantum Realm',5,0],['genetics','🧬','Genetics Gateway',5,0],['vedic','🕉️','Vedic Science',6,0],['acid','🧫','Acids & Bases',4,0],['float','🚢','Sinking & Floating',4,0],['isro','🚀','ISRO & Space Missions',4,0],['cosmos','🌌','Stars & Black Holes',4,0],['eco','🌳','Eco Web',4,0],['terra','🌋','Restless Earth',4,0],['optics','🔍','Light Machines',4,0],['micro','🦠','Micro World',4,0],['trivia','🏆','Trivia Arena',0,0]];
 var BADGE_META=[['first','🌱','First Steps','Complete your first lesson'],['bullseye','🎯','Bullseye','Get 3 stars in any quiz'],['streak3','🔥','Streak Spark','Learn 3 days in a row'],['explorer','🧭','World Explorer','Visit 8 different worlds'],['olymp','🏅','Olympiad Contender','3 stars in Physics, Electricity AND Logic'],['anatomy','🫀','Body Expert','Finish all Human Body lessons'],['stargazer','🔭','Skywatcher','Finish all Skywatcher lessons'],['dronepilot','🛸','Drone Pilot','Finish all Robots & Drones lessons'],['quantum','⚛️','Quantum Curious','Finish all Quantum Realm lessons'],['vedic','🕉️','Vedic Scholar','Finish all Vedic Science lessons'],['perfect3','💯','Perfect Ten','Score 100% in 3 different quizzes'],['grand','🏆','Grand Scientist','2+ stars in every world']];
 
-var LEVELS=[[0,'Curious Kid'],[150,'Explorer'],[400,'Investigator'],[800,'Inventor'],[1400,'Scientist'],[2200,'Olympiad Star'],[3200,'Grand Scientist']];
+var LEVELS=[[0,'Rookie'],[120,'Explorer'],[300,'Challenger'],[550,'Bronze Olympian'],[900,'Silver Olympian'],[1350,'Gold Olympian'],[2000,'Gurukool Champion']];
 
 function readState(){try{var s=JSON.parse(localStorage.getItem('sq_v3'));if(s&&s.profiles&&s.profiles[s.current||'p1'])return s;}catch(e){}return null;}
 var S=readState();
@@ -339,7 +345,7 @@ function render(){
     }else{
       document.getElementById('rank-bar').style.width='100%';
       document.getElementById('rank-next').textContent='MAX';
-      document.getElementById('rank-hint').textContent='Top rank reached. Grand Scientist — legendary!';
+      document.getElementById('rank-hint').textContent='Top rank reached. Gurukool Champion — legendary!';
     }
   }
   var totL=0,totS=0,doneL=0,html='',vis=0;
@@ -401,26 +407,6 @@ function importCode(c){
   localStorage.setItem('sq_v3',JSON.stringify(st));S=st;
   return true;
 }
-document.getElementById('pp-copy').addEventListener('click',function(){
-  var code=exportCode();
-  var n=document.getElementById('pp-note');
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(code).then(function(){n.textContent='Copied! Now paste it on the other device.';n.style.display='block';}).catch(function(){fallbackShow(code);});}
-  else fallbackShow(code);
-});
-function fallbackShow(code){var n=document.getElementById('pp-note');n.textContent='Tap the box below, select all and copy: ';n.style.display='block';var ta=document.getElementById('pp-in');ta.value=code;ta.focus();}
-document.getElementById('pp-download').addEventListener('click',function(){
-  var blob=new Blob([exportCode()],{type:'text/plain'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  var d=new Date();
-  a.download='science-champ-code-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.txt';
-  a.click();URL.revokeObjectURL(a.href);
-});
-document.getElementById('pp-load').addEventListener('click',function(){
-  var v=document.getElementById('pp-in').value;
-  if(importCode(v)){render();var n=document.getElementById('pp-note');n.textContent='Progress merged! 🎉 Nothing was overwritten.';n.style.display='block';}
-  else{alert('That code does not look right. Copy the FULL Save Code (it starts with SQ1. / SQ2. / SQ3.) and try again.');}
-});
-
 /* ---- reset (parent PIN gate, same shared cc_pin as everywhere) ---- */
 function pinGate(cb){
   var pin='';
