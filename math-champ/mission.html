@@ -295,8 +295,14 @@
         if (L === 5) { b = ri(4, 12); a = 3 * b; return { q: 'Meera is 3 times as old as her brother. Together they are ' + (a + b) + '. How old is the brother?', a: b, target: 70, hint: 'Together they are 4 equal parts (1 for him + 3 for her).', work: (a + b) + ' \u00F7 4 = ' + b }; }
         if (L === 6) { s = ri(45, 90); t = ri(2, 5); return { q: 'A train covers ' + (s * t) + ' km in ' + t + ' hours. What is its speed in km/h?', a: s, target: 60, hint: 'Speed = distance \u00F7 time.', work: (s * t) + ' \u00F7 ' + t + ' = ' + s + ' km/h' }; }
         if (L === 7) { a = ri(12, 40) * 10; P = pick([5, 10, 20, 25, 50]); b = a + a * P / 100; return { q: 'A shopkeeper buys a bag for \u20B9' + a + ' and sells it for \u20B9' + b + '. What is the profit as a PERCENT of the cost?', a: P, target: 75, hint: 'Profit first (\u20B9' + (b - a) + '), then compare it to the cost.', work: (b - a) + ' \u00F7 ' + a + ' \u00D7 100 = ' + P + '%' }; }
-        a = ri(10, 30) * 5; var need = a * ri(10, 14); var have = a * ri(2, 5);
-        return { q: 'A tap fills a tank at ' + a + ' litres per hour. The tank needs ' + need + ' litres and already has ' + have + ' litres. How many HOURS until it is full?', a: (need - have) / a, target: 80, hint: 'How many litres are still missing? Then divide by the rate.', work: (need - have) + ' \u00F7 ' + a + ' = ' + ((need - have) / a) + ' hours' };
+        if (ri(0, 1) === 0) {
+          a = ri(10, 30) * 5; var need = a * ri(10, 14); var have = a * ri(2, 5);
+          return { q: 'A tap fills a tank at ' + a + ' litres per hour. The tank needs ' + need + ' litres and already has ' + have + ' litres. How many HOURS until it is full?', a: (need - have) / a, target: 80, hint: 'How many litres are still missing? Then divide by the rate.', work: (need - have) + ' \u00F7 ' + a + ' = ' + ((need - have) / a) + ' hours' };
+        }
+        var RP = [[7, 5], [3, 2], [5, 3], [4, 3], [5, 2], [9, 4]][ri(0, 5)], u8 = ri(3, 15), len8 = RP[0] * u8, wid8 = RP[1] * u8, per8 = 2 * (len8 + wid8), askLen = ri(0, 1) === 0;
+        return { q: 'The perimeter of a rectangle is ' + per8 + ' centimetres. The length and the width are in the ratio ' + RP[0] + ':' + RP[1] + '. Find the ' + (askLen ? 'length' : 'width') + ' of the rectangle in centimetres.', a: askLen ? len8 : wid8, target: 80,
+          hint: 'Perimeter = 2 \u00D7 (length + width). Halve the perimeter FIRST, then share it in the ratio.',
+          work: per8 + ' \u00F7 2 = ' + (per8 / 2) + '; one part = ' + (per8 / 2) + ' \u00F7 ' + (RP[0] + RP[1]) + ' = ' + u8 + '; ' + (askLen ? 'length = ' + RP[0] : 'width = ' + RP[1]) + ' \u00D7 ' + u8 + ' = ' + (askLen ? len8 : wid8) + ' cm' };
       },
       sense: function (L) {
         var a, b, d, seq, i, n;
@@ -316,10 +322,31 @@
         if (L === 2) { h = ri(1, 8); m = ri(1, 4) * 15; mins = ri(20, 55); return { q: 'A movie starts at ' + fmt(h, m) + ' and runs for ' + mins + ' minutes. How many minutes past ' + fmt(h, 0) + ' does it end?', a: m + mins, target: 45, hint: 'Turn the start into minutes past ' + h + ':00 (' + m + '), then add.', work: m + ' + ' + mins + ' = ' + (m + mins) + ' minutes past ' + h + ':00' }; }
         if (L === 3) { d = ri(2, 8); return { q: 'How many days are there in ' + d + ' weeks?', a: d * 7, target: 30, hint: 'One week is 7 days.', work: d + ' \u00D7 7 = ' + (d * 7) }; }
         if (L === 4) { s = ri(40, 90); t = ri(2, 6); return { q: 'A rickshaw travels ' + (s * t) + ' km in ' + t + ' hours. What is its speed in km/h?', a: s, target: 60, hint: 'Speed = distance \u00F7 time.', work: (s * t) + ' \u00F7 ' + t + ' = ' + s + ' km/h' }; }
-        if (L === 5) { s = ri(10, 20) * 4; q = pick([15, 30, 45, 75, 105]); return { q: 'A car drives at ' + s + ' km/h for ' + q + ' minutes. How far does it go in km?', a: s * q / 60, target: 60, hint: q + ' minutes is ' + (q / 60) + ' hours \u2014 distance = speed \u00D7 time.', work: s + ' \u00D7 ' + (q / 60) + ' = ' + (s * q / 60) + ' km' }; }
-        if (L === 6) { s = ri(40, 80); t = ri(2, 9); return { q: 'A bus must cover ' + (s * t) + ' km at ' + s + ' km/h. How many HOURS does the trip take?', a: t, target: 60, hint: 'Time = distance \u00F7 speed.', work: (s * t) + ' \u00F7 ' + s + ' = ' + t + ' hours' }; }
-        if (L === 7) { s = ri(10, 20) * 4; q = pick([15, 30, 45]); return { q: 'A car covers ' + (s * q / 60) + ' km at ' + s + ' km/h. How many MINUTES does the trip take?', a: q, target: 80, hint: 'Distance \u00F7 speed gives hours; \u00D7 60 gives minutes.', work: (s * q / 60) + ' \u00F7 ' + s + ' = ' + (q / 60) + ' h = ' + q + ' min' }; }
-        m = ri(1, 9) * 5; return { q: 'How many seconds are there in 1 hour and ' + m + ' minutes?', a: 3600 + m * 60, target: 60, hint: 'Hours \u2192 minutes \u2192 seconds, two steps.', work: '65 min would be 3900; here it is 3600 + ' + (m * 60) + ' = ' + (3600 + m * 60) + ' seconds' };
+        if (L === 5) {
+          var A5 = 10 * ri(4, 8), t5 = ri(2, 4), s5 = A5 - 10, s5b = A5 + 10 * t5;
+          return { q: 'A truck drives for ' + t5 + ' hours at ' + s5 + ' km/h, and then for 1 more hour at ' + s5b + ' km/h. What is its average speed for the WHOLE trip in km/h?', a: A5, target: 70,
+            hint: 'Average speed = total distance \u00F7 total time. It is NOT the average of the two speeds!',
+            work: 'Distance: ' + (s5 * t5) + ' + ' + s5b + ' = ' + (s5 * t5 + s5b) + ' km; time: ' + (t5 + 1) + ' h; ' + (s5 * t5 + s5b) + ' \u00F7 ' + (t5 + 1) + ' = ' + A5 + ' km/h' };
+        }
+        if (L === 6) {
+          var s6 = 10 * ri(4, 9), t6 = pick([2, 4]), d6 = s6 * t6, s6b = 2 * s6, d6b = 3 * d6, t6b = 3 * d6 / (2 * s6), avg6 = 4 * d6 / (t6 + t6b);
+          return { q: 'A train travels from station P to Q at ' + s6 + ' km/h, taking ' + t6 + ' hours. From Q to R it DOUBLES its speed, and the Q to R distance is THREE TIMES the P to Q distance. What is its average speed from P to R in km/h?', a: avg6, target: 85,
+            hint: 'Find each leg\u2019s distance and time separately, then total distance \u00F7 total time.',
+            work: 'PQ = ' + d6 + ' km; QR = ' + d6b + ' km at ' + s6b + ' km/h takes ' + t6b + ' h; (' + d6 + ' + ' + d6b + ') \u00F7 (' + t6 + ' + ' + t6b + ') = ' + avg6 + ' km/h' };
+        }
+        if (L === 7) {
+          var s7 = 14 * ri(3, 6), t7 = pick([1.5, 3]), s7b = 1.5 * s7, d7 = s7 * t7, d7b = 2 * d7, t7b = 2 * d7 / s7b, avg7 = (d7 + d7b) / (t7 + t7b), t7txt = t7 === 1.5 ? 'one and a half hours' : t7 + ' hours';
+          return { q: 'Sam drove from town A to town B at an average speed of ' + s7 + ' km/h. He took ' + t7txt + ' to reach town B. From town B to town C he increased his speed by 50%. The distance from town B to town C is twice the distance from town A to town B. What was his average speed from town A to town C in km/h?', a: avg7, target: 90,
+            hint: '50% more speed = ' + s7b + ' km/h (not +' + (s7 + 50) + '!). Get A to B distance first, then B to C distance, then total \u00F7 total.',
+            work: 'A\u2192B: ' + s7 + ' \u00D7 ' + t7 + ' = ' + d7 + ' km. B\u2192C: ' + d7b + ' km at ' + s7b + ' km/h = ' + t7b + ' h. (' + d7 + ' + ' + d7b + ') \u00F7 (' + t7 + ' + ' + t7b + ') = ' + avg7 + ' km/h' };
+        }
+        if (ri(0, 1) === 0) {
+          m = ri(1, 9) * 5; return { q: 'How many seconds are there in 1 hour and ' + m + ' minutes?', a: 3600 + m * 60, target: 60, hint: 'Hours \u2192 minutes \u2192 seconds, two steps.', work: '65 min would be 3900; here it is 3600 + ' + (m * 60) + ' = ' + (3600 + m * 60) + ' seconds' };
+        }
+        var RT = [[60, 30, 40], [90, 45, 60], [30, 15, 20], [60, 20, 30], [90, 30, 45], [120, 40, 60], [84, 28, 42], [72, 24, 36]][ri(0, 7)];
+        return { q: 'A car travels from town X to town Y at ' + RT[0] + ' km/h and returns along the same road at ' + RT[1] + ' km/h. What is its average speed for the whole round trip in km/h?', a: RT[2], target: 85,
+          hint: 'NOT (' + RT[0] + ' + ' + RT[1] + ') \u00F7 2! Equal distances out and back, so average = 2 \u00D7 ' + RT[0] + ' \u00D7 ' + RT[1] + ' \u00F7 (' + RT[0] + ' + ' + RT[1] + ').',
+          work: '2 \u00D7 ' + RT[0] + ' \u00D7 ' + RT[1] + ' \u00F7 (' + RT[0] + ' + ' + RT[1] + ') = ' + RT[2] + ' km/h' };
       }
     };
 

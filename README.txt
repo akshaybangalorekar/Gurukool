@@ -28,7 +28,8 @@ math-champ/          Math-Champ — the maths coach
   mission.html       Training Mission: adaptive practice engine.
                      Pick a 10/30/60-minute mission; it poses
                      questions across 9 topics (arithmetic,
-                     fractions, percentages, word problems, number
+                     fractions, percentages, word problems with
+                     ratios, multi-leg average speed, number
                      sense, Pattern Detective...), measures
                      accuracy AND speed, climbs
                      difficulty when cruising, re-teaches and
