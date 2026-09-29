@@ -380,7 +380,16 @@
         }
         if (L === 7) {
           var s7 = 14 * ri(3, 6), t7 = pick([1.5, 3]), s7b = 1.5 * s7, d7 = s7 * t7, d7b = 2 * d7, t7b = 2 * d7 / s7b, avg7 = (d7 + d7b) / (t7 + t7b), t7txt = t7 === 1.5 ? 'one and a half hours' : t7 + ' hours';
-          return { q: 'Sam drove from town A to town B at an average speed of ' + s7 + ' km/h. He took ' + t7txt + ' to reach town B. From town B to town C he increased his speed by 50%. The distance from town B to town C is twice the distance from town A to town B. What was his average speed from town A to town C in km/h?', a: avg7, target: 90,
+          var head7 = 'Sam drove from town A to town B at an average speed of ' + s7 + ' km/h. He took ' + t7txt + ' to reach town B. From town B to town C he increased his speed by 50%. The distance from town B to town C is twice the distance from town A to town B.';
+          if (ri(0, 1) === 0) {
+            var trap7 = (s7 + s7b) / 2, o7 = [trap7, avg7, s7b, s7 * 3];
+            for (var sh7 = o7.length - 1; sh7 > 0; sh7--) { var sj7 = ri(0, sh7); var st7 = o7[sh7]; o7[sh7] = o7[sj7]; o7[sj7] = st7; }
+            var opt7 = o7.map(function (o, ix) { return String.fromCharCode(65 + ix) + ') ' + o + ' km/h'; }).join('   ');
+            return { q: head7 + ' What was his average speed from town A to town C? ' + opt7 + ' (Type just the number.)', a: avg7, target: 90,
+              hint: 'Two of those are traps: one is only the average of the two speeds, one is only the B to C speed. Use total distance \u00F7 total time.',
+              work: 'A\u2192B: ' + s7 + ' \u00D7 ' + t7 + ' = ' + d7 + ' km. B\u2192C: ' + d7b + ' km at ' + s7b + ' km/h = ' + t7b + ' h. (' + d7 + ' + ' + d7b + ') \u00F7 (' + t7 + ' + ' + t7b + ') = ' + avg7 + ' km/h. (' + trap7 + ' only averages the speeds \u2014 it ignores time; ' + s7b + ' is just the B\u2192C speed.)' };
+          }
+          return { q: head7 + ' What was his average speed from town A to town C in km/h?', a: avg7, target: 90,
             hint: '50% more speed = ' + s7b + ' km/h (not +' + (s7 + 50) + '!). Get A to B distance first, then B to C distance, then total \u00F7 total.',
             work: 'A\u2192B: ' + s7 + ' \u00D7 ' + t7 + ' = ' + d7 + ' km. B\u2192C: ' + d7b + ' km at ' + s7b + ' km/h = ' + t7b + ' h. (' + d7 + ' + ' + d7b + ') \u00F7 (' + t7 + ' + ' + t7b + ') = ' + avg7 + ' km/h' };
         }
