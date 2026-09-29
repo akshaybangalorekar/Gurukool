@@ -144,6 +144,46 @@
     function pick(arr) { return arr[ri(0, arr.length - 1)]; }
     function money(n) { return n.toFixed(2); }
 
+    function sticksQ(hard) {
+      var trip = ri(0, 1) === 0 ? [6, 11, 15] : [ri(3, 9), 0, 0];
+      if (trip[1] === 0) { trip[1] = trip[0] + ri(2, 8); trip[2] = trip[1] + ri(2, 8); }
+      var sa = trip[0], sb = trip[1], sc = trip[2], tot = sa + sb + sc;
+      var M = {};
+      function add(v, f) { if (v > 0 && !M[v]) M[v] = f; }
+      add(sa, String(sa)); add(sb, String(sb)); add(sc, String(sc));
+      add(sa + sb, sa + ' + ' + sb); add(sa + sc, sa + ' + ' + sc); add(sb + sc, sb + ' + ' + sc);
+      add(sb - sa, sb + ' \u2212 ' + sa); add(sc - sa, sc + ' \u2212 ' + sa); add(sc - sb, sc + ' \u2212 ' + sb);
+      add(tot, sa + ' + ' + sb + ' + ' + sc);
+      add(sa + sb - sc >= 0 ? sa + sb - sc : sc - sa - sb, sa + sb - sc >= 0 ? sa + ' + ' + sb + ' \u2212 ' + sc : sc + ' \u2212 ' + sa + ' \u2212 ' + sb);
+      add(sc + sa - sb, sc + ' + ' + sa + ' \u2212 ' + sb);
+      add(sc + sb - sa, sc + ' + ' + sb + ' \u2212 ' + sa);
+      var keys = Object.keys(M).map(Number).sort(function (x, y) { return x - y; });
+      var imp;
+      if (hard) {
+        var missing = [];
+        for (var v2 = 2; v2 <= tot; v2++) if (!M[v2]) missing.push(v2);
+        imp = missing.length ? missing[ri(0, Math.min(missing.length - 1, 3))] : tot + ri(3, 9);
+      } else {
+        imp = tot + ri(3, 10);
+      }
+      var opts = [];
+      var pool = keys.filter(function (v3) { return v3 >= 2 && v3 !== sa && v3 !== sb && v3 !== sc; });
+      while (opts.length < 3 && pool.length) {
+        var k = ri(0, pool.length - 1);
+        opts.push(pool.splice(k, 1)[0]);
+      }
+      while (opts.length < 3 && keys.length) {
+        var kk = keys[ri(0, keys.length - 1)];
+        if (opts.indexOf(kk) < 0) opts.push(kk);
+      }
+      opts.push(imp);
+      for (var i2 = opts.length - 1; i2 > 0; i2--) { var j2 = ri(0, i2); var tmp = opts[i2]; opts[i2] = opts[j2]; opts[j2] = tmp; }
+      var optStr = opts.map(function (o, ix) { return String.fromCharCode(65 + ix) + ') ' + o + ' cm'; }).join('   ');
+      var others = opts.filter(function (o) { return o !== imp; }).map(function (o) { return o + ' = ' + M[o]; }).join('; ');
+      return { q: 'Ben has three sticks of ' + sa + ' cm, ' + sb + ' cm and ' + sc + ' cm. He marks lengths by laying sticks end to end \u2014 and can also use the gap between two sticks\u2019 ends \u2014 but each stick can be used only ONCE for each mark. Which of these lengths can he NOT mark: ' + optStr + '? (Type the number, not the letter.)', a: imp, target: hard ? 95 : 80,
+        hint: imp > tot ? 'Add all three sticks together \u2014 that is the longest single mark possible. Now compare the options with it.' : 'Try every way of adding and subtracting the sticks, each used once. Which option never shows up?',
+        work: 'Longest mark: ' + sa + ' + ' + sb + ' + ' + sc + ' = ' + tot + ' cm. ' + imp + (imp > tot ? ' is MORE than ' + tot : ' is not any combination of the sticks') + ' \u2192 impossible. The others work: ' + others + '.' };
+    }
     var TOPICS = [
       { id: 'add',  icon: '➕', name: 'Addition & Subtraction' },
       { id: 'mult', icon: '✖️', name: 'Multiplication' },
@@ -292,9 +332,13 @@
         if (L === 2) { a = ri(2, 8) * 10 + 5; b = ri(2, 7) * 10 + 3; return { q: 'You buy a comic for \u20B9' + b + ' and pay with a \u20B9' + a + ' note. How much change do you get in \u20B9?', a: a - b, target: 40, hint: 'Change = what you paid \u2212 the price.', work: a + ' \u2212 ' + b + ' = \u20B9' + (a - b) }; }
         if (L === 3) { a = ri(3, 8); b = a + ri(1, 5); t = (a + b) * ri(2, 6); return { q: t + ' sweets are shared between two friends in the ratio ' + a + ' : ' + b + '. How many sweets does the friend with the BIGGER share get?', a: t / (a + b) * b, target: 60, hint: 'One part = ' + t + ' \u00F7 ' + (a + b) + '. The bigger friend takes ' + b + ' parts.', work: '1 part = ' + (t / (a + b)) + '; bigger share = ' + (t / (a + b)) + ' \u00D7 ' + b + ' = ' + (t / (a + b) * b) }; }
         if (L === 4) { s = ri(4, 12); u = ri(6, 18); return { q: 'A batsman scores ' + (s * u) + ' runs in ' + s + ' overs. How many runs per over is that?', a: u, target: 60, hint: 'Share the runs equally among the overs.', work: (s * u) + ' \u00F7 ' + s + ' = ' + u + ' runs per over' }; }
-        if (L === 5) { b = ri(4, 12); a = 3 * b; return { q: 'Meera is 3 times as old as her brother. Together they are ' + (a + b) + '. How old is the brother?', a: b, target: 70, hint: 'Together they are 4 equal parts (1 for him + 3 for her).', work: (a + b) + ' \u00F7 4 = ' + b }; }
+        if (L === 5) {
+          if (ri(0, 1) === 1) return sticksQ(false);
+          b = ri(4, 12); a = 3 * b; return { q: 'Meera is 3 times as old as her brother. Together they are ' + (a + b) + '. How old is the brother?', a: b, target: 70, hint: 'Together they are 4 equal parts (1 for him + 3 for her).', work: (a + b) + ' \u00F7 4 = ' + b }; }
         if (L === 6) { s = ri(45, 90); t = ri(2, 5); return { q: 'A train covers ' + (s * t) + ' km in ' + t + ' hours. What is its speed in km/h?', a: s, target: 60, hint: 'Speed = distance \u00F7 time.', work: (s * t) + ' \u00F7 ' + t + ' = ' + s + ' km/h' }; }
-        if (L === 7) { a = ri(12, 40) * 10; P = pick([5, 10, 20, 25, 50]); b = a + a * P / 100; return { q: 'A shopkeeper buys a bag for \u20B9' + a + ' and sells it for \u20B9' + b + '. What is the profit as a PERCENT of the cost?', a: P, target: 75, hint: 'Profit first (\u20B9' + (b - a) + '), then compare it to the cost.', work: (b - a) + ' \u00F7 ' + a + ' \u00D7 100 = ' + P + '%' }; }
+        if (L === 7) {
+          if (ri(0, 1) === 1) return sticksQ(true);
+          a = ri(12, 40) * 10; P = pick([5, 10, 20, 25, 50]); b = a + a * P / 100; return { q: 'A shopkeeper buys a bag for \u20B9' + a + ' and sells it for \u20B9' + b + '. What is the profit as a PERCENT of the cost?', a: P, target: 75, hint: 'Profit first (\u20B9' + (b - a) + '), then compare it to the cost.', work: (b - a) + ' \u00F7 ' + a + ' \u00D7 100 = ' + P + '%' }; }
         if (ri(0, 1) === 0) {
           a = ri(10, 30) * 5; var need = a * ri(10, 14); var have = a * ri(2, 5);
           return { q: 'A tap fills a tank at ' + a + ' litres per hour. The tank needs ' + need + ' litres and already has ' + have + ' litres. How many HOURS until it is full?', a: (need - have) / a, target: 80, hint: 'How many litres are still missing? Then divide by the rate.', work: (need - have) + ' \u00F7 ' + a + ' = ' + ((need - have) / a) + ' hours' };
