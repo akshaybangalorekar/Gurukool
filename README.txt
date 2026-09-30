@@ -255,6 +255,21 @@ Recent changes (round 17 — v17, Phase 4 begins: Investigations + nav fix)
   the keypad + mic work on the number step. Safety rules are stated
   (never open a plug, never touch metal pins).
 
+Recent changes (round 18 — v18, Samskritam speaker fixed)
+------------------------
+- BUG FIXED: in Samskritam-Champ the 🔊 speaker did nothing when
+  tapped. Two causes, both fixed:
+    * the button's click handler was built with double quotes inside
+      a double-quoted HTML attribute, so the tap never fired at all;
+    * and even when it fired, the device's voice was not chosen, so
+      some devices stayed silent.
+  Now the speaker picks a Hindi/Sanskrit voice when the device has
+  one, otherwise it reads the transliteration with an Indian-English
+  voice (still very understandable), and if there is no voice at all
+  it shows the pronunciation key instead of leaving silence. The home
+  page also tells a parent how to add a Hindi voice (iPad Settings ->
+  Accessibility -> Spoken Content -> Voices -> Hindi).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

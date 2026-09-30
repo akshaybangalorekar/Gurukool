@@ -87,17 +87,63 @@
   }
 
   /* ---------- speech ---------- */
-  function speak(text) {
-    try {
-      if (!window.speechSynthesis) { toast('🔇 This device cannot speak Sanskrit aloud — use the pronunciation key!'); return; }
-      window.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = 'hi-IN';      /* the closest voice most iPads have */
-      u.rate = 0.8;
-      window.speechSynthesis.speak(u);
-    } catch (e) { toast('🔇 No voice available on this device.'); }
+  var voiceNoteShown = false;
+  function voices() { try { return (window.speechSynthesis && window.speechSynthesis.getVoices()) || []; } catch (e) { return []; } }
+  function voiceFor(prefixes, list) {
+    for (var i = 0; i < prefixes.length; i++) {
+      for (var j = 0; j < (list || []).length; j++) {
+        var lg = String(list[j].lang || '').toLowerCase().replace('_', '-');
+        if (lg.indexOf(prefixes[i]) === 0) return list[j];
+      }
+    }
+    return null;
   }
-  function speakBtn(text) { return '<button class="sk-say" onclick="skSpeak(' + JSON.stringify(text) + ')" title="Hear it">🔊</button>'; }
+  function hasIndianVoice() { var v = voices(); return !!(voiceFor(['hi', 'sa'], v) || voiceFor(['en-in'], v)); }
+
+  function sayNote(latin) {
+    /* no usable voice — never leave the child with silence */
+    if (!voiceNoteShown) {
+      voiceNoteShown = true;
+      toast('\ud83d\udd07 This device has no spoken voice installed — say it like this: \u201c' + (latin || '') + '\u201d. (A parent can add a Hindi voice in iPad Settings \u2192 Accessibility \u2192 Spoken Content \u2192 Voices.)');
+    } else {
+      toast('\ud83d\udd07 Say it like this: \u201c' + (latin || '') + '\u201d');
+    }
+  }
+
+  /* speak(devText, latinText): use a Hindi/Sanskrit voice for the Devanagari,
+     otherwise read the transliteration with an Indian-English voice, and if
+     there is no voice at all, show the pronunciation key instead of silence. */
+  function speak(devText, latinText) {
+    var synth = window.speechSynthesis;
+    var U = window.SpeechSynthesisUtterance;
+    if (!synth || !U) { sayNote(latinText || devText); return; }
+    var list = voices();
+    var hindi = voiceFor(['hi', 'sa'], list);
+    var en = voiceFor(['en-in', 'en-gb', 'en'], list);
+    var text, u = new U();
+    if (hindi) { text = devText; u.voice = hindi; u.lang = hindi.lang || 'hi-IN'; }
+    else if (en) { text = latinText || devText; u.voice = en; u.lang = en.lang || 'en-IN'; }
+    else { text = latinText || devText; u.lang = 'en-IN'; }
+    u.text = text;
+    u.rate = 0.8; u.pitch = 1; u.volume = 1;
+    var started = false;
+    u.onstart = function () { started = true; };
+    u.onerror = function () { if (!started) sayNote(latinText || devText); };
+    /* iOS quirk: cancelling right before speak() can silence the new utterance */
+    try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) {}
+    try { synth.speak(u); } catch (e) { sayNote(latinText || devText); return; }
+    setTimeout(function () {
+      try { if (!started && !synth.speaking) sayNote(latinText || devText); } catch (e) {}
+    }, 1000);
+  }
+
+  function attrJs(x) {
+    /* safe inside a double-quoted onclick attribute: no nested double quotes */
+    return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/'/g, '&#39;').replace(/\\/g, '&#92;');
+  }
+  function speakBtn(dev, latin) {
+    return '<button class="sk-say" onclick="skSpeak(\'' + attrJs(dev) + '\',\'' + attrJs(latin || '') + '\')" title="Hear it">\ud83d\udd0a</button>';
+  }
 
   function normChars(s) {
     return String(s || '').replace(/[\s।!?,.:;'"()\-]/g, '');
@@ -176,7 +222,7 @@
       '<div class="sk-grid">' + cards + '</div>' +
       '<a class="sk-treasury" href="#" onclick="skTreasury();return false"><span>📚</span><div><b>My Shabda-Kosha — word treasury</b><span>' + Object.keys(S.words || {}).length + ' words collected · tap to review and quiz yourself</span></div><span class="sk-go">▶</span></a>' +
       (pats ? '<p class="sk-label">🧠 Patterns you discovered</p><div class="sk-patterns">' + pats + '</div>' : '') +
-      '<p class="sk-note">🔊 Tap the speaker to hear a line (your device\'s Devanagari voice — close, not perfect). 🎤 Tap the mic and say it out loud. Every scene ends with a <b>family mission</b> — two lines for you and your child to say to each other.</p>';
+      '<p class="sk-note">' + (hasIndianVoice() ? '' : '\ud83d\udd07 <b>No spoken voice on this device</b> — the speaker will read the transliteration in English instead, and the pronunciation key is always your guide. To add a Hindi voice: iPad Settings \u2192 Accessibility \u2192 Spoken Content \u2192 Voices \u2192 Hindi.<br>') + '🔊 Tap the speaker to hear a line (your device\'s Devanagari voice — close, not perfect). 🎤 Tap the mic and say it out loud. Every scene ends with a <b>family mission</b> — two lines for you and your child to say to each other.</p>';
   }
 
   function sceneHTML() {
@@ -193,7 +239,7 @@
         '<p class="sk-story">Now take it home — <b>' + esc(m.title) + '</b>. Say these two lines to each other tonight:</p>' +
         m.lines.map(function (l) {
           return '<div class="sk-mline"><span class="sk-who">' + esc(l.who) + '</span><div><b class="sk-dev">' + esc(l.dev) + '</b>' +
-            '<span class="sk-tr">' + esc(l.tr) + '</span><span class="sk-mean">' + esc(l.mean) + '</span></div>' + speakBtn(l.dev) + '</div>';
+            '<span class="sk-tr">' + esc(l.tr) + '</span><span class="sk-mean">' + esc(l.mean) + '</span></div>' + speakBtn(l.dev, l.tr) + '</div>';
         }).join('') +
         '<button class="sk-btn" onclick="skMissionDone()">✅ We said it together!</button>' +
         '<p class="sk-note">Both of you earn this — type your own name on the Gurukool home page and your progress is kept separately.</p>' +
@@ -206,7 +252,7 @@
       '<div class="sk-guru"><span class="sk-guru-av">🧘</span><div><b class="sk-dev">' + tapWords(turn.g.dev) + '</b>' +
       '<span class="sk-tr">' + esc(turn.g.tr) + '</span>' +
       '<span class="sk-sayline">🗣 ' + esc(turn.g.say) + '</span>' +
-      '<span class="sk-mean">' + esc(turn.g.mean) + '</span></div>' + speakBtn(turn.g.dev) + '</div>' +
+      '<span class="sk-mean">' + esc(turn.g.mean) + '</span></div>' + speakBtn(turn.g.dev, turn.g.tr) + '</div>' +
       '<p class="sk-you">Your turn — what do you say?</p><div id="sk-opts">' + optsHTML(turn) + '</div>' +
       '<div id="sk-fb"></div><div id="sk-note"></div></div>';
   }
@@ -232,7 +278,7 @@
   }
 
   /* ---------- dialogue logic ---------- */
-  window.skSpeak = function (text) { speak(text); };
+  window.skSpeak = function (dev, latin) { speak(dev, latin); };
   window.skWord = function (key) {
     var w = SK_WORDS[key]; if (!w) return;
     modal('<h3>' + w.dev + ' — ' + w.mean + '</h3>' +
@@ -275,8 +321,8 @@
     var o = turn.opts[i]; if (!o) return;
     if (!o.ok) {
       /* never scold: the guru simply repeats, slowly */
-      $('sk-fb').innerHTML = '<div class="sk-fb bad">The guru smiles and says it again, more slowly… ' + speakBtn(turn.g.dev) + '</div>';
-      speak(turn.g.dev);
+      $('sk-fb').innerHTML = '<div class="sk-fb bad">The guru smiles and says it again, more slowly… ' + speakBtn(turn.g.dev, turn.g.tr) + '</div>';
+      speak(turn.g.dev, turn.g.tr);
       return;
     }
     var xp = 10 + (turn.opts.length > 1 ? 2 : 0);
