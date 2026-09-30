@@ -174,6 +174,25 @@ Recent changes (round 13 — v13, Phase 1 complete: Science-Champ unified)
 - Phase 1 (uniform look, keypad/mic everywhere, kid dashboards) is
   now COMPLETE across all three champs.
 
+Recent changes (round 14 — v14, Phase 2: the Parent Console)
+------------------------
+- The Admin Console is now the PARENT CONSOLE — one PIN-gated place
+  with four tabs: Setup (cloud sync, restore, PIN - everything that
+  was there before), Insights, Signals and This week's plan.
+- Insights: per child and per champ, every topic is graded from the
+  last attempts on the device — Strong / Needs practice / Struggling
+  / Just starting — with accuracy, average time vs target, attempt
+  count and a trend arrow showing whether practice is working.
+  (Maths is grouped by topic, quest line and drills; science by
+  world from quiz scores; Mind-Champ by case with stars.)
+- Signals: his own words — doubt-jar notes, guru notes and journal
+  entries — with possible confusion/frustration words highlighted.
+  Explicitly labelled as signals to interpret, not a verdict.
+- This week's plan: three concrete recommendations (focus, stretch,
+  curiosity, or gently re-invite) each with an India-friendly home
+  activity, plus a weekly digest (questions, XP, accuracy this week
+  vs last, notes, streak).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

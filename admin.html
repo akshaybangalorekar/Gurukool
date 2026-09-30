@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Admin Console — Gurukool</title>
+<title>Parent Console — Gurukool</title>
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -65,7 +65,7 @@
 
 <header class="topbar">
   <span>⚙️</span>
-  <h1>Admin Console</h1>
+  <h1>Parent Console</h1>
   <a class="back" href="index.html">← Back to Gurukool</a>
 </header>
 
@@ -560,5 +560,35 @@ window.ChampSync = (function () {
 })();
 </script>
 <script src="version.js"></script>
+<style>
+/* ---------- Parent Console (Phase 2) ---------- */
+#pc-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 16px; }
+.pc-tab { font-family: inherit; font-size: 16.5px; font-weight: 800; padding: 10px 16px; border-radius: 12px; border: 2px solid rgba(43,38,32,.25); background: #fbf4e4; color: #2b2620; cursor: pointer; }
+.pc-tab.on { border-color: #2e7d32; background: linear-gradient(135deg, #f1f8e9, #fffdf7); box-shadow: 0 0 0 3px rgba(46,125,50,.10); }
+.pc-pane { animation: pcfade .18s ease; }
+@keyframes pcfade { from { opacity: 0; } to { opacity: 1; } }
+.pc-childrow { font-weight: 800; font-size: 17px; margin: 0 0 12px; }
+.pc-childrow select { font-family: inherit; font-size: 16.5px; font-weight: 800; padding: 8px 12px; border-radius: 10px; border: 2px solid rgba(43,38,32,.25); background: #fff; }
+.pc-lead { color: #7a6f60; line-height: 1.5; }
+.pc-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: #fffdf7; border: 1.5px solid rgba(43,38,32,.12); border-radius: 12px; padding: 10px 14px; margin: 8px 0; }
+.pc-row b { font-size: 17px; min-width: 210px; }
+.pc-meta { color: #7a6f60; font-size: 15px; font-weight: 600; }
+.pc-trend { margin-left: auto; font-size: 15.5px; }
+.pc-cards { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0 18px; }
+.pc-stat { background: #fffdf7; border: 1.5px solid rgba(43,38,32,.12); border-radius: 14px; padding: 12px 18px; text-align: center; min-width: 120px; }
+.pc-stat b { display: block; font-size: 26px; font-family: 'Baloo 2', 'Comic Sans MS', cursive, sans-serif; }
+.pc-stat span { color: #7a6f60; font-size: 14.5px; font-weight: 700; }
+.pc-list { line-height: 1.5; padding-left: 20px; }
+.pc-list li { margin: 10px 0; }
+.pc-kind { color: #7a6f60; font-size: 14px; font-weight: 700; margin-left: 6px; }
+.pc-list mark { background: #ffe0b2; padding: 0 3px; border-radius: 4px; }
+.pc-empty { color: #7a6f60; background: #fbf4e4; border-radius: 12px; padding: 14px; }
+.pc-recs { display: grid; gap: 12px; }
+.pc-rec { display: flex; gap: 14px; background: linear-gradient(135deg, #f1f8e9, #fffdf7 70%); border: 2px solid #9ccc65; border-radius: 14px; padding: 14px 16px; }
+.pc-rec-icon { font-size: 26px; }
+.pc-rec b { font-size: 17.5px; }
+.pc-rec p { margin: 6px 0 0; line-height: 1.5; }
+</style>
+<script src="parent-console.js"></script>
 </body>
 </html>
