@@ -270,6 +270,24 @@ Recent changes (round 18 — v18, Samskritam speaker fixed)
   page also tells a parent how to add a Hindi voice (iPad Settings ->
   Accessibility -> Spoken Content -> Voices -> Hindi).
 
+Recent changes (round 19 — v19, Phase 4: Eureka moments + book recommendations)
+------------------------
+- MATHS — EUREKA MOMENTS: when a topic is genuinely mastered (6+ tries
+  at 80%+ accuracy, or a quest line finished), a popup shows once —
+  and only once per topic per month — explaining how that maths lives
+  in the real world, with a "go see it yourself" micro-mission
+  (cricket overs for fractions, discount tags for percentages, egg
+  trays for multiplication, timetables for time, sharing a roti for
+  division). Rare on purpose. It never interrupts a mission — only
+  the maths home and dashboard show it.
+- SCIENCE — FOR CURIOUS MINDS: book recommendations that appear only
+  when a world is truly mastered (quiz 80%+) or the child has asked
+  3+ questions in that world, once per world per month, and each one
+  says WHY that book. Picks are widely available and age-right (DK,
+  Horrible Science, The Way Things Work, George's Secret Key...).
+- Maths training areas now say plainly: this is not a test — practice
+  is how a discovered trick becomes fast.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
