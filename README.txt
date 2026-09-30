@@ -209,6 +209,33 @@ Recent changes (round 15 — v15, profiles + Melbourne time)
   player's progress, and points to "Add player" for a separate child.
 - Version badge times are now shown in Melbourne time (AEST/AEDT).
 
+Recent changes (round 16 — v16, Phase 3: Samskritam-Champ)
+------------------------
+- NEW CHAMP: Samskritam-Champ (संस्कृतम्-चैम्प) — learn Sanskrit the way
+  it is really learned: by talking. A guru character holds a guided
+  conversation; the child (or a parent!) answers by tapping or by
+  SPEAKING into the mic (speech is matched generously against the
+  expected phrase). Every line shows Devanagari + transliteration +
+  a pronunciation key + meaning, and every known word is tappable for
+  its stem, its meaning and its cousins in Hindi/English (mātṛ→maa,
+  trayas→three, daśa→decade).
+- Five scenes, easy to story: First Words (greetings) → Who Is in Your
+  Family? → At the Table (water, food, "-āmi = I do") → How Many?
+  (numbers + cognates) → The Thirsty Crow (a Panchatantra tale and its
+  moral, buddhiḥ balāt śreṣṭhā).
+- Grammar arrives as DISCOVERY: after the child uses a pattern it is
+  named ("PATTERN DISCOVERED! pibāmi, vāñchāmi — both end in -āmi").
+  No tables first.
+- FAMILY MISSIONS: every scene ends with two lines for the child and
+  the parent to say to each other ("jalam vāñchasi?" / "ām, jalam
+  vāñchāmi"). Both are learners — type a name on the home page and
+  each keeps their own progress, XP and streak.
+- Shabda-Kosha: a personal word treasury with a quiz. Wrong taps are
+  never scolded — the guru simply repeats the line, slowly.
+- Cloud sync: the locker is now champSync:5 and carries Sanskrit
+  progress (sk + per-learner sks) alongside maths, science and mind.
+  Older locker files still load.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

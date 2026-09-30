@@ -394,6 +394,35 @@ window.ChampSync = (function () {
   var MC_KEY = 'mc_state', MPROFILES_KEY = 'mc_profiles';
   function readMCProfiles() { try { var p = JSON.parse(localStorage.getItem(MPROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
   function writeMCProfiles(p) { try { localStorage.setItem(MPROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+  var SK_KEY = 'sk_state', SKPROFILES_KEY = 'sk_profiles';
+  function readSKProfiles() { try { var p = JSON.parse(localStorage.getItem(SKPROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
+  function writeSKProfiles(p) { try { localStorage.setItem(SKPROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+  function mergeSK(a, b) {
+    if (!b || typeof b !== 'object' || !b.scenes) return a;
+    if (!a || !a.scenes) return b;
+    var out = JSON.parse(JSON.stringify(b));
+    out.xp = Math.max(a.xp || 0, b.xp || 0);
+    out.name = ((b.xp || 0) > (a.xp || 0)) ? (b.name || a.name || '') : (a.name || b.name || '');
+    out.patterns = uniqList((a.patterns || []).concat(b.patterns || []));
+    out.journal = uniqList((a.journal || []).concat(b.journal || []));
+    out.words = out.words || {};
+    for (var w in (a.words || {})) {
+      var aw = a.words[w], bw = out.words[w] = out.words[w] || { seen: 0, ok: 0, last: 0 };
+      bw.seen = Math.max(bw.seen || 0, aw.seen || 0);
+      bw.ok = Math.max(bw.ok || 0, aw.ok || 0);
+      bw.last = Math.max(bw.last || 0, aw.last || 0);
+    }
+    for (var k in a.scenes) {
+      var as = a.scenes[k], bs = out.scenes[k] = out.scenes[k] || { done: false, at: 0, words: [], mission: false };
+      bs.done = bs.done || !!as.done;
+      bs.at = Math.max(bs.at || 0, as.at || 0);
+      bs.mission = bs.mission || !!as.mission;
+      bs.words = uniqList((bs.words || []).concat(as.words || []));
+    }
+    if ((a.streak && a.streak.count || 0) > (out.streak && out.streak.count || 0)) out.streak = a.streak;
+    out.pin = out.pin || a.pin || '';
+    return out;
+  }
   function uniqList(arr) { var o = {}, out = []; (arr || []).forEach(function (x) { if (!o[x]) { o[x] = 1; out.push(x); } }); return out; }
   function mergeMC(a, b) {
     if (!b || typeof b !== 'object' || !b.cases) return a;
@@ -415,34 +444,39 @@ window.ChampSync = (function () {
     return out;
   }
 
-  /* cloud file carries every champ + every child: { champSync: 4, sq, oc, ocs, mc, mcs } */
-  function payload(sq, oc, mc) {
+  /* cloud file carries every champ + every learner: { champSync: 5, sq, oc, ocs, mc, mcs, sk, sks } */
+  function payload(sq, oc, mc, sk) {
     var ocs = readProfiles();
     var n = (oc && oc.name ? oc.name : '').trim().toLowerCase();
     if (n) ocs[n] = oc;
     var mcs = readMCProfiles();
     var mn = (mc && mc.name ? mc.name : '').trim().toLowerCase();
     if (mn) mcs[mn] = mc;
-    return { champSync: 4, sq: sq || null, oc: oc || null, ocs: ocs, mc: mc || null, mcs: mcs };
+    var sks = readSKProfiles();
+    var sn = (sk && sk.name ? sk.name : '').trim().toLowerCase();
+    if (sn) sks[sn] = sk;
+    return { champSync: 5, sq: sq || null, oc: oc || null, ocs: ocs, mc: mc || null, mcs: mcs, sk: sk || null, sks: sks };
   }
 
   /* understands the current format plus every older one */
   function parseRemote(txt) {
     var o = JSON.parse(txt);
-    if (o && (o.champSync === 4 || o.champSync === 3 || o.champSync === 2)) {
-      var ocs = {}, k;
+    if (o && (o.champSync === 5 || o.champSync === 4 || o.champSync === 3 || o.champSync === 2)) {
+      var ocs = {}, mcs = {}, sks = {}, k;
       if (o.ocs && typeof o.ocs === 'object') for (k in o.ocs) { var v = o.ocs[k]; if (v && typeof v === 'object' && v.attempts) ocs[String(k).toLowerCase()] = v; }
       var onc = (o.oc && o.oc.name ? o.oc.name : '').trim().toLowerCase();
       if (o.oc && o.oc.attempts && !ocs[onc]) ocs[onc || 'current'] = o.oc;
-      var mcs = {};
       if (o.mcs && typeof o.mcs === 'object') for (k in o.mcs) { var mv = o.mcs[k]; if (mv && typeof mv === 'object' && mv.cases) mcs[String(k).toLowerCase()] = mv; }
       var mcn = (o.mc && o.mc.name ? o.mc.name : '').trim().toLowerCase();
       if (o.mc && o.mc.cases && !mcs[mcn]) mcs[mcn || 'current'] = o.mc;
-      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null, mcs: mcs, mc: (o.mc && o.mc.cases) ? o.mc : null };
+      if (o.sks && typeof o.sks === 'object') for (k in o.sks) { var sv = o.sks[k]; if (sv && typeof sv === 'object' && sv.scenes) sks[String(k).toLowerCase()] = sv; }
+      var scn = (o.sk && o.sk.name ? o.sk.name : '').trim().toLowerCase();
+      if (o.sk && o.sk.scenes && !sks[scn]) sks[scn || 'current'] = o.sk;
+      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null, mcs: mcs, mc: (o.mc && o.mc.cases) ? o.mc : null, sks: sks, sk: (o.sk && o.sk.scenes) ? o.sk : null };
     }
-    if (o && o.profiles) return { sq: o, oc: null, ocs: {}, mcs: {}, mc: null };
-    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {}, mcs: {}, mc: null };
-    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2, mcs: {}, mc: null }; }
+    if (o && o.profiles) return { sq: o, oc: null, ocs: {}, mcs: {}, mc: null, sks: {}, sk: null };
+    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {}, mcs: {}, mc: null, sks: {}, sk: null };
+    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2, mcs: {}, mc: null, sks: {}, sk: null }; }
     return null;
   }
 
@@ -463,10 +497,11 @@ window.ChampSync = (function () {
     } catch (e) { return false; }
   }
 
-  function mergeInto(pr, getSq, getOc, getMc) {
+  function mergeInto(pr, getSq, getOc, getMc, getSk) {
     var sq = getSq ? getSq() : readLS(SQ_KEY);
     var oc = getOc ? getOc() : readLS(OC_KEY);
     var mc = getMc ? getMc() : readLS(MC_KEY);
+    var sk = getSk ? getSk() : readLS(SK_KEY);
     if (pr) {
       if (pr.legacy && sq && sq.profiles) mergeProfile(sq.profiles[sq.current || 'p1'], pr.legacy);
       else if (pr.sq && sq && sq.profiles) mergeSQ(sq, pr.sq);
@@ -502,12 +537,26 @@ window.ChampSync = (function () {
         mc = mmerged[mactive];
         writeMCProfiles(mmerged);
       }
+      /* samskritam: the same per-learner merge */
+      var scur = (sk && sk.name ? sk.name : '').trim().toLowerCase();
+      var slocal = readSKProfiles();
+      if (scur) slocal[scur] = sk;
+      var srem = pr.sks || {};
+      if (pr.sk && pr.sk.scenes && !srem[(pr.sk.name || 'current').trim().toLowerCase()]) srem[(pr.sk.name || 'current').trim().toLowerCase()] = pr.sk;
+      var smerged = {};
+      for (k in slocal) smerged[k] = srem[k] ? mergeSK(slocal[k], srem[k]) : slocal[k];
+      for (k in srem) if (!smerged[k]) smerged[k] = srem[k];
+      if (Object.keys(smerged).length) {
+        var sactive = (ccName && smerged[ccName]) ? ccName : (scur && smerged[scur] ? scur : Object.keys(smerged)[0]);
+        sk = smerged[sactive];
+        writeSKProfiles(smerged);
+      }
     }
-    return { sq: sq, oc: oc, mc: mc };
+    return { sq: sq, oc: oc, mc: mc, sk: sk };
   }
 
   /* one tap: pull cloud -> merge -> push merged -> download local backup.
-     opts: { silent, getSq, getOc, getMc, onMerged(sq,oc,mc), toast(msg), onNeedSetup() }
+     opts: { silent, getSq, getOc, getMc, getSk, onMerged(sq,oc,mc,sk), toast(msg), onNeedSetup() }
      returns a Promise resolving to 'setup' | 'ok' | 'error'. */
   function sync(opts) {
     opts = opts || {};
@@ -529,10 +578,10 @@ window.ChampSync = (function () {
       .then(function (txt) {
         var pr = null;
         if (txt) { try { pr = parseRemote(txt); } catch (e) { pr = null; } }
-        merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc);
-        writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc);
-        if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc); } catch (e) {} }
-        var pl = payload(merged.sq, merged.oc, merged.mc);
+        merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc, opts.getSk);
+        writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc); writeLS(SK_KEY, merged.sk);
+        if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc, merged.sk); } catch (e) {} }
+        var pl = payload(merged.sq, merged.oc, merged.mc, merged.sk);
         return fetch(ghUrl(c), {
           method: 'PUT',
           headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' },
@@ -549,7 +598,7 @@ window.ChampSync = (function () {
         return 'error';
       })
       .then(function (status) {
-        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY), merged ? merged.mc : readLS(MC_KEY)));
+        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY), merged ? merged.mc : readLS(MC_KEY), merged ? merged.sk : readLS(SK_KEY)));
         return status;
       });
   }
@@ -560,13 +609,13 @@ window.ChampSync = (function () {
     var pr = null;
     try { pr = parseRemote(txt); } catch (e) { pr = null; }
     if (!pr) throw new Error('this does not look like a Gurukool backup');
-    var merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc);
-    writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc);
-    if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc); } catch (e) {} }
+    var merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc, opts.getSk);
+    writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc); writeLS(SK_KEY, merged.sk);
+    if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc, merged.sk); } catch (e) {} }
     return merged;
   }
 
-  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, mergeMC: mergeMC, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
+  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, mergeMC: mergeMC, mergeSK: mergeSK, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
 })();
 
 
