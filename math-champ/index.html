@@ -240,9 +240,8 @@
     OC.$('#name-save').addEventListener('click', function () {
       var v = nameInput.value.trim();
       if (!v) return;
-      S.name = v;
       try { localStorage.setItem('cc_name', v); } catch (e) {}
-      OC.save();
+      if (window.OC && OC.switchChild) OC.switchChild(v); else { S.name = v; OC.save(); }
       location.reload();
     });
     nameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') OC.$('#name-save').click(); });

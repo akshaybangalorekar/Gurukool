@@ -65,6 +65,24 @@ Recent changes (round 5 — v5)
   the old GK1 codes and gurukool-progress-DATE.txt backups. The
   Passport error message now names progress.json too.
 
+Recent changes (round 6 — v6)
+------------------------
+- Cloud sync now runs every 3 minutes (was 10) on every open champ
+  page: pulls the family's latest progress, merges it, pushes it back.
+  Pulled progress is adopted live on screen (dashboards also quietly
+  refresh every 3 minutes) unless a mission or quiz is in progress.
+- Per-child progress: maths now keeps a separate profile for every
+  child, keyed by the name you enter. The cloud file (progress.json,
+  format champSync:3) carries EVERY child's maths progress, and each
+  device makes the child named on it the active one. Enter "Atharv"
+  on a laptop and you see Atharv's maths + science progress; enter
+  another child's name and theirs loads instead. Science profiles
+  are also auto-selected by the entered name. Older champSync:2
+  cloud files still load fine.
+- To use on a new laptop: open the Admin Console there once, set up
+  cloud sync with the same GitHub locker (owner/repo/token), then
+  enter the child's name on the Gurukool home page.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

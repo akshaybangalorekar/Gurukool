@@ -44,6 +44,16 @@
 
   var STATE = load();
 
+  /* if the champion name on this device (cc_name) is a different child,
+     switch to that child's own maths progress (multi-kid support) */
+  (function () {
+    try {
+      var ccName = (localStorage.getItem('cc_name') || '').trim();
+      var cur = (STATE.name || '').trim();
+      if (ccName && cur.toLowerCase() !== ccName.toLowerCase()) switchChild(ccName);
+    } catch (e) {}
+  })();
+
   /* ---------- levels ---------- */
 
   var LEVELS = [
@@ -394,8 +404,43 @@
 
   /* ---------- export ---------- */
 
+  /* ---------- per-child maths profiles (name-keyed) ---------- */
+
+  function readProfiles() { try { var p = JSON.parse(localStorage.getItem('oc_profiles') || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
+  function writeProfiles(pr) { try { localStorage.setItem('oc_profiles', JSON.stringify(pr || {})); } catch (e) {} }
+
+  function setState(o) {
+    if (!o || typeof o !== 'object') return;
+    STATE = o;
+    if (window.OC) window.OC.STATE = STATE;
+    save();
+  }
+
+  /* switch the active child: the current one is parked under their own name,
+     the requested child's progress is loaded (or started fresh the first time) */
+  function switchChild(name) {
+    name = String(name || '').trim();
+    if (!name) return false;
+    var key = name.toLowerCase();
+    var cur = (STATE.name || '').trim();
+    var profiles = readProfiles();
+    if (cur) profiles[cur.toLowerCase()] = JSON.parse(JSON.stringify(STATE));
+    var next = profiles[key];
+    if (!next) { next = defaultState(); next.name = name; }
+    next.name = name;
+    STATE = next;
+    if (window.OC) window.OC.STATE = STATE;
+    save();
+    writeProfiles(profiles);
+    return true;
+  }
+
   window.OC = {
     STATE: STATE,
+    switchChild: switchChild,
+    setState: setState,
+    readProfiles: readProfiles,
+    writeProfiles: writeProfiles,
     save: save,
     defaultState: defaultState,
     LEVELS: LEVELS,
@@ -429,7 +474,7 @@
    IDENTICAL COPY embedded in Math-Champ (assets/app.js) and ScienceQuest.
    One tap on EITHER champ syncs BOTH to the family's GitHub repo and downloads
    a dated local backup file. Merge rules: progress is never destroyed.
-   Cloud file format: { champSync: 2, sq: <ScienceQuest state>, oc: <Math-Champ state> }
+   Cloud file format: { champSync: 3, sq: <ScienceQuest state>, oc: <Math-Champ state>, ocs: { childName: <Math-Champ state> } }
    Older formats (science-only {profiles:...}, legacy single-profile {xp:...}) still load. */
 window.ChampSync = (function () {
   'use strict';
@@ -494,15 +539,31 @@ window.ChampSync = (function () {
     return out;
   }
 
-  function payload(sq, oc) { return { champSync: 2, sq: sq || null, oc: oc || null }; }
+  var PROFILES_KEY = 'oc_profiles';
+  function readProfiles() { try { var p = JSON.parse(localStorage.getItem(PROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
+  function writeProfiles(p) { try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+
+  /* cloud file carries EVERY child's maths progress: { champSync: 3, sq, oc, ocs } */
+  function payload(sq, oc) {
+    var ocs = readProfiles();
+    var n = (oc && oc.name ? oc.name : '').trim().toLowerCase();
+    if (n) ocs[n] = oc;
+    return { champSync: 3, sq: sq || null, oc: oc || null, ocs: ocs };
+  }
 
   /* understands the current format plus every older one */
   function parseRemote(txt) {
     var o = JSON.parse(txt);
-    if (o && o.champSync === 2) return { sq: (o.sq && o.sq.profiles) ? o.sq : null, oc: (o.oc && o.oc.attempts) ? o.oc : null };
-    if (o && o.profiles) return { sq: o, oc: null };
-    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null };
-    if (o && o.attempts) return { sq: null, oc: o };
+    if (o && (o.champSync === 3 || o.champSync === 2)) {
+      var ocs = {}, k;
+      if (o.ocs && typeof o.ocs === 'object') for (k in o.ocs) { var v = o.ocs[k]; if (v && typeof v === 'object' && v.attempts) ocs[String(k).toLowerCase()] = v; }
+      var onc = (o.oc && o.oc.name ? o.oc.name : '').trim().toLowerCase();
+      if (o.oc && o.oc.attempts && !ocs[onc]) ocs[onc || 'current'] = o.oc;
+      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null };
+    }
+    if (o && o.profiles) return { sq: o, oc: null, ocs: {} };
+    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {} };
+    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2 }; }
     return null;
   }
 
@@ -530,10 +591,25 @@ window.ChampSync = (function () {
       if (pr.legacy && sq && sq.profiles) mergeProfile(sq.profiles[sq.current || 'p1'], pr.legacy);
       else if (pr.sq && sq && sq.profiles) mergeSQ(sq, pr.sq);
       else if (pr.sq && !sq) sq = pr.sq;
-      if (pr.oc && oc && oc.attempts) oc = mergeOC(oc, pr.oc);
-      else if (pr.oc && !oc) oc = pr.oc;
+      /* maths: merge EVERY child's profile by name, then make the
+         child named on this device (cc_name) the active one */
+      var curName = (oc && oc.name ? oc.name : '').trim().toLowerCase();
+      var local = readProfiles();
+      if (curName) local[curName] = oc;
+      var remote = pr.ocs || {};
+      var merged = {}, k;
+      for (k in local) merged[k] = remote[k] ? mergeOC(local[k], remote[k]) : local[k];
+      for (k in remote) if (!merged[k]) merged[k] = remote[k];
+      if (Object.keys(merged).length) {
+        var ccName = '';
+        try { ccName = (localStorage.getItem('cc_name') || '').trim().toLowerCase(); } catch (e) {}
+        var active = (ccName && merged[ccName]) ? ccName : (curName && merged[curName] ? curName : Object.keys(merged)[0]);
+        oc = merged[active];
+        writeProfiles(merged);
+      } else if (pr.oc && oc && oc.attempts) { oc = mergeOC(oc, pr.oc); }
+      else if (pr.oc && !oc) { oc = pr.oc; }
     }
-    return { sq: sq, oc: oc };
+    return { sq: sq, oc: oc, ocs: null };
   }
 
   /* one tap: pull cloud -> merge -> push merged -> download local backup.
@@ -609,10 +685,17 @@ window.ChampSync = (function () {
   function autoSync() {
     try {
       if (!ChampSync.ghCfg()) return;
-      ChampSync.sync({ silent: true, getSq: null, getOc: null, onMerged: null });
+      ChampSync.sync({ silent: true, getSq: null, getOc: null, onMerged: function (sq, oc) {
+        try {
+          /* adopt freshly pulled progress live — but never disturb a running mission */
+          if (window.MISSION && window.MISSION.M && window.MISSION.M.running) return;
+          if (window.OC && oc && OC.STATE !== oc && OC.setState) OC.setState(oc);
+          if (typeof window.GK_REFRESH === 'function') { try { window.GK_REFRESH(); } catch (e) {} }
+        } catch (e) {}
+      } });
     } catch (e) { /* offline or storage blocked — retry on the next cycle */ }
   }
   setTimeout(autoSync, 20000);            /* first quiet sync shortly after open */
-  setInterval(autoSync, 600000);           /* then every 10 minutes */
+  setInterval(autoSync, 180000);          /* then every 3 minutes: pull + push */
 })();
 

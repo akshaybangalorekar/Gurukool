@@ -10,8 +10,9 @@ let S=loadState();
 if(!S.profiles[S.current]){S.current=Object.keys(S.profiles)[0];}
 S.profiles[S.current]=S.profiles[S.current]||freshProfile();
 let state=S.profiles[S.current];
-/* one shared champion name — set once on the Gurukool home page (cc_name) */
-try{var ccName=(localStorage.getItem('cc_name')||'').trim();if(ccName&&state&&state.name==='Champion'){state.name=ccName;save();}}catch(e){}
+/* the champion on this device is chosen by NAME (cc_name): pick that child's profile */
+function selectCurrentByName(){try{var ccName=(localStorage.getItem('cc_name')||'').trim();if(!ccName)return;var pid=Object.keys(S.profiles).find(function(id){return (S.profiles[id].name||'').toLowerCase()===ccName.toLowerCase();});if(pid&&pid!==S.current){S.current=pid;state=S.profiles[S.current];save();}}catch(e){}}
+try{var ccName=(localStorage.getItem('cc_name')||'').trim();if(ccName&&state&&state.name==='Champion'){state.name=ccName;save();}selectCurrentByName();}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 const LEVELS=[[0,'Rookie'],[120,'Explorer'],[300,'Challenger'],[550,'Bronze Olympian'],[900,'Silver Olympian'],[1350,'Gold Olympian'],[2000,'Gurukool Champion']];
@@ -53,7 +54,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}}
 
 function homeHTML(){const L=levelInfo();const cards=WORLDS.map(w=>{const p=wprog(w);const s=w.id==='trivia'?'':' '+starStr(stars(w.id));return '<div class="wcard" style="--c:'+w.color+'" onclick="openWorld(\''+w.id+'\')"><div class="ic">'+w.icon+(p.pct>=100?' ✅':'')+'</div><div class="nm">'+w.name+'</div><div class="tg">'+w.tag+'</div><div class="bar"><i style="width:'+p.pct+'%"></i></div><div class="pct">'+p.pct+'% · '+p.txt+s+'</div></div>';}).join('');
-return MISSIONBANNER()+'<div class="top"><div class="row"><div class="lvlbadge">Lv '+(L.i+1)+' · '+L.cur[1]+'</div><div class="xpbar"><div class="xpfill" style="width:'+L.pct+'%"></div></div></div><div class="row2"><button class="mini" onclick="showProfiles()">'+S.profiles[S.current].av+' '+esc(S.profiles[S.current].name)+'</button><span class="stat">⭐ '+state.xp+' XP</span><span class="stat">🔥 '+state.streak+'-day streak</span><button class="mini" onclick="showDoubts()">🫙 '+state.doubts.length+'</button><button class="mini" onclick="showBadges()">🏅 '+state.badges.length+'/'+BADGES.length+'</button><button class="mini" onclick="toggleMute()">'+(S.mute?'🔇':'🔊')+'</button><button class="mini" onclick="location.href=\'../parent-guide.html\'" title="Parent guide">📖</button><button class="mini" onclick="location.href=\'dashboard.html\'" title="Dashboard">📊 Dashboard</button></div>'+(L.nx?'<div class="stat">'+(L.nx[0]-state.xp)+' XP to reach '+L.nx[1]+' →</div>':'')+'</div><h1>🔬 Science-Champ</h1><p class="sub">Level up from Rookie to Gurukool Champion — '+WORLDS.length+' worlds of physics, chemistry, biology, earth and space, electricity, light, heat, robotics, drones, coding, quantum computing, genetics, Vedic science, great scientists, kitchen science and rapid-fire trivia!</p><p class="muted" style="margin:0 0 12px">💡 Tip: confused by a word? Press and hold on it (or select it with your mouse), then tap <b>✨ Explain simply</b>. You will also spot Sanskrit twin-words next to English terms — like <i>vega वेग</i> for speed, <i>śakti शक्ति</i> for energy and <i>vidyut विद्युत्</i> for electricity — so the language of ancient Indian science feels natural!</p><div class="grid">'+cards+'</div><div class=\"note\">📱 <b>Moving between devices?</b> Saving is automatic — progress lives in this browser and syncs to your family cloud locker every 10 minutes (set up once per device in the <b>Admin Console</b>, from the Gurukool home page). You can also move progress with the shared <b>Progress Passport</b> or the Admin Console — both from the Gurukool home page. Progress always merges, nothing is lost.</div><p class="muted" style="text-align:center">Made with ❤️ by Gurukool for a future scientist</p>';}
+return MISSIONBANNER()+'<div class="top"><div class="row"><div class="lvlbadge">Lv '+(L.i+1)+' · '+L.cur[1]+'</div><div class="xpbar"><div class="xpfill" style="width:'+L.pct+'%"></div></div></div><div class="row2"><button class="mini" onclick="showProfiles()">'+S.profiles[S.current].av+' '+esc(S.profiles[S.current].name)+'</button><span class="stat">⭐ '+state.xp+' XP</span><span class="stat">🔥 '+state.streak+'-day streak</span><button class="mini" onclick="showDoubts()">🫙 '+state.doubts.length+'</button><button class="mini" onclick="showBadges()">🏅 '+state.badges.length+'/'+BADGES.length+'</button><button class="mini" onclick="toggleMute()">'+(S.mute?'🔇':'🔊')+'</button><button class="mini" onclick="location.href=\'../parent-guide.html\'" title="Parent guide">📖</button><button class="mini" onclick="location.href=\'dashboard.html\'" title="Dashboard">📊 Dashboard</button></div>'+(L.nx?'<div class="stat">'+(L.nx[0]-state.xp)+' XP to reach '+L.nx[1]+' →</div>':'')+'</div><h1>🔬 Science-Champ</h1><p class="sub">Level up from Rookie to Gurukool Champion — '+WORLDS.length+' worlds of physics, chemistry, biology, earth and space, electricity, light, heat, robotics, drones, coding, quantum computing, genetics, Vedic science, great scientists, kitchen science and rapid-fire trivia!</p><p class="muted" style="margin:0 0 12px">💡 Tip: confused by a word? Press and hold on it (or select it with your mouse), then tap <b>✨ Explain simply</b>. You will also spot Sanskrit twin-words next to English terms — like <i>vega वेग</i> for speed, <i>śakti शक्ति</i> for energy and <i>vidyut विद्युत्</i> for electricity — so the language of ancient Indian science feels natural!</p><div class="grid">'+cards+'</div><div class=\"note\">📱 <b>Moving between devices?</b> Saving is automatic — progress lives in this browser and syncs to your family cloud locker every 3 minutes (set up once per device in the <b>Admin Console</b>, from the Gurukool home page). You can also move progress with the shared <b>Progress Passport</b> or the Admin Console — both from the Gurukool home page. Progress always merges, nothing is lost.</div><p class="muted" style="text-align:center">Made with ❤️ by Gurukool for a future scientist</p>';}
 
 function worldHTML(){const w=W(view.wid);if(!w)return homeHTML();let h='<button class="btn sec" onclick="go(\'home\')">← All worlds</button><div class="whead" style="--c:'+w.color+'"><div class="ic">'+w.icon+'</div><h2>'+w.name+'</h2><p>'+w.tag+'</p></div><div class="art'+(w.id==='sky'?' night':'')+'">'+(WORLD_ART[w.id]||'')+'</div>';
 if(w.id==='trivia'){const q=state.quiz.trivia;h+='<div class="note">⚡ Rapid-fire: 10 random questions from EVERY world plus bonus trivia. 7+ correct = ⭐⭐, a perfect 10 = ⭐⭐⭐.<br>Best so far: '+(q?q.s+' / '+q.t:'—')+' '+starStr(stars('trivia'))+'</div><button class="btn" onclick="startQuiz(\'trivia\')">▶ Play Trivia Arena</button>';return h;}
@@ -264,7 +265,11 @@ async function cloudSync(silent){
   var res = await ChampSync.sync({
     silent: silent,
     getSq: function(){ return S; },
-    onMerged: function(){ checkBadges(); save(); render(); },
+    onMerged: function(sq2){
+      try{ if(m&&m.running) return; }catch(e){}
+      try{ if(sq2&&sq2.profiles){ S=sq2; if(!S.profiles[S.current])S.current=Object.keys(S.profiles)[0]; selectCurrentByName(); } }catch(e){}
+      checkBadges(); save(); render();
+    },
     toast: function(m){ toast(m); },
     onNeedSetup: null /* cloud is set up ONLY in the Admin Console */
   });
@@ -275,7 +280,7 @@ async function cloudSync(silent){
    IDENTICAL COPY embedded in Math-Champ (assets/app.js) and ScienceQuest.
    One tap on EITHER champ syncs BOTH to the family's GitHub repo and downloads
    a dated local backup file. Merge rules: progress is never destroyed.
-   Cloud file format: { champSync: 2, sq: <ScienceQuest state>, oc: <Math-Champ state> }
+   Cloud file format: { champSync: 3, sq: <ScienceQuest state>, oc: <Math-Champ state>, ocs: { childName: <Math-Champ state> } }
    Older formats (science-only {profiles:...}, legacy single-profile {xp:...}) still load. */
 window.ChampSync = (function () {
   'use strict';
@@ -340,15 +345,31 @@ window.ChampSync = (function () {
     return out;
   }
 
-  function payload(sq, oc) { return { champSync: 2, sq: sq || null, oc: oc || null }; }
+  var PROFILES_KEY = 'oc_profiles';
+  function readProfiles() { try { var p = JSON.parse(localStorage.getItem(PROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
+  function writeProfiles(p) { try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+
+  /* cloud file carries EVERY child's maths progress: { champSync: 3, sq, oc, ocs } */
+  function payload(sq, oc) {
+    var ocs = readProfiles();
+    var n = (oc && oc.name ? oc.name : '').trim().toLowerCase();
+    if (n) ocs[n] = oc;
+    return { champSync: 3, sq: sq || null, oc: oc || null, ocs: ocs };
+  }
 
   /* understands the current format plus every older one */
   function parseRemote(txt) {
     var o = JSON.parse(txt);
-    if (o && o.champSync === 2) return { sq: (o.sq && o.sq.profiles) ? o.sq : null, oc: (o.oc && o.oc.attempts) ? o.oc : null };
-    if (o && o.profiles) return { sq: o, oc: null };
-    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null };
-    if (o && o.attempts) return { sq: null, oc: o };
+    if (o && (o.champSync === 3 || o.champSync === 2)) {
+      var ocs = {}, k;
+      if (o.ocs && typeof o.ocs === 'object') for (k in o.ocs) { var v = o.ocs[k]; if (v && typeof v === 'object' && v.attempts) ocs[String(k).toLowerCase()] = v; }
+      var onc = (o.oc && o.oc.name ? o.oc.name : '').trim().toLowerCase();
+      if (o.oc && o.oc.attempts && !ocs[onc]) ocs[onc || 'current'] = o.oc;
+      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null };
+    }
+    if (o && o.profiles) return { sq: o, oc: null, ocs: {} };
+    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {} };
+    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2 }; }
     return null;
   }
 
@@ -376,10 +397,25 @@ window.ChampSync = (function () {
       if (pr.legacy && sq && sq.profiles) mergeProfile(sq.profiles[sq.current || 'p1'], pr.legacy);
       else if (pr.sq && sq && sq.profiles) mergeSQ(sq, pr.sq);
       else if (pr.sq && !sq) sq = pr.sq;
-      if (pr.oc && oc && oc.attempts) oc = mergeOC(oc, pr.oc);
-      else if (pr.oc && !oc) oc = pr.oc;
+      /* maths: merge EVERY child's profile by name, then make the
+         child named on this device (cc_name) the active one */
+      var curName = (oc && oc.name ? oc.name : '').trim().toLowerCase();
+      var local = readProfiles();
+      if (curName) local[curName] = oc;
+      var remote = pr.ocs || {};
+      var merged = {}, k;
+      for (k in local) merged[k] = remote[k] ? mergeOC(local[k], remote[k]) : local[k];
+      for (k in remote) if (!merged[k]) merged[k] = remote[k];
+      if (Object.keys(merged).length) {
+        var ccName = '';
+        try { ccName = (localStorage.getItem('cc_name') || '').trim().toLowerCase(); } catch (e) {}
+        var active = (ccName && merged[ccName]) ? ccName : (curName && merged[curName] ? curName : Object.keys(merged)[0]);
+        oc = merged[active];
+        writeProfiles(merged);
+      } else if (pr.oc && oc && oc.attempts) { oc = mergeOC(oc, pr.oc); }
+      else if (pr.oc && !oc) { oc = pr.oc; }
     }
-    return { sq: sq, oc: oc };
+    return { sq: sq, oc: oc, ocs: null };
   }
 
   /* one tap: pull cloud -> merge -> push merged -> download local backup.
@@ -462,5 +498,5 @@ if(ghCfg())setTimeout(function(){cloudSync(true);},1500);
 /* AUTO-SAVE — silent cloud sync every 10 minutes. No buttons, no file downloads.
    Cloud settings live ONLY in the Admin Console (admin.html). Local progress
    saves to this browser instantly on every XP, star and badge. */
-setInterval(function(){if(ghCfg())cloudSync(true);},600000);
+setTimeout(function(){if(ghCfg())cloudSync(true);},20000);setInterval(function(){if(ghCfg())cloudSync(true);},180000);
 

@@ -224,6 +224,14 @@
       if (!o || typeof o !== 'object') return null;
       var sq = (o.sq && o.sq.profiles) ? o.sq : (o.profiles ? o : null);
       var oc = (o.oc && o.oc.attempts) ? o.oc : (o.attempts ? o : null);
+      if (o.ocs && typeof o.ocs === 'object') {
+        var ccn = '';
+        try { ccn = (localStorage.getItem('cc_name') || '').trim().toLowerCase(); } catch (e) {}
+        if (ccn && o.ocs[ccn] && o.ocs[ccn].attempts) oc = o.ocs[ccn];
+        if (window.OC && OC.readProfiles && OC.writeProfiles) {
+          try { var prof = OC.readProfiles(); for (var k in o.ocs) { if (o.ocs[k] && o.ocs[k].attempts) prof[k] = o.ocs[k]; } OC.writeProfiles(prof); } catch (e) {}
+        }
+      }
       if (!sq && !oc) return null;
       return { sq: sq, oc: oc };
     }
