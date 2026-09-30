@@ -194,10 +194,7 @@
     });
 
     /* real science import: parse SQ1/SQ2/SQ3 -> v3 shape -> merge into sq_v3 */
-    function sqImport(code) {
-      var data = null;
-      try { data = JSON.parse(decodeURIComponent(escape(atob(code.slice(code.indexOf('.') + 1))))); }
-      catch (e) { return false; }
+    function sqImportObj(data) {
       if (!data || typeof data !== 'object') return false;
       var incoming;
       if (data.profiles) incoming = data;
@@ -212,20 +209,39 @@
       merged.v = 3;
       try { localStorage.setItem('sq_v3', JSON.stringify(merged)); return true; } catch (e) { return false; }
     }
+    function sqImport(code) {
+      var data = null;
+      try { data = JSON.parse(decodeURIComponent(escape(atob(code.slice(code.indexOf('.') + 1))))); }
+      catch (e) { return false; }
+      return sqImportObj(data);
+    }
     window.SQ_IMPORT = sqImport;
+
+    /* accept a raw progress.json (cloud locker) or a backup file too */
+    function jsonImport(text) {
+      var o = null;
+      try { o = JSON.parse(String(text).trim()); } catch (e) { return null; }
+      if (!o || typeof o !== 'object') return null;
+      var sq = (o.sq && o.sq.profiles) ? o.sq : (o.profiles ? o : null);
+      var oc = (o.oc && o.oc.attempts) ? o.oc : (o.attempts ? o : null);
+      if (!sq && !oc) return null;
+      return { sq: sq, oc: oc };
+    }
 
     function doImport(code) {
       var parsed = parseGK(code);
-      if (!parsed) { window.alert('That does not look like a Gurukool progress code.'); return; }
+      if (!parsed) parsed = jsonImport(code);
+      if (!parsed) { window.alert('That does not look like a Gurukool progress code \u2014 or a progress.json / backup file.'); return; }
       var done = false;
       OC.parentGate(function () {
         var notes = [];
         if (parsed.oc) {
-          var ok = OC.importCode(parsed.oc);
+          var ok = (parsed.oc && typeof parsed.oc === 'object' && OC.importObj) ? OC.importObj(parsed.oc) : OC.importCode(parsed.oc);
           notes.push(ok ? 'Math: loaded ✓' : 'Math: cancelled');
         }
         if (parsed.sq) {
-          notes.push(sqImport(parsed.sq) ? 'Science: loaded ✓' : 'Science: could not load');
+          var sok = (parsed.sq && typeof parsed.sq === 'object') ? sqImportObj(parsed.sq) : sqImport(parsed.sq);
+          notes.push(sok ? 'Science: loaded ✓' : 'Science: could not load');
         }
         window.alert(notes.join('\n') + '\n\nReload the page to see the fresh numbers.');
         done = notes.join('').indexOf('cancelled') === -1;
@@ -247,9 +263,13 @@
     window.PP = {
       exportCode: exportCode,
       parseGK: parseGK,
-      sqImport: sqImport
+      sqImport: sqImport,
+      sqImportObj: sqImportObj,
+      jsonImport: jsonImport,
+      doImport: doImport
     };
   })();
   </script>
+<script src="version.js"></script>
 </body>
 </html>

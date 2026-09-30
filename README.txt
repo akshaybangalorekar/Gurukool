@@ -52,6 +52,19 @@ Recent changes (round 4)
   200000, "three point five" becomes 3.5. Works in Safari (needs
   internet); shows a friendly note otherwise.
 
+Recent changes (round 5 — v5)
+------------------------
+- Version badge: every page now shows a small pill at the bottom
+  right: "Gurukool v5 · 30 Sep 2026, 7:45 pm IST". Compare it with
+  the version you were told about to confirm the site is current.
+  version.js at the repo root is the single file to bump on each
+  release.
+- progress.json (the cloud-locker file) can now be imported directly
+  on a new device TWO ways: the Progress Passport's file picker and
+  the Admin Console's "Restore a backup file" both accept it, plus
+  the old GK1 codes and gurukool-progress-DATE.txt backups. The
+  Passport error message now names progress.json too.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

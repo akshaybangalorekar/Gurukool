@@ -347,8 +347,8 @@
 
   /* Load a code onto THIS device (with a confirm that shows both summaries).
      Returns true if loaded. Caller should reload the page afterwards. */
-  function importCode(codeStr) {
-    var incoming = parseCode(codeStr);
+  function importCode(codeStr) { return importObj(parseCode(codeStr)); }
+  function importObj(incoming) {
     var msg = 'Progress code contains: ' + summarizeState(incoming) +
       '\n\nThis device currently has: ' + summarizeState(STATE) + '.\n\n';
     if (incoming.xp < STATE.xp) {
@@ -419,6 +419,7 @@
     exportCode: exportCode,
     parseCode: parseCode,
     importCode: importCode,
+    importObj: importObj,
     summarizeState: summarizeState,
     parentGate: parentGate
   };
