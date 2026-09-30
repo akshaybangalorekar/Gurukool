@@ -134,6 +134,19 @@ Recent changes (round 10 — v10, Gurukool 2.0 begins)
   then science investigations + physics/electronics/programming
   basics + inference (Sherlock) world.
 
+Recent changes (round 11 — v11, Math-Champ rebuild: shell)
+------------------------
+- Uniform Gurukool header on EVERY Math-Champ page (same bar as
+  Mind-Champ): level badge, XP bar, learner name chip, XP, streak,
+  cloud-sync button and the Gurukool home link. One shared function
+  (buildNav) drives all 7 math pages, so the whole champ looks and
+  behaves the same everywhere.
+- Math home page now opens with a "Technique quests" banner linking
+  to The Equation Forge, so hands-on discovery is front and centre
+  before the training grounds.
+- Next in the math rebuild: Training Ground reskin + a second quest
+  line (word-problem inference: reading between the lines).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

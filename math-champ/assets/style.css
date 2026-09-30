@@ -527,3 +527,15 @@ footer q { font-style: italic; }
 .navsync { background: var(--surface-2); color: var(--ink-dim); border: 1px solid var(--border); border-radius: 10px; padding: 6px 11px; font-size: 16.5px; line-height: 1; cursor: pointer; margin-left: 8px; transition: all .15s ease; }
 .navsync:hover { background: var(--accent-dim); color: var(--accent); }
 .navsync:active { transform: scale(.94); }
+
+/* ---------- uniform Gurukool header (same bar across all champs) ---------- */
+.gk-bar { max-width: 1080px; margin: 0 auto; padding: 9px 20px 2px; display: flex; flex-direction: column; gap: 6px; }
+.gk-row1 { display: flex; align-items: center; gap: 10px; }
+.gk-row2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gk-lvl { background: linear-gradient(135deg, #66bb6a, #2e7d32); color: #fff; font-weight: 800; border-radius: 999px; padding: 5px 12px; font-size: 16.5px; white-space: nowrap; }
+.gk-xpbar { flex: 1; height: 16px; background: var(--bg-deep); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+.gk-xpfill { height: 100%; background: linear-gradient(90deg, #9ccc65, #2e7d32); border-radius: 999px; transition: width .4s; }
+.gk-stat { font-weight: 800; font-size: 16.5px; color: var(--ink); }
+.gk-next { color: var(--ink-dim); font-size: 15px; }
+.gk-mini { background: var(--surface-2); color: var(--ink); border: 1px solid var(--border-bright); border-radius: 10px; padding: 6px 10px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: var(--font-body); text-decoration: none; display: inline-block; }
+.gk-mini:hover { background: var(--accent-dim); }

@@ -191,11 +191,17 @@
   /* ---------- navigation ---------- */
 
   function refreshNav() {
-    var xpEl = document.getElementById('nav-xp');
     var lv = levelOf(STATE.xp);
-    if (xpEl) xpEl.textContent = lv.level.name + ' · ' + STATE.xp + ' XP';
+    var lvEl = document.getElementById('nav-lvl');
+    if (lvEl) lvEl.textContent = 'Lv ' + (lv.index + 1) + ' \u00b7 ' + lv.level.name;
+    var xpEl = document.getElementById('nav-xp');
+    if (xpEl) xpEl.textContent = '\u2b50 ' + STATE.xp + ' XP';
     var stEl = document.getElementById('nav-streak');
-    if (stEl) stEl.textContent = (STATE.streak.count || 0) + '-day streak';
+    if (stEl) stEl.textContent = '\ud83d\udd25 ' + (STATE.streak.count || 0) + '-day streak';
+    var barEl = document.getElementById('nav-xpfill');
+    if (barEl) barEl.style.width = lv.pct + '%';
+    var nxEl = document.getElementById('nav-next');
+    if (nxEl) nxEl.textContent = lv.next ? (lv.next.min - STATE.xp) + ' XP to reach ' + lv.next.name + ' \u2192' : 'Highest rank achieved \u2014 legendary!';
   }
 
   function buildNav(active) {
@@ -211,17 +217,27 @@
     ];
     var nav = document.getElementById('topnav');
     if (!nav) return;
-    var html = '<div class="topnav__inner">' +
+    /* ---- uniform Gurukool header (same bar as Mind-Champ) ---- */
+    var LV = levelOf(STATE.xp);
+    var nm = (STATE.name || '').trim() || 'Champ';
+    var head = '<div class="gk-bar"><div class="gk-row1">' +
+      '<div class="gk-lvl" id="nav-lvl">Lv ' + (LV.index + 1) + ' \u00b7 ' + LV.level.name + '</div>' +
+      '<div class="gk-xpbar"><div class="gk-xpfill" id="nav-xpfill" style="width:' + LV.pct + '%"></div></div></div>' +
+      '<div class="gk-row2"><a class="gk-mini" href="index.html">\u26a1 ' + esc(nm) + '</a>' +
+      '<span class="gk-stat" id="nav-xp">\u2b50 ' + STATE.xp + ' XP</span>' +
+      '<span class="gk-stat" id="nav-streak">\ud83d\udd25 ' + (STATE.streak.count || 0) + '-day streak</span>' +
+      '<button class="gk-mini" id="nav-sync" title="Sync now">\u2601\ufe0f</button>' +
+      '<a class="gk-mini" href="../index.html">\ud83c\udfe0 Gurukool</a></div>' +
+      '<div class="gk-stat gk-next" id="nav-next">' + (LV.next ? (LV.next.min - STATE.xp) + ' XP to reach ' + LV.next.name + ' \u2192' : 'Highest rank achieved \u2014 legendary!') + '</div></div>';
+    var html = head + '<div class="topnav__inner">' +
       '<a class="brand" href="index.html">' +
       '<span class="brand__mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>' +
       '<span class="brand__name">Math-<span>Champ</span></span></a>' +
-      '<span class="nav-xp" id="nav-xp"></span>' +
-      '<span class="nav-streak" id="nav-streak"></span>' +
       '<nav class="topnav__links">';
     links.forEach(function (l) {
       html += '<a href="' + l.href + '"' + (l.key === active ? ' class="is-active"' : '') + '>' + l.label + '</a>';
     });
-    html += '</nav><button class="navsync" id="nav-sync" title="Sync now" aria-label="Sync now">\u2601\ufe0f</button></div>';
+    html += '</nav></div>';
     nav.innerHTML = html;
     var sb = document.getElementById('nav-sync');
     if (sb) sb.addEventListener('click', function () { forceSync(sb); });
