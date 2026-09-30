@@ -160,6 +160,20 @@ Recent changes (round 12 — v12, Math-Champ rebuild: second quest line)
   own technique shelf. Both feed the same XP, ranks and speed curve.
 - Math home banner updated to point at both lines.
 
+Recent changes (round 13 — v13, Phase 1 complete: Science-Champ unified)
+------------------------
+- Science-Champ now wears the SAME uniform Gurukool header as
+  Math-Champ and Mind-Champ, on EVERY view (home, world, mission,
+  journey, quiz): level badge, XP bar, player chip, XP, streak,
+  doubts, badges, cloud sync, mute, Dashboard, Parents and the
+  Gurukool home link.
+- Science-Champ practice questions now use the horizontal KID KEYPAD
+  + MIC at the bottom of the screen (same pad as maths), so the iPad
+  keyboard is no longer needed to answer. The pad's Check button
+  presses Enter on the focused answer box.
+- Phase 1 (uniform look, keypad/mic everywhere, kid dashboards) is
+  now COMPLETE across all three champs.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

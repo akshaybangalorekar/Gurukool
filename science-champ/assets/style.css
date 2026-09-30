@@ -336,3 +336,15 @@ button{user-select:none;-webkit-user-select:none}
 .btn { border-radius: 12px; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease; }
 .btn:active { transform: translateY(2px); box-shadow: none; }
 .mini { box-shadow: none; }
+
+/* ---------- uniform Gurukool header (same bar across all champs) ---------- */
+.gk-bar { max-width: 1080px; margin: 0 auto 14px; padding: 10px 16px 8px; display: flex; flex-direction: column; gap: 6px; background: #fffdf7; border: 1px solid rgba(43,38,32,.14); border-radius: 16px; box-shadow: 0 2px 10px rgba(43,38,32,.05); }
+.gk-row1 { display: flex; align-items: center; gap: 10px; }
+.gk-row2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gk-lvl { background: linear-gradient(135deg, #66bb6a, #2e7d32); color: #fff; font-weight: 800; border-radius: 999px; padding: 5px 12px; font-size: 16.5px; white-space: nowrap; }
+.gk-xpbar { flex: 1; height: 16px; background: #f3ead7; border-radius: 999px; overflow: hidden; border: 1px solid rgba(43,38,32,.14); }
+.gk-xpfill { height: 100%; background: linear-gradient(90deg, #9ccc65, #2e7d32); border-radius: 999px; transition: width .4s; }
+.gk-stat { font-weight: 800; font-size: 16.5px; color: #2b2620; }
+.gk-next { color: #7a6f60; font-size: 15px; }
+.gk-mini { background: #fbf4e4; color: #2b2620; border: 1px solid rgba(43,38,32,.25); border-radius: 10px; padding: 6px 10px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; }
+.gk-mini:hover { background: rgba(46,125,50,.10); }

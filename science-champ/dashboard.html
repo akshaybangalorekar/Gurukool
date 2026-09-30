@@ -73,6 +73,7 @@ footer{text-align:center;color:#7a6f60;font-size:14.9px;padding:14px 0 8px}
 </style>
 </head>
 <body>
+<div id="gk-head"></div>
 <nav class="topnav">
   <a class="brand" href="index.html"><span class="mark">🔬</span><span class="name">Science-Champ</span></a>
   <span class="gap"></span>
@@ -430,5 +431,28 @@ render();
 <script src="../version.js"></script>
 <script>/* keep a parent's view fresh: quiet auto-refresh every 3 minutes while visible */
 setInterval(function () { if (document.visibilityState === 'visible') location.reload(); }, 180000);</script>
+<script>
+/* uniform Gurukool header on the parent dashboard */
+(function () {
+  var el = document.getElementById('gk-head');
+  if (!el) return;
+  var S = null;
+  try { S = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) {}
+  var prof = (S && S.profiles && S.profiles[S.current || 'p1']) || { name: 'Champion', av: 'L', xp: 0, streak: 0 };
+  var LEVELS = [{ n: 'Rookie', min: 0 }, { n: 'Explorer', min: 120 }, { n: 'Challenger', min: 300 }, { n: 'Bronze Olympian', min: 550 }, { n: 'Silver Olympian', min: 900 }, { n: 'Gold Olympian', min: 1350 }, { n: 'Gurukool Champion', min: 2000 }];
+  var xp = prof.xp || 0, li = 0;
+  LEVELS.forEach(function (l, i) { if (xp >= l.min) li = i; });
+  var nx = LEVELS[li + 1] || null;
+  var pct = nx ? Math.round(100 * (xp - LEVELS[li].min) / (nx.min - LEVELS[li].min)) : 100;
+  el.innerHTML = '<div class="gk-bar"><div class="gk-row1"><div class="gk-lvl">Lv ' + (li + 1) + ' \u00b7 ' + LEVELS[li].n + '</div>' +
+    '<div class="gk-xpbar"><div class="gk-xpfill" style="width:' + pct + '%"></div></div></div>' +
+    '<div class="gk-row2"><span class="gk-mini">' + (prof.av || '') + ' ' + (prof.name || 'Champion') + '</span>' +
+    '<span class="gk-stat">\u2b50 ' + xp + ' XP</span><span class="gk-stat">\ud83d\udd25 ' + (prof.streak || 0) + '-day streak</span>' +
+    '<a class="gk-mini" href="index.html">\u26a1 Play</a>' +
+    '<a class="gk-mini" href="../parent-guide.html">\ud83d\udcd6 Parents</a>' +
+    '<a class="gk-mini" href="../index.html">\ud83c\udfe0 Gurukool</a></div>' +
+    (nx ? '<div class="gk-stat gk-next">' + (nx.min - xp) + ' XP to reach ' + nx.n + ' \u2192</div>' : '') + '</div>';
+})();
+</script>
 </body>
 </html>
