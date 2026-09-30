@@ -193,6 +193,22 @@ Recent changes (round 14 — v14, Phase 2: the Parent Console)
   activity, plus a weekly digest (questions, XP, accuracy this week
   vs last, notes, streak).
 
+Recent changes (round 15 — v15, profiles + Melbourne time)
+------------------------
+- FIXED: changing the name now starts a SEPARATE profile, exactly as
+  designed. Previously the hub renamed the current player in place,
+  so a new name still showed the old child's progress. Now:
+    * the current child's progress is parked under their own name,
+    * the typed name loads that child's profile if it exists, or
+      starts a fresh empty one if it does not,
+    * science-champ does the same (it used to keep the old profile
+      when the name was unknown).
+  So "Atharv" and a test name each keep their own XP, stars, cases,
+  doubts and streaks, and typing "Atharv" again brings his back.
+- Science's pencil (rename) now explains that renaming keeps the
+  player's progress, and points to "Add player" for a separate child.
+- Version badge times are now shown in Melbourne time (AEST/AEDT).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

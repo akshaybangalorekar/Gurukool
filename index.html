@@ -166,7 +166,7 @@
     <h1 class="hero__title">Pick today's <em>mission</em>.</h1>
     <p class="hero__sub">Three training worlds — one goal: a sharper, faster, braver brain.</p>
     <div id="hub-namebox" style="display:none; margin:20px auto 0; max-width:440px;">
-      <p style="font-size:15px; color:var(--ink-dim); margin:0 0 10px;"><b style="color:var(--ink);">Who is training today?</b> Type your name once — every champ will use it. (Asked only once — you can change it any time.)</p>
+      <p style="font-size:15px; color:var(--ink-dim); margin:0 0 10px;"><b style="color:var(--ink);">Who is training today?</b> Type your name once — every champ will use it. <b>A new name starts a fresh profile</b>, and each name keeps its own progress; typing an earlier name brings that child's progress back.</p>
       <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
         <input type="text" id="hub-name" placeholder="Type your name…" maxlength="20" style="padding:10px 14px; border-radius:12px; border:1.5px solid var(--border); font-size:16px; max-width:240px; font-family:inherit;">
         <button id="hub-name-save" type="button" style="padding:10px 18px; border:none; border-radius:12px; background:linear-gradient(135deg,#c2410c,#e0722c); color:#fff; font-weight:800; font-size:15px; cursor:pointer;">That's me! 🚀</button>
@@ -307,18 +307,35 @@
       v = (v || '').trim().slice(0, 20);
       if (!v) return;
       try { localStorage.setItem('cc_name', v); } catch (e) {}
-      S.name = v; try { OC.save(); } catch (e) {}            /* Math-Champ uses it immediately */
-      try {                                                      /* Science: give it the name too */
-        var sq = null; try { sq = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) {}
-        if (sq && sq.profiles && sq.profiles[sq.current || 'p1']) {
-          if (sq.profiles[sq.current || 'p1'].name === 'Champion') {
-            sq.profiles[sq.current || 'p1'].name = v;
-            localStorage.setItem('sq_v3', JSON.stringify(sq));
-          }
-        } else {
-          sq = { v: 3, current: 'p1', profiles: { p1: { name: v, av: '\u{1F982}', xp: 0, lessons: {}, quiz: {}, practice: {}, badges: [], streak: 0, lastDay: '', visited: [], doubts: [], recent: [], missionN: 0, levels: {} } } };
-          localStorage.setItem('sq_v3', JSON.stringify(sq));
+      var lv = v.toLowerCase();
+      /* Math-Champ: park the current child, then load or create the named profile */
+      try { if (window.OC && OC.switchChild) OC.switchChild(v); else { S.name = v; OC.save(); } } catch (e) {}
+      /* Mind-Champ: same parking model */
+      try {
+        var mc = null; try { mc = JSON.parse(localStorage.getItem('mc_state')); } catch (e) {}
+        var mcp = {}; try { mcp = JSON.parse(localStorage.getItem('mc_profiles') || '{}') || {}; } catch (e) {}
+        if (mc) {
+          var mcur = (mc.name || '').trim().toLowerCase();
+          if (mcur && mcur !== lv) mcp[mcur] = mc;
+          var mnext = mcp[lv];
+          if (!mnext) mnext = { name: v, xp: 0, streak: { last: null, count: 0 }, techniques: [], cases: {}, journal: [], pin: '' };
+          mnext.name = v;
+          localStorage.setItem('mc_state', JSON.stringify(mnext));
+          localStorage.setItem('mc_profiles', JSON.stringify(mcp));
         }
+      } catch (e) {}
+      /* Science-Champ: every name is its own player profile */
+      try {
+        var sq = null; try { sq = JSON.parse(localStorage.getItem('sq_v3')); } catch (e) {}
+        var blank = function (nm) { return { name: nm, av: '🦁', xp: 0, stars: [], badges: [], doubts: [], visited: [], lessons: {}, quiz: {}, practice: {}, levels: {}, missionN: 0, missionLog: [], streak: 0, lastDay: '', recent: [] }; };
+        if (!sq || !sq.profiles) { sq = { v: 3, current: 'p1', mute: false, timed: true, pin: '', profiles: { p1: blank(v) } }; }
+        else {
+          var pid = null;
+          Object.keys(sq.profiles).forEach(function (k) { if ((sq.profiles[k].name || '').toLowerCase() === lv) pid = k; });
+          if (!pid) { var n = Object.keys(sq.profiles).length + 1, nid = 'p' + n; while (sq.profiles[nid]) { n++; nid = 'p' + n; } pid = nid; sq.profiles[pid] = blank(v); }
+          sq.current = pid;
+        }
+        localStorage.setItem('sq_v3', JSON.stringify(sq));
       } catch (e) {}
       hubRefreshName();
     }

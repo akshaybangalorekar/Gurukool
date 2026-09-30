@@ -351,7 +351,51 @@
     }
   }
 
-  window.ParentConsole = { render: renderAll, setChild: function (n) { current = n; renderAll(); } };
+
+  /* ---------- players on this device ---------- */
+  function allProfiles() {
+    var out = [];
+    var ocs = read('oc_profiles') || {}, oc = read('oc_state');
+    if (oc && oc.name) ocs[(oc.name || '').trim().toLowerCase()] = oc;
+    for (var k in ocs) out.push({ champ: 'Maths', name: (ocs[k] || {}).name || k, xp: (ocs[k] || {}).xp || 0, store: 'oc', key: k });
+    var mcs = read('mc_profiles') || {}, mc = read('mc_state');
+    if (mc && mc.name) mcs[(mc.name || '').trim().toLowerCase()] = mc;
+    for (var k2 in mcs) out.push({ champ: 'Mind', name: (mcs[k2] || {}).name || k2, xp: (mcs[k2] || {}).xp || 0, store: 'mc', key: k2 });
+    var sq = read('sq_v3') || {}, sp = sq.profiles || {};
+    for (var k3 in sp) out.push({ champ: 'Science', name: (sp[k3] || {}).name || k3, xp: (sp[k3] || {}).xp || 0, store: 'sq', key: k3, current: (k3 === sq.current) });
+    var cur = '';
+    try { cur = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
+    out.forEach(function (r) { r.isCurrent = (r.name || '').trim().toLowerCase() === cur.toLowerCase(); });
+    return out;
+  }
+
+  function renamePlayer(store, key, oldName) {
+    var nn = window.prompt('New name for ' + oldName + '?\n\nTheir progress stays with them.', oldName);
+    if (!nn || !nn.trim()) return;
+    nn = nn.trim().slice(0, 20);
+    var i;
+    if (store === 'oc') { var ocs = read('oc_profiles') || {}, oc = read('oc_state'); if (oc && (oc.name || '') === oldName) { oc.name = nn; localStorage.setItem('oc_state', JSON.stringify(oc)); } if (ocs[key]) { ocs[key].name = nn; localStorage.setItem('oc_profiles', JSON.stringify(ocs)); } }
+    if (store === 'mc') { var mcs = read('mc_profiles') || {}, mc = read('mc_state'); if (mc && (mc.name || '') === oldName) { mc.name = nn; localStorage.setItem('mc_state', JSON.stringify(mc)); } if (mcs[key]) { mcs[key].name = nn; localStorage.setItem('mc_profiles', JSON.stringify(mcs)); } }
+    if (store === 'sq') { var sq = read('sq_v3') || {}; if (sq.profiles && sq.profiles[key]) { sq.profiles[key].name = nn; localStorage.setItem('sq_v3', JSON.stringify(sq)); } }
+    try { if ((localStorage.getItem('cc_name') || '') === oldName) localStorage.setItem('cc_name', nn); } catch (e) {}
+    renderPlayers();
+  }
+
+  function renderPlayers() {
+    var host = el('pc-players');
+    if (!host) return;
+    var rows = allProfiles();
+    if (!rows.length) { host.innerHTML = '<div class="pc-empty">No players yet — the first name typed on the Gurukool home page creates one.</div>'; return; }
+    var h = '<p class="pc-lead">Every name on this device keeps its own progress. <b>Rename</b> keeps that player\'s XP, stars and notes. To <b>switch</b> players, type the name on the Gurukool home page — or just open that champ.</p>';
+    h += rows.map(function (r) {
+      return '<div class="pc-row"><b>' + esc(r.name) + '</b><span class="pc-meta">' + esc(r.champ) + ' · ' + r.xp + ' XP</span>' +
+        (r.isCurrent ? '<span style="background:#e8f5e9;color:#047857;font-weight:800;border-radius:999px;padding:3px 10px;font-size:14.5px">▶ current player</span>' : '') +
+        '<button class="gk-mini" style="margin-left:auto" onclick="ParentConsole.rename(\'' + r.store + '\',\'' + String(r.key).replace(/'/g, "") + '\',\'' + String(r.name).replace(/'/g, "") + '\')">✏️ rename</button></div>';
+    }).join('');
+    host.innerHTML = h;
+  }
+
+  window.ParentConsole = { render: renderAll, rename: renamePlayer, players: allProfiles, setChild: function (n) { current = n; renderAll(); } };
 
   /* ---------- wire into admin.html ---------- */
   function build() {
@@ -386,7 +430,10 @@
     plan.innerHTML = '<div id="pc-plan"></div>';
     setup.className = 'pc-pane';
 
+    var playersCard = document.createElement('div');
+    playersCard.innerHTML = '<h2>👥 Players on this device</h2><div id="pc-players"></div>';
     content.appendChild(tabs);
+    setup.insertBefore(playersCard, setup.firstChild);
     content.appendChild(setup);
     content.appendChild(head);
     content.appendChild(sig);
@@ -406,6 +453,7 @@
     var childSel = el('pc-child');
     if (childSel) childSel.addEventListener('change', function () { current = childSel.value; renderAll(); });
 
+    renderPlayers();
     renderAll();
   }
 
