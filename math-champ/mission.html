@@ -329,7 +329,7 @@
       word: function (L) {
         var a, b, t, s, u, P;
         if (L === 1) { a = ri(14, 40); b = ri(12, 38); return { q: 'Ravi has ' + a + ' marbles and wins ' + b + ' more in a game. How many marbles does he have now?', a: a + b, target: 35, hint: 'Winning more means adding.', work: a + ' + ' + b + ' = ' + (a + b) }; }
-        if (L === 2) { a = ri(2, 8) * 10 + 5; b = ri(2, 7) * 10 + 3; return { q: 'You buy a comic for \u20B9' + b + ' and pay with a \u20B9' + a + ' note. How much change do you get in \u20B9?', a: a - b, target: 40, hint: 'Change = what you paid \u2212 the price.', work: a + ' \u2212 ' + b + ' = \u20B9' + (a - b) }; }
+        if (L === 2) { a = ri(2, 8) * 10 + 5; b = ri(2, 7) * 10 + 3; while (a <= b) a = ri(3, 9) * 10 + 5; return { q: 'You buy a comic for \u20B9' + b + ' and pay with a \u20B9' + a + ' note. How much change do you get in \u20B9?', a: a - b, target: 40, hint: 'Change = what you paid \u2212 the price.', work: a + ' \u2212 ' + b + ' = \u20B9' + (a - b) }; }
         if (L === 3) { a = ri(3, 8); b = a + ri(1, 5); t = (a + b) * ri(2, 6); return { q: t + ' sweets are shared between 2 friends in the ratio ' + a + ' : ' + b + '. How many sweets does the friend with the BIGGER share get?', a: t / (a + b) * b, target: 60, hint: 'One part = ' + t + ' \u00F7 ' + (a + b) + '. The bigger friend takes ' + b + ' parts.', work: '1 part = ' + (t / (a + b)) + '; bigger share = ' + (t / (a + b)) + ' \u00D7 ' + b + ' = ' + (t / (a + b) * b) }; }
         if (L === 4) { s = ri(4, 12); u = ri(6, 18); return { q: 'A batsman scores ' + (s * u) + ' runs in ' + s + ' overs. How many runs per over is that?', a: u, target: 60, hint: 'Share the runs equally among the overs.', work: (s * u) + ' \u00F7 ' + s + ' = ' + u + ' runs per over' }; }
         if (L === 5) {
@@ -416,7 +416,7 @@
       running: false, totalSec: 0, endAt: 0, tick: null,
       qCount: 0, xp: 0, streak: 0, bestStreak: 0,
       correctFirstTry: 0, solved: 0, slowCorrect: 0, fastCorrect: 0,
-      topicStats: {}, retestQueue: [], lastTopic: null,
+      topicStats: {}, retestQueue: [], lastTopic: null, seen: {},
       cur: null, curTopic: null, curLevel: 1, firstTry: true, qStart: 0, retryMode: false
     };
 
@@ -464,6 +464,10 @@
       var q = null;
       try { q = gen(M.curLevel); } catch (e) { q = null; }
       if (!q || typeof q.a !== 'number' || !isFinite(q.a)) { q = GEN.mult(2); M.curTopic = 'mult'; }
+      /* never serve the exact same question text twice in one mission */
+      var guard = 0;
+      while (M.seen[q.q] && guard++ < 40) { q = gen(M.curLevel); }
+      M.seen[q.q] = 1;
       M.cur = q;
       M.firstTry = true;
       M.qStart = Date.now();
@@ -584,7 +588,7 @@
       M.running = true; M.totalSec = minutes * 60; M.endAt = Date.now() + minutes * 60000; M.tick = null;
       M.qCount = 0; M.xp = 0; M.streak = 0; M.bestStreak = 0;
       M.correctFirstTry = 0; M.solved = 0; M.slowCorrect = 0; M.fastCorrect = 0;
-      M.topicStats = {}; M.retestQueue = []; M.lastTopic = null;
+      M.topicStats = {}; M.retestQueue = []; M.lastTopic = null; M.seen = {};
       M.cur = null; M.curTopic = null; M.curLevel = 1; M.firstTry = true; M.qStart = 0; M.retryMode = false;
       $('start-screen').style.display = 'none';
       $('report-screen').style.display = 'none';

@@ -1,6 +1,6 @@
 const KEY='sq_v3';
 const OLD_KEYS=['sq_v2','sq_v1'];
-function freshProfile(){return{name:'Champion',av:'🦁',xp:0,lessons:{},quiz:{},practice:{},badges:[],streak:0,lastDay:'',visited:[],doubts:[],recent:[],missionN:0,levels:{}};}
+function freshProfile(){return{name:'Champion',av:'🦁',xp:0,lessons:{},quiz:{},practice:{},badges:[],streak:0,lastDay:'',visited:[],doubts:[],recent:[],missionN:0,levels:{},missionLog:[]};}
 function fresh(){return{v:3,pin:'',mute:false,timed:true,current:'p1',profiles:{p1:freshProfile()}};}
 function loadState(){var o=null;var keys=[KEY].concat(OLD_KEYS);for(var i=0;i<keys.length&&!o;i++){try{var s=localStorage.getItem(keys[i]);if(s)o=JSON.parse(s);}catch(e){}}
 if(o&&o.profiles&&o.profiles[o.current||'p1']){var st2=fresh();for(var k2 in st2){if(o[k2]!==undefined)st2[k2]=o[k2];}for(var pid in st2.profiles){var pp=st2.profiles[pid];pp.doubts=Array.isArray(pp.doubts)?pp.doubts:[];pp.badges=pp.badges||[];pp.visited=pp.visited||[];pp.lessons=pp.lessons||{};pp.quiz=pp.quiz||{};pp.practice=pp.practice||{};pp.levels=pp.levels||{};for(var qid in pp.quiz){var qq=pp.quiz[qid];if(qq&&qq.t&&qq.s>=qq.t){var ll=pp.levels[qid]=pp.levels[qid]||{c:1,b1:0,b2:0,arena:0};ll.c=Math.max(ll.c,2);ll.b1=Math.max(ll.b1||0,qq.t);}}}return st2;}
@@ -107,15 +107,20 @@ function recentWorlds(){var ks=Object.keys(state.lessons),out=[];ks.slice(-8).fo
 function icasFor(wid){var p=(ICAS[wid]||((W(wid)||{}).quiz)||[]).slice();shuffle(p);return p;}
 function nextMissionWorld(){var best=null;WORLDS.forEach(function(w){if(w.id==='trivia')return;var d=lessonsDone(w.id);if(w.lessons.length-d>0&&(!best||d<best.d))best={id:w.id,d:d};});if(!best){WORLDS.forEach(function(w){if(w.id==='trivia')return;var q=state.quiz[w.id];if((!q||q.s<q.t)&&!best)best={id:w.id,d:99};});}return best?best.id:'physics';}
 function startSession(){startMissionAt(nextMissionWorld());}
+function mLog(){if(!state.missionLog)state.missionLog=[];return state.missionLog;}
+function mLogAdd(q){var L=mLog();var k=(q.s||'')+'|'+(q.q||'');if(L.indexOf(k)<0){L.push(k);while(L.length>40)L.shift();}}
+function mSeen(q){var L=state.missionLog||[];return L.indexOf((q.s||'')+'|'+(q.q||''))>=0;}
 function startMissionAt(wid){stopTimer();var w=W(wid);if(!w)return;
  var undone=w.lessons.map(function(_,i){return i;}).filter(function(i){return !state.lessons[wid+':'+i];});
  if(!undone.length)undone=[Math.floor(Math.random()*w.lessons.length)];
- var rp=[];recentWorlds().forEach(function(rw){if(rw!==wid)icasFor(rw).forEach(function(q){rp.push(q);});});shuffle(rp);
- MISSION={wid:wid,lx:undone.slice(1),ti:undone[0],phase:'story',qz:null,round:0,right:0,wrong:0,t0:Date.now(),rp:rp.slice(0,3),rpIdx:0};
+ var rp=[],rpAny=[];recentWorlds().forEach(function(rw){if(rw!==wid)icasFor(rw).forEach(function(q){rpAny.push(q);if(!mSeen(q))rp.push(q);});});shuffle(rp);
+ if(rp.length<3)rp=rpAny.slice();shuffle(rp);
+ MISSION={wid:wid,lx:undone.slice(1),ti:undone[0],phase:'story',qz:null,round:0,right:0,wrong:0,t0:Date.now(),rp:rp.slice(0,3),rpIdx:0,used:[]};
+ MISSION.rp.forEach(function(q){MISSION.used.push((q.s||'')+'|'+(q.q||''));mLogAdd(q);});
  if(MISSION.rp.length){MISSION.phase='recap';MISSION.qz={qs:MISSION.rp,i:0,picked:-1,kind:'recap',r:0};}
  view.page='mission';view.wid=wid;actx();hideSelUI();render();window.scrollTo(0,0);}
 function mGo(ph){MISSION.phase=ph;MISSION.qz=null;
- if(ph==='quiz'||ph==='boss'||ph==='requiz'){var qs=icasFor(MISSION.wid);var n=(ph==='boss')?4:3;MISSION.qz={qs:qs.slice(0,Math.min(n,qs.length)),i:0,picked:-1,kind:ph,r:0};if(!MISSION.qz.qs.length){mDone();return;}}
+ if(ph==='quiz'||ph==='boss'||ph==='requiz'){var pool=icasFor(MISSION.wid);if(!MISSION.used)MISSION.used=[];var qs=[],ky={};pool.forEach(function(q){var k=(q.s||'')+'|'+(q.q||'');if(ky[k]||MISSION.used.indexOf(k)>=0)return;ky[k]=1;qs.push(q);});if(!qs.length)qs=pool.slice(0,(ph==='boss')?4:3);var n=(ph==='boss')?4:3;MISSION.qz={qs:qs.slice(0,Math.min(n,qs.length)),i:0,picked:-1,kind:ph,r:0};MISSION.qz.qs.forEach(function(q){MISSION.used.push((q.s||'')+'|'+(q.q||''));mLogAdd(q);});if(!MISSION.qz.qs.length){mDone();return;}}
  render();window.scrollTo(0,0);}
 function mStory(){mGo('teach');}
 function mLearn(){var m=MISSION;if(!state.lessons[m.wid+':'+m.ti]){state.lessons[m.wid+':'+m.ti]=1;award(10);}save();if(m.lx.length>0){m.ti=m.lx.shift();mGo('teach');}else mGo('quiz');}
@@ -184,8 +189,13 @@ function addDoubt(){if(selCache.text.length<3){toast('Nothing selected');return;
 
 /* ---- Highlight-to-explain ---- */
 let selCache={text:'',rect:null};
-function norm2(s){return String(s).toLowerCase().replace(/[.,;:!?"'’()]/g,'').replace(/\s+/g,' ').trim();}
-function matchGlossary(text){const t=norm2(text);if(!t)return null;if(GLOSSARY[t])return GLOSSARY[t];const keys=Object.keys(GLOSSARY).sort((a,b)=>b.length-a.length);for(let i=0;i<keys.length;i++){if(t.indexOf(keys[i])>=0)return GLOSSARY[keys[i]];}const s=t.replace(/s$/,'');if(GLOSSARY[s])return GLOSSARY[s];for(let i=0;i<keys.length;i++){if(s.indexOf(keys[i])>=0)return GLOSSARY[keys[i]];}return null;}
+function norm2(s){return String(s).toLowerCase().replace(/[.,;:!?"'’()]/g,'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim();}
+function matchGlossary(text){const t=norm2(text);if(!t)return null;if(GLOSSARY[t])return GLOSSARY[t];const keys=Object.keys(GLOSSARY).sort((a,b)=>b.length-a.length);for(let i=0;i<keys.length;i++){if(t.indexOf(keys[i])>=0)return GLOSSARY[keys[i]];}const s=t.replace(/s$/,'');if(GLOSSARY[s])return GLOSSARY[s];for(let i=0;i<keys.length;i++){if(s.indexOf(keys[i])>=0)return GLOSSARY[keys[i]];}
+/* single word (like 'kinetic') -> the key that contains it */
+if(t.length>=5){var r=t.replace(/s$/,'');for(let i=0;i<keys.length;i++){if(keys[i].indexOf(r)>=0)return GLOSSARY[keys[i]];}}
+/* de-spaced match catches Sanskrit words whose diacritics were stripped */
+var t2=t.replace(/ /g,'');if(t2.length>=5){if(GLOSSARY[t2])return GLOSSARY[t2];for(let i=0;i<keys.length;i++){if(keys[i].replace(/ /g,'').indexOf(t2)>=0)return GLOSSARY[keys[i]];}}
+return null;}
 let selTimer=null;
 function scheduleSel(){clearTimeout(selTimer);selTimer=setTimeout(handleSel,350);}
 function handleSel(){hideSelBtn();var sel=window.getSelection?window.getSelection():null;if(!sel||sel.isCollapsed)return;var t=String(sel).trim();if(t.length<3||t.length>200)return;var anchor=sel.anchorNode;if(!anchor)return;var eln=anchor.nodeType===3?anchor.parentElement:anchor;if(!eln||!eln.closest||!eln.closest('#app'))return;var rect=null;try{rect=sel.getRangeAt(0).getBoundingClientRect();}catch(e){}selCache={text:t,rect:rect};showSelBtn();}

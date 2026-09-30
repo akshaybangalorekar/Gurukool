@@ -21,6 +21,25 @@ Recent changes
 - Math mission: subtraction questions never produce negative answers
   (bigger number is always first).
 
+Recent changes (round 3)
+------------------------
+- No repeated questions: the math mission never serves the same
+  question text twice in one session (it re-generates until fresh);
+  science missions track asked questions so the quiz, boss battle
+  and recap never repeat one, and recent missions avoid recently
+  asked questions across sessions.
+- Explain-simply dictionary doubled (154 to 300+ entries): kinetic
+  energy, oxygen, bacteria, ISRO missions, quantum computing and
+  many more. Selecting a single word (like "kinetic") now finds its
+  concept, and Sanskrit terms with diacritics match too.
+- Diagram readability: all 132 science diagrams audited; every
+  diagram's canvas now auto-expands so labels are never cut off at
+  the edge, and the 7 worst text-collision diagrams (electricity
+  circuits, Kalam timeline, zero/thermos, heart, energy staircase,
+  Newton's laws) were re-laid out by hand.
+- Fixed a word-problem generator that asked for change from a note
+  smaller than the price.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
