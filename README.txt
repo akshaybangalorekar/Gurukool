@@ -40,6 +40,18 @@ Recent changes (round 3)
 - Fixed a word-problem generator that asked for change from a note
   smaller than the price.
 
+Recent changes (round 4)
+------------------------
+- Kid Keypad redesigned as a horizontal bar docked at the base of
+  the screen (mission, word problems, speed lab): 1-9, 0, decimal,
+  sign, plus, backspace in one row, wide Check button, and it wraps
+  neatly on narrower screens.
+- New mic button (voice typing): tap and speak the answer or an
+  equation. Speech is converted to math on the fly - "forty three"
+  becomes 43, "five plus four" becomes 5+4, "two lakh" becomes
+  200000, "three point five" becomes 3.5. Works in Safari (needs
+  internet); shows a friendly note otherwise.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

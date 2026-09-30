@@ -753,24 +753,29 @@ Rohan is 4 more than twice Meera"></textarea>
   <!-- ============ Kid Keypad: on-screen number pad (touch devices only) ============ -->
   <style>
     #kidpad { position: fixed; left: 0; right: 0; bottom: 0; z-index: 900; display: none;
-      max-width: 560px; margin: 0 auto; padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
+      margin: 0 auto; padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
       background: rgba(43, 38, 32, 0.97); border-radius: 18px 18px 0 0;
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3); }
     #kidpad.show { display: block; }
-    #kidpad .kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    #kidpad button { min-height: 54px; font-size:27.6px; font-weight: 800; border: 0; border-radius: 12px;
+    #kidpad .kstatus { color: #faf5ea; font-size: 13px; text-align: center; min-height: 16px; margin: 0 0 4px; }
+    #kidpad .kgrid { display: flex; flex-wrap: wrap; gap: 7px; }
+    #kidpad button { flex: 1 1 54px; min-width: 48px; min-height: 52px; font-size: 25px; font-weight: 800; border: 0; border-radius: 12px;
       background: #faf5ea; color: #2b2620; font-family: inherit; cursor: pointer;
       touch-action: manipulation; user-select: none; -webkit-user-select: none; }
     #kidpad button:active { transform: translateY(2px); background: #f2d8a7; }
-    #kidpad .kw { background: #e9e2d4; font-size:24.1px; }
-    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size:23.0px; letter-spacing: 0.4px; }
+    #kidpad .kw { background: #e9e2d4; }
+    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size: 20px; letter-spacing: 0.4px; flex: 1.8 1 120px; }
+    #kidpad .kmic { background: #e9e2d4; }
+    #kidpad .kmic.listening { background: #ef5350; color: #fff; animation: kpulse 1s infinite; }
+    @keyframes kpulse { 50% { opacity: 0.55; } }
   </style>
   <div id="kidpad" aria-hidden="true">
+    <div class="kstatus" id="kpstatus"></div>
     <div class="kgrid">
-      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="back" class="kw" aria-label="Backspace">⌫</button>
-      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="." class="kw">.</button>
-      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="-" class="kw">&minus;</button>
-      <button data-k="0">0</button><button data-k="go" class="kgo" style="grid-column: span 3;">GO ✓</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="4">4</button><button data-k="5">5</button>
+      <button data-k="6">6</button><button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="0">0</button>
+      <button data-k="." class="kw">.</button><button data-k="-" class="kw">&minus;</button><button data-k="+" class="kw">+</button><button data-k="back" class="kw" aria-label="Backspace">⌫</button>
+      <button data-k="mic" class="kmic" aria-label="Speak your answer">🎤</button><button data-k="go" class="kgo">GO ✓</button>
     </div>
   </div>
   <script>
@@ -809,6 +814,7 @@ Rohan is 4 more than twice Meera"></textarea>
       if (!target) target = document.querySelector(INPUT_SEL);
       if (!target) return;
       var k = b.getAttribute('data-k'), v = target.value;
+      if (k === 'mic') { toggleMic(); return; }
       if (k === 'back') {
         target.value = v.slice(0, Math.max(0, caret(target) - 1)) + v.slice(caret(target) + ((v.length > caret(target)) ? 1 : 0));
       } else if (k === 'go') {
@@ -825,6 +831,95 @@ Rohan is 4 more than twice Meera"></textarea>
       }
       target.dispatchEvent(new Event('input', { bubbles: true }));
     });
+
+    /* ---- 🎤 voice-to-math: speak numbers and equations, get digits ---- */
+    var kstatus = document.getElementById('kpstatus'), statTimer = null;
+    function status(msg) {
+      if (!kstatus) return;
+      kstatus.textContent = msg || '';
+      if (statTimer) clearTimeout(statTimer);
+      if (msg) statTimer = setTimeout(function () { kstatus.textContent = ''; }, 5000);
+    }
+    function insertText(str) {
+      if (!target) target = document.querySelector(INPUT_SEL);
+      if (!target) return;
+      var c = caret(target);
+      target.value = target.value.slice(0, c) + str + target.value.slice(c);
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    var UN = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9,
+      ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17,
+      eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fourty: 40, fifty: 50, sixty: 60,
+      seventy: 70, eighty: 80, ninety: 90 };
+    var SC = { hundred: 100, thousand: 1000, lakh: 100000, lakhs: 100000, crore: 10000000, crores: 10000000 };
+    var OPS = { 'plus': '+', 'add': '+', 'minus': '-', 'negative': '-', 'times': '\u00D7',
+      'multiply': '\u00D7', 'divide': '\u00F7', 'over': '\u00F7' };
+    function voiceToMath(text) {
+      var s = ' ' + String(text).toLowerCase() + ' ';
+      s = s.replace(/multiplied by/g, ' times ').replace(/divided by/g, ' divide ')
+           .replace(/equals|equal to|is equal/g, ' = ')
+           .replace(/rupees|rupee|rs\.?|percent|percentage|answer|only/g, ' ');
+      var toks = s.replace(/[^a-z0-9.+= ]/g, ' ').split(/\s+/).filter(Boolean);
+      var out = '', total = 0, cur = null, dec = '', inDec = false, lastUnit = false, lastTens = false;
+      function flush() {
+        if (cur !== null || dec !== '' || total) {
+          out += (total + (cur === null ? 0 : cur)) + (dec ? '.' + dec : '');
+        }
+        total = 0; cur = null; dec = ''; inDec = false;
+      }
+      for (var i = 0; i < toks.length; i++) {
+        var t = toks[i];
+        if (t === '.' || t === 'point' || t === 'dot') { inDec = true; continue; }
+        if (OPS[t] || t === '=') { flush(); out += (t === '=' ? '=' : OPS[t]); continue; }
+        if (t === 'and') { continue; }
+        if (/^\d+$/.test(t)) {
+          if (inDec) { dec += t; }
+          else if (cur === null) { cur = parseInt(t, 10); lastUnit = true; }
+          else { cur = parseInt(String(cur) + t, 10); }
+          continue;
+        }
+        if (t in UN) {
+          var uv = UN[t];
+          if (inDec) { dec += uv; }
+          else if (uv < 10 && lastUnit && cur !== null) { cur = cur * 10 + uv; }
+          else if (uv < 10 && lastTens && cur !== null) { cur = cur + uv; }
+          else { cur = (cur === null ? 0 : cur) + uv; }
+          lastUnit = uv < 10; lastTens = uv >= 20;
+          continue;
+        }
+        if (t in SC) {
+          var sv = SC[t];
+          if (sv === 100) { cur = (cur === null ? 1 : cur) * 100; }
+          else { cur = (cur === null ? 1 : cur) * sv; total += cur; cur = null; }
+          lastUnit = false; lastTens = false;
+          continue;
+        }
+      }
+      flush();
+      return out.replace(/^\s+/, '');
+    }
+    window.voiceToMath = voiceToMath;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec = null, listening = false;
+    var micBtn = pad.querySelector('[data-k="mic"]');
+    function toggleMic() {
+      if (!SR) { status('\uD83C\uDF99\uFE0F Voice needs internet (Safari)'); return; }
+      if (listening && rec) { try { rec.stop(); } catch (e) {} return; }
+      rec = new SR();
+      rec.lang = 'en-IN';
+      rec.interimResults = false;
+      rec.maxAlternatives = 1;
+      rec.onstart = function () { listening = true; if (micBtn) micBtn.classList.add('listening'); status('\uD83C\uDF99\uFE0F Listening\u2026 speak now'); };
+      rec.onresult = function (e) {
+        var tr = e.results[0][0].transcript;
+        var m = voiceToMath(tr);
+        status('\uD83C\uDF99\uFE0F Heard: ' + (m || tr));
+        if (m) insertText(m);
+      };
+      rec.onerror = function (e) { status(e.error === 'not-allowed' ? '\uD83C\uDF99\uFE0F Allow the microphone first' : '\uD83C\uDF99\uFE0F ' + (e.error || 'failed')); };
+      rec.onend = function () { listening = false; if (micBtn) micBtn.classList.remove('listening'); };
+      try { rec.start(); } catch (err) { status('\uD83C\uDF99\uFE0F ' + (err && err.message ? err.message : 'failed')); }
+    }
   })();
   </script>
 
