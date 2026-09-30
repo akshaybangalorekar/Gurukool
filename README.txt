@@ -117,6 +117,23 @@ Recent changes (round 9 — v9)
   progress too (mc + per-child mcs), alongside maths (oc/ocs) and science
   (sq). Older locker files still load fine.
 
+Recent changes (round 10 — v10, Gurukool 2.0 begins)
+------------------------
+- Math-Champ: NEW "Technique Quests" page — The Equation Forge: 25
+  hands-on puzzles across 5 levels teaching equations the right way:
+  = as a balance beam, BODMAS as recipe order, moving terms across
+  the equals sign (with the sign-flip "river toll"), undoing multiply
+  with divide (splitting bags), and taking out common factors. Two-
+  part evidence puzzles train reading between the lines. Full keypad
+  + mic on the answers. XP counts toward Math-Champ ranks and the
+  speed curve (diamonds).
+- Cloud sync: oc_state now carries quest progress (merged per quest
+  line on every sync, all 4 engine copies).
+- This starts the Gurukool 2.0 rebuild: uniform hands-on technique
+  quests across all three champs. Next: parent intelligence console,
+  then science investigations + physics/electronics/programming
+  basics + inference (Sherlock) world.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

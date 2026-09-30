@@ -202,6 +202,7 @@
     var links = [
       { href: '../index.html', label: '\u2039 Gurukool', key: 'hub' },
       { href: 'index.html', label: 'Home', key: 'home' },
+      { href: 'quests.html', label: 'Quests', key: 'quests' },
       { href: 'mission.html', label: 'Mission', key: 'mission' },
       { href: 'word-problems.html', label: 'Word Problems', key: 'word' },
       { href: 'speed-lab.html', label: 'Speed Lab', key: 'speed' },
@@ -566,8 +567,25 @@ window.ChampSync = (function () {
       Object.keys(src).forEach(function (id) { if (!out.badges[id] || src[id] < out.badges[id]) out.badges[id] = src[id]; });
     });
     var sa = a.streak || { last: null, count: 0 }, sb = b.streak || { last: null, count: 0 };
-    out.streak = { last: (String(sb.last || '') > String(sa.last || '') ? sb.last : sa.last), count: Math.max(sa.count || 0, sb.count || 0) };
+    out.missionLast = (b.missionLast && (!a.missionLast || (b.missionLast.ts || 0) > (a.missionLast.ts || 0))) ? b.missionLast : a.missionLast;
     out.pin = a.pin || b.pin || '';
+    /* Technique Quests progress merges per quest line */
+    out.quest = mergeQuestData(a.quest, b.quest);
+    return out;
+  }
+  function mergeQuestData(a, b) {
+    if (!a && !b) return undefined;
+    var out = JSON.parse(JSON.stringify(b || {}));
+    for (var k in (a || {})) {
+      var ac = a[k], bc = out[k] = out[k] || { done: false, stars: 0, used: [], journal: [] };
+      bc.done = bc.done || !!ac.done;
+      bc.stars = Math.max(bc.stars || 0, ac.stars || 0);
+      bc.used = (bc.used || []).concat(ac.used || []).filter(function (v, i, arr) { return arr.indexOf(v) === i; });
+      var jseen = {};
+      bc.journal = (bc.journal || []).concat(ac.journal || []).filter(function (j) {
+        var key = j.ts + '|' + j.text; if (jseen[key]) return false; jseen[key] = 1; return true;
+      }).slice(-40);
+    }
     return out;
   }
 

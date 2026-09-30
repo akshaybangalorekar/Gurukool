@@ -81,7 +81,7 @@
       <div class="chart-box" id="chart-box" style="display:none;">
         <canvas id="time-chart" height="260"></canvas>
         <p class="small muted" style="margin:10px 0 0; text-align:center;">
-          Each mark = one timed question from anywhere in Math-Champ — dots are word problems, squares are training missions. Green = correct. The dashed line = the Olympian target. The trend line should slope DOWN as you get faster.
+          Each mark = one timed question from anywhere in Math-Champ — dots are word problems, squares are missions, diamonds are quests. Green = correct. The dashed line = the Olympian target. The trend line should slope DOWN as you get faster.
         </p>
       </div>
     </section>
@@ -153,7 +153,7 @@
 
     /* ---------- KPIs ---------- */
     /* every timed activity counts: word problems + training missions */
-    var words = S.attempts.filter(function (a) { return a.kind === 'word' || a.kind === 'mission'; });
+    var words = S.attempts.filter(function (a) { return a.kind === 'word' || a.kind === 'mission' || a.kind === 'quest'; });
     var wordsCorrect = words.filter(function (a) { return a.correct; });
     var lv = OC.levelOf(S.xp);
 
@@ -235,6 +235,7 @@
       chartData.forEach(function (d, i) {
         ctx.beginPath();
         if (d.kind === 'mission') ctx.rect(x(i) - 5, y(d.t) - 5, 10, 10);   /* missions = squares */
+        else if (d.kind === 'quest') { ctx.moveTo(x(i), y(d.t) - 7); ctx.lineTo(x(i) + 7, y(d.t)); ctx.lineTo(x(i), y(d.t) + 7); ctx.lineTo(x(i) - 7, y(d.t)); ctx.closePath(); }  /* quests = diamonds */
         else ctx.arc(x(i), y(d.t), 6, 0, Math.PI * 2);                       /* word problems = dots */
         ctx.fillStyle = d.ok ? '#047857' : '#b45309';
         ctx.fill();
@@ -305,6 +306,8 @@
         ? 'Word Problem: ' + OC.esc(a.title || '')
         : a.kind === 'mission'
         ? 'Mission: ' + OC.esc(a.title || '')
+        : a.kind === 'quest'
+        ? 'Quest: ' + OC.esc(a.title || '')
         : 'Drill: ' + OC.esc(a.title || a.drill || '');
       var result = qk
         ? (a.correct ? '<span class="tag tag--green">correct</span>' : '<span class="tag tag--red">revisit</span>')
