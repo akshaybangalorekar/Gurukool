@@ -27,7 +27,7 @@
 
     <section class="card">
       <p class="section-label">1 · The one-minute version</p>
-      <p>Gurukool is a small offline website with two training games — <b>Math-Champ</b> and <b>Science-Champ</b> — plus a central parent console. Your child opens the hub (index.html) or taps the home-screen icon on the iPad; everything else follows from there. Progress saves itself on the device instantly, and (if you set it up) silently to your private GitHub every 10 minutes.</p>
+      <p>Gurukool is a small offline website with four training games — <b>Math-Champ</b>, <b>Science-Champ</b>, <b>Mind-Champ</b> and <b>Samskritam-Champ</b> — plus a central parent console. Your child opens the hub (index.html) or taps the home-screen icon on the iPad; everything else follows from there. Progress saves itself on the device instantly, and (if you set it up) silently to your private GitHub every 3 minutes.</p>
     </section>
 
     <section class="card">
@@ -63,9 +63,23 @@
       <a class="btn btn--ghost" href="admin.html" style="text-decoration:none;">Open the Admin Console</a>
     </section>
   </main>
-  <script src="math-champ/assets/app.js"></script>
   <script>
-    OC.buildNav('guide');
+  /* root-level nav — every link is correct from the Gurukool root */
+  (function () {
+    var nav = document.getElementById('topnav');
+    if (!nav) return;
+    nav.innerHTML = '<div class="topnav__inner"><a class="brand" href="index.html">' +
+      '<span class="brand__mark" style="background:linear-gradient(135deg,#c2410c,#e0722c)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/></svg></span>' +
+      '<span class="brand__name">Gurukool <span>· Parent Guide</span></span></a>' +
+      '<nav class="topnav__links">' +
+      '<a href="index.html">\ud83c\udfe0 Home</a>' +
+      '<a href="admin.html">\ud83e\udde0 Parent Console</a>' +
+      '<a href="math-champ/index.html">\u26a1 Math</a>' +
+      '<a href="science-champ/index.html">\ud83d\udd2c Science</a>' +
+      '<a href="mind-champ/index.html">\ud83e\udde0 Mind</a>' +
+      '<a href="samskritam-champ/index.html">\ud83e\ude94 Sanskrit</a>' +
+      '</nav></div>';
+  })();
   </script>
 <script src="version.js"></script>
 </body>

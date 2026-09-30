@@ -236,6 +236,25 @@ Recent changes (round 16 — v16, Phase 3: Samskritam-Champ)
   progress (sk + per-learner sks) alongside maths, science and mind.
   Older locker files still load.
 
+Recent changes (round 17 — v17, Phase 4 begins: Investigations + nav fix)
+------------------------
+- FIXED NAVIGATION: the Parent Guide and the Progress Passport were
+  borrowing Math-Champ's menu, whose links are relative to the maths
+  folder — so "Gurukool" (and the other links) threw a GitHub 404.
+  Both pages now have their own menu with a proper HOME button, plus
+  Parent Console and the four champs.
+- NEW: Science-Champ INVESTIGATIONS (linked from the science home
+  page) — hands-on mysteries in the Phase-4 style: predict first,
+  find the proving clue, run a home experiment, DRAW it, then answer
+  with evidence. Three investigations:
+    * Why does the charger get hot? (electricity & electrical basics)
+    * Why does the ball bounce lower each time? (physics: energy)
+    * How does a computer know what to do? (programming: algorithms,
+      with a bug-hunt ordering puzzle and the literal-sandwich test)
+  Progress is stored on the science profile and XP goes to science;
+  the keypad + mic work on the number step. Safety rules are stated
+  (never open a plug, never touch metal pins).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
