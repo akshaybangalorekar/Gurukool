@@ -147,6 +147,19 @@ Recent changes (round 11 — v11, Math-Champ rebuild: shell)
 - Next in the math rebuild: Training Ground reskin + a second quest
   line (word-problem inference: reading between the lines).
 
+Recent changes (round 12 — v12, Math-Champ rebuild: second quest line)
+------------------------
+- NEW quest line: "The Riddle Bazaar" — 5 levels x 5 word-problem
+  inference puzzles, aimed at reading between the lines: Read Every
+  Word, Spot the Hidden Fact, Ignore the Distraction, Draw the
+  Situation, Check What's Asked. Two-part evidence answers ("which
+  fact proves it?"), the classic traps (all but 9, pen + notebook,
+  the marble jar) and a sketch pad for the drawing level.
+- The quests page now has TABS for both quest lines (The Equation
+  Forge / The Riddle Bazaar), each with its own level chain and its
+  own technique shelf. Both feed the same XP, ranks and speed curve.
+- Math home banner updated to point at both lines.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

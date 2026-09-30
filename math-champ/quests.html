@@ -63,6 +63,11 @@
   .qq-pad { border: 2px solid var(--border-bright); border-radius: 14px; background:
     repeating-linear-gradient(0deg, transparent 0 23px, rgba(43,38,32,.08) 23px 24px),
     repeating-linear-gradient(90deg, transparent 0 23px, rgba(43,38,32,.08) 23px 24px), #fff; max-width: 100%; touch-action: none; cursor: crosshair; }
+  .qq-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 12px; }
+  .qq-tab { font-family: var(--font-display); font-size: 1rem; font-weight: 800; padding: 10px 16px; border-radius: 12px; border: 2px solid var(--border-bright); background: var(--surface-2); color: var(--ink); cursor: pointer; }
+  .qq-tab.on { border-color: #2e7d32; background: linear-gradient(135deg, #f1f8e9, #fffdf7); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .qq-setname { text-align: center; font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 14px; }
+  .qq-settag { color: var(--ink-dim); font-size: .95rem; font-weight: 700; }
   textarea { width: 100%; font-family: var(--font-body); font-size: 1rem; padding: 10px; border-radius: 12px; border: 2px solid var(--border-bright); }
 </style>
 </head>
@@ -73,6 +78,7 @@
 <script>
   OC.buildNav('quests');
 </script>
+<script src="assets/riddles.js"></script>
 <script src="assets/quests.js"></script>
 <!-- ============ Kid Keypad: on-screen number pad (touch devices only) ============ -->
   <style>

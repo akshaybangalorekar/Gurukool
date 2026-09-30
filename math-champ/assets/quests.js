@@ -266,7 +266,16 @@ function eqScale(leftText, rightText, blocks) {
 /* ---------- the quest app (mounts inside math-champ, uses OC) ---------- */
 (function () {
   'use strict';
-  var view = { page: 'home' }, P = null, t0 = 0;
+  var view = { page: 'home', set: 'forge' }, P = null, t0 = 0;
+
+  /* ---------- quest lines ---------- */
+  var QUEST_SETS = [
+    { id: 'forge', name: 'The Equation Forge', icon: '\u26cf\ufe0f', tag: 'equations & algebra', levels: EQ_LEVELS },
+    { id: 'bazaar', name: 'The Riddle Bazaar', icon: '🧺', tag: 'word problems & careful reading', levels: (typeof RB_LEVELS !== 'undefined' ? RB_LEVELS : []) }
+  ];
+  function setById(id) { for (var i = 0; i < QUEST_SETS.length; i++) if (QUEST_SETS[i].id === id) return QUEST_SETS[i]; return QUEST_SETS[0]; }
+  function allLevels() { var out = []; QUEST_SETS.forEach(function (x) { out = out.concat(x.levels); }); return out; }
+  try { var s0 = localStorage.getItem('gk_quest_set'); if (s0 && setById(s0).id === s0) view.set = s0; } catch (e) {}
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>'); }
 
@@ -276,10 +285,10 @@ function eqScale(leftText, rightText, blocks) {
     return (S.quest[id] = S.quest[id] || { done: false, stars: 0, used: [], journal: [] });
   }
   function save() { OC.save(); }
-  function levelById(id) { for (var i = 0; i < EQ_LEVELS.length; i++) if (EQ_LEVELS[i].id === id) return EQ_LEVELS[i]; return null; }
-  function unlocked(i) { return i === 0 || !!(OC.STATE.quest && OC.STATE.quest[EQ_LEVELS[i - 1].id] && OC.STATE.quest[EQ_LEVELS[i - 1].id].done); }
+  function levelById(id) { var L = allLevels(); for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i]; return null; }
+  function unlockedIn(levels, i) { return i === 0 || !!(OC.STATE.quest && OC.STATE.quest[levels[i - 1].id] && OC.STATE.quest[levels[i - 1].id].done); }
 
-  function techs() { return EQ_LEVELS.map(function (L) { return { t: L.tech, on: !!(OC.STATE.quest && OC.STATE.quest[L.id] && OC.STATE.quest[L.id].done) }; }); }
+  function techsIn(levels) { return levels.map(function (L) { return { t: L.tech, on: !!(OC.STATE.quest && OC.STATE.quest[L.id] && OC.STATE.quest[L.id].done) }; }); }
 
   function render() {
     var app = $('q-app'); if (!app) return;
@@ -288,22 +297,28 @@ function eqScale(leftText, rightText, blocks) {
   }
 
   function homeHTML() {
-    var cards = EQ_LEVELS.map(function (Q, i) {
+    var set = setById(view.set);
+    var tabs = QUEST_SETS.map(function (x) {
+      return '<button class="qq-tab' + (x.id === view.set ? ' on' : '') + '" onclick="qSet(\'' + x.id + '\')">' + x.icon + ' ' + x.name + '</button>';
+    }).join('');
+    var cards = set.levels.map(function (Q, i) {
       var st = (OC.STATE.quest || {})[Q.id] || { done: false, stars: 0, used: [] };
-      var ok = unlocked(i);
+      var ok = unlockedIn(set.levels, i);
       return '<div class="qq-card' + (ok ? '' : ' locked') + (st.done ? ' done' : '') + '" onclick="' + (ok ? "qOpen('" + Q.id + "')" : 'qLocked()') + '">' +
         '<div class="qq-icon">' + (ok ? Q.icon : '🔒') + '</div><div class="qq-body"><b>Level ' + (i + 1) + ': ' + Q.name + '</b>' +
         '<span class="qq-tech">' + Q.tech.icon + ' ' + Q.tech.name + '</span>' +
         '<span class="qq-st">' + (st.done ? '🏆 mastered' : (st.used.length ? '⭐ ' + st.used.length + '/5 solved' : 'start the quest')) + '</span></div>' +
         '<div class="qq-go">' + (st.done ? '🏅' : (ok ? '▶' : '')) + '</div></div>';
     }).join('');
-    var shelf = techs().map(function (x) {
+    var shelf = techsIn(set.levels).map(function (x) {
       return '<div class="qq-tech-chip' + (x.on ? '' : ' off') + '"><span>' + x.t.icon + '</span><div><b>' + x.t.name + '</b><span>' + (x.on ? esc(x.t.desc) : 'master the level to unlock') + '</span></div></div>';
     }).join('');
-    return '<h1 style="text-align:center">⛏️ Technique Quests</h1>' +
-      '<p style="text-align:center;color:#7a6f60;margin:0 0 16px">Hands-on cases that teach <b>how equations really work</b> — no lesson first, just the balance beam and you.</p>' +
+    return '<h1 style="text-align:center">🧠 Technique Quests</h1>' +
+      '<p style="text-align:center;color:#7a6f60;margin:0 0 14px">Hands-on cases that teach you to <b>think</b> — no lesson first, just puzzles and your own sharp mind.</p>' +
+      '<div class="qq-tabs">' + tabs + '</div>' +
+      '<div class="qq-setname">' + set.icon + ' <b>' + set.name + '</b> <span class="qq-settag">' + set.tag + '</span></div>' +
       '<div class="qq-grid">' + cards + '</div>' +
-      '<p class="qq-label">🧰 Equation techniques</p>' +
+      '<p class="qq-label">🧰 Techniques in this quest line</p>' +
       '<div class="qq-techgrid">' + shelf + '</div>';
   }
 
@@ -477,7 +492,8 @@ function eqScale(leftText, rightText, blocks) {
       '<button class="qq-btn" style="margin-top:8px" onclick="this.closest(\'div[style*=fixed]\').remove()">Got it!</button></div>';
     document.body.appendChild(ov);
   };
-  window.qHome = function () { view = { page: 'home' }; render(); };
+  window.qHome = function () { view = { page: 'home', set: view.set || 'forge' }; render(); };
+  window.qSet = function (id) { view = { page: 'home', set: id }; try { localStorage.setItem('gk_quest_set', id); } catch (e) {} render(); };
   window.qOpen = function (id) {
     view = { page: 'case', lid: id, phase: 'intro', pi: 0 };
     var st = qState(id);
@@ -495,7 +511,7 @@ function eqScale(leftText, rightText, blocks) {
   }
 
   /* test hook */
-  window.EQ = { levels: EQ_LEVELS, open: qOpen, start: qStart, next: qNext, check: qCheck, state: function () { return P; }, view: function () { return view; }, finish: qFinish, qState: qState };
+  window.EQ = { levels: EQ_LEVELS, sets: QUEST_SETS, allLevels: allLevels, open: qOpen, start: qStart, next: qNext, check: qCheck, state: function () { return P; }, view: function () { return view; }, finish: qFinish, qState: qState, qSet: qSet };
 
   render();
 })();
