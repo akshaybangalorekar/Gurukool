@@ -5,6 +5,22 @@ olympiad hopeful. No accounts, no server, no tracking — everything
 lives in the browser (and moves via save codes or a private GitHub
 repo when you want it to).
 
+Recent changes
+--------------
+- iPad readability pass: all HTML text in Math-Champ and
+  Science-Champ (questions, options, lessons, buttons) bumped ~15%.
+  SVG diagrams were left as-is (they already scale to the screen).
+- Digits instead of spelled-out numbers in every quiz question and
+  mission generator (e.g. "two propellers" -> "2 propellers"), so
+  young readers never have to decode number words mid-question.
+- Science missions now teach ALL lessons of a world before any quiz
+  or boss questions — a first-time player who jumps straight into
+  Mission Mode can no longer meet concepts (e.g. kinetic energy)
+  before they are taught. The "Got it" button reads "next lesson!"
+  while lessons remain, then "quiz me!".
+- Math mission: subtraction questions never produce negative answers
+  (bigger number is always first).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

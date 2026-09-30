@@ -13,26 +13,26 @@
   <link rel="stylesheet" href="assets/style.css">
   <style>
     .mi-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
-    .mi-clock { font-family: var(--font-display, inherit); font-size: 30px; font-weight: 800; }
-    .mi-phase { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal, #2a9d8f); }
-    .mi-strip { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 15px; margin: 10px 0 4px; }
-    .mi-topic-chip { display: inline-block; background: var(--bg, #faf5ea); border: 1.5px solid var(--border, #e8dfcc); border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size: 14px; margin-bottom: 12px; }
-    .mi-question { font-size: 24px; font-weight: 700; line-height: 1.5; margin: 0 0 18px; }
+    .mi-clock { font-family: var(--font-display, inherit); font-size:34.5px; font-weight: 800; }
+    .mi-phase { font-size:13.8px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal, #2a9d8f); }
+    .mi-strip { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size:17.2px; margin: 10px 0 4px; }
+    .mi-topic-chip { display: inline-block; background: var(--bg, #faf5ea); border: 1.5px solid var(--border, #e8dfcc); border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size:16.1px; margin-bottom: 12px; }
+    .mi-question { font-size:27.6px; font-weight: 700; line-height: 1.5; margin: 0 0 18px; }
     .mi-answer-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
     .mi-answer-row input { max-width: 240px; }
     .mi-feedback { margin-top: 16px; border-radius: 12px; padding: 14px 16px; display: none; }
     .mi-feedback.ok { display: block; background: rgba(42, 157, 143, 0.12); border: 1.5px solid rgba(42, 157, 143, 0.5); }
     .mi-feedback.hint { display: block; background: rgba(217, 119, 6, 0.10); border: 1.5px solid rgba(217, 119, 6, 0.45); }
     .mi-feedback.solve { display: block; background: rgba(192, 57, 43, 0.08); border: 1.5px solid rgba(192, 57, 43, 0.4); }
-    .mi-feedback b { font-size: 16px; }
-    .mi-report-num { font-family: var(--font-display, inherit); font-size: 34px; font-weight: 800; }
+    .mi-feedback b { font-size:18.4px; }
+    .mi-report-num { font-family: var(--font-display, inherit); font-size:39.1px; font-weight: 800; }
     .mi-tbar { height: 12px; background: var(--bg, #faf5ea); border-radius: 999px; overflow: hidden; margin: 6px 0 2px; }
     .mi-tbar i { display: block; height: 100%; background: linear-gradient(90deg, #2a9d8f, #58bfae); }
     .dur-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 18px 0 8px; }
-    .dur-btn { text-align: left; padding: 18px; border-radius: 14px; border: 2px solid var(--border, #e8dfcc); background: var(--bg, #faf5ea); cursor: pointer; font-family: inherit; }
+    .dur-btn { text-align: left; padding: 18px 18px 22px; border-radius: 14px; border: 2px solid var(--border, #e8dfcc); background: var(--bg, #faf5ea); cursor: pointer; font-family: inherit; }
     .dur-btn:hover { border-color: var(--teal, #2a9d8f); }
-    .dur-btn .t { font-size: 22px; font-weight: 800; display: block; margin-bottom: 4px; }
-    .dur-btn .d { font-size: 13.5px; color: var(--ink-dim, #7a6f60); }
+    .dur-btn .t { font-size:25.3px; font-weight: 800; display: block; margin-bottom: 4px; }
+    .dur-btn .d { font-size:15.5px; color: var(--ink-dim, #7a6f60); }
     .mi-shake { animation: mishake 0.35s; }
     @keyframes mishake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
     .streak-pop { display: inline-block; animation: mipop 0.5s; }
@@ -51,8 +51,8 @@
   <main class="wrap" id="start-screen">
     <section class="card card--hero fade-in" style="--i:1;">
       <p class="section-label">Adaptive practice engine</p>
-      <h2 style="font-family:var(--font-display); font-size:30px; margin:0 0 10px;">🎯 Training Mission</h2>
-      <p class="muted" style="margin:0 0 6px; font-size:16px; max-width:640px;">
+      <h2 style="font-family:var(--font-display); font-size:34.5px; margin:0 0 10px;">🎯 Training Mission</h2>
+      <p class="muted" style="margin:0 0 6px; font-size:18.4px; max-width:640px;">
         A mission keeps posing questions and <b>watches how you answer</b> — right or wrong, and how fast.
         Cruise through and it quietly climbs to tougher questions. Stumble, and it practises the same
         kind with you until you crack it. By the end, it tells you exactly what got stronger.
@@ -112,7 +112,7 @@
   <main class="wrap" id="report-screen" style="display:none;">
     <section class="card card--hero fade-in" style="--i:1; text-align:center;">
       <p class="section-label">Mission complete</p>
-      <h2 style="font-family:var(--font-display); font-size:30px; margin:0 0 6px;" id="r-title">Well trained, champion! 🎉</h2>
+      <h2 style="font-family:var(--font-display); font-size:34.5px; margin:0 0 6px;" id="r-title">Well trained, champion! 🎉</h2>
       <div class="kpi-row" style="max-width:640px; margin:16px auto;">
         <div class="kpi"><div class="kpi__value" id="r-xp">0</div><div class="kpi__label">XP earned</div></div>
         <div class="kpi"><div class="kpi__value" id="r-acc">0%</div><div class="kpi__label">Accuracy</div></div>
@@ -180,8 +180,8 @@
       for (var i2 = opts.length - 1; i2 > 0; i2--) { var j2 = ri(0, i2); var tmp = opts[i2]; opts[i2] = opts[j2]; opts[j2] = tmp; }
       var optStr = opts.map(function (o, ix) { return String.fromCharCode(65 + ix) + ') ' + o + ' cm'; }).join('   ');
       var others = opts.filter(function (o) { return o !== imp; }).map(function (o) { return o + ' = ' + M[o]; }).join('; ');
-      return { q: 'Ben has three sticks of ' + sa + ' cm, ' + sb + ' cm and ' + sc + ' cm. He marks lengths by laying sticks end to end \u2014 and can also use the gap between two sticks\u2019 ends \u2014 but each stick can be used only ONCE for each mark. Which of these lengths can he NOT mark: ' + optStr + '? (Type the number, not the letter.)', a: imp, target: hard ? 95 : 80,
-        hint: imp > tot ? 'Add all three sticks together \u2014 that is the longest single mark possible. Now compare the options with it.' : 'Try every way of adding and subtracting the sticks, each used once. Which option never shows up?',
+      return { q: 'Ben has 3 sticks of ' + sa + ' cm, ' + sb + ' cm and ' + sc + ' cm. He marks lengths by laying sticks end to end \u2014 and can also use the gap between 2 sticks\u2019 ends \u2014 but each stick can be used only ONCE for each mark. Which of these lengths can he NOT mark: ' + optStr + '? (Type the number, not the letter.)', a: imp, target: hard ? 95 : 80,
+        hint: imp > tot ? 'Add all 3 sticks together \u2014 that is the longest single mark possible. Now compare the options with it.' : 'Try every way of adding and subtracting the sticks, each used once. Which option never shows up?',
         work: 'Longest mark: ' + sa + ' + ' + sb + ' + ' + sc + ' = ' + tot + ' cm. ' + imp + (imp > tot ? ' is MORE than ' + tot : ' is not any combination of the sticks') + ' \u2192 impossible. The others work: ' + others + '.' };
     }
     var TOPICS = [
@@ -272,10 +272,10 @@
       add: function (L) {
         var a, b, c, op, ans;
         if (L === 1) { a = ri(10, 45); b = ri(10, 45); return { q: a + ' + ' + b + ' = ?', a: a + b, target: 20, hint: 'Add the tens, then the ones.', work: a + ' + ' + b + ' = ' + (a + b) }; }
-        if (L === 2) { a = ri(17, 89); b = ri(14, 79); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 25, hint: 'Carry (or borrow) between the columns.', work: a + op + b + ' = ' + ans }; }
-        if (L === 3) { a = ri(120, 899); b = ri(110, 780); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 30, hint: 'Work column by column, right to left.', work: 'Column by column gives ' + ans }; }
-        if (L === 4) { a = ri(1200, 8999); b = ri(1100, 7800); op = ri(0, 1) ? ' + ' : ' \u2212 '; ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 40, hint: 'Same columns as always \u2014 just more of them.', work: 'Take it one column at a time: ' + ans }; }
-        if (L === 5) { a = ri(1500, 4999) / 100; b = ri(950, 3899) / 100; return { q: '\u20B9' + money(a) + ' + \u20B9' + money(b) + ' = \u20B9?', a: a + b, target: 45, hint: 'Line up the paise (the two decimals) under each other.', work: 'Add rupees and paise separately, then join: \u20B9' + money(a + b) }; }
+        if (L === 2) { a = ri(17, 89); b = ri(14, 79); op = ri(0, 1) ? ' + ' : ' \u2212 '; if (op !== ' + ' && b > a) { var tmp = a; a = b; b = tmp; } ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 25, hint: 'Carry (or borrow) between the columns.', work: a + op + b + ' = ' + ans }; }
+        if (L === 3) { a = ri(120, 899); b = ri(110, 780); op = ri(0, 1) ? ' + ' : ' \u2212 '; if (op !== ' + ' && b > a) { var tmp = a; a = b; b = tmp; } ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 30, hint: 'Work column by column, right to left.', work: 'Column by column gives ' + ans }; }
+        if (L === 4) { a = ri(1200, 8999); b = ri(1100, 7800); op = ri(0, 1) ? ' + ' : ' \u2212 '; if (op !== ' + ' && b > a) { var tmp = a; a = b; b = tmp; } ans = op === ' + ' ? a + b : a - b; return { q: a + op + b + ' = ?', a: ans, target: 40, hint: 'Same columns as always \u2014 just more of them.', work: 'Take it one column at a time: ' + ans }; }
+        if (L === 5) { a = ri(1500, 4999) / 100; b = ri(950, 3899) / 100; return { q: '\u20B9' + money(a) + ' + \u20B9' + money(b) + ' = \u20B9?', a: a + b, target: 45, hint: 'Line up the paise (the 2 decimals) under each other.', work: 'Add rupees and paise separately, then join: \u20B9' + money(a + b) }; }
         if (L === 6) { a = ri(18, 89); c = a + ri(15, 60); return { q: a + ' + ? = ' + c, a: c - a, target: 35, hint: 'Ask: what goes with ' + a + ' to reach ' + c + '?', work: c + ' \u2212 ' + a + ' = ' + (c - a) }; }
         if (L === 7) { a = ri(120, 680); b = ri(110, 590); c = ri(90, 400); return { q: a + ' + ' + b + ' \u2212 ' + c + ' = ?', a: a + b - c, target: 40, hint: 'Left to right: first the plus, then the minus.', work: a + ' + ' + b + ' = ' + (a + b) + '; \u2212 ' + c + ' = ' + (a + b - c) }; }
         a = ri(2100, 9800); b = ri(1800, 8900); c = ri(100, 900);
@@ -286,11 +286,11 @@
         if (L === 1) { a = ri(2, 9); b = ri(2, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 12, hint: 'Think of ' + a + ' groups of ' + b + '.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
         if (L === 2) { a = ri(3, 12); b = ri(3, 12); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 15, hint: 'Split it if needed: ' + a + ' \u00D7 ' + (b - 1) + ' plus one more ' + a + '.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
         if (L === 3) { a = ri(12, 29); b = ri(3, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 25, hint: 'Split ' + a + ' into tens and ones, multiply each by ' + b + ', then add.', work: (Math.floor(a / 10) * 10) + ' \u00D7 ' + b + ' = ' + (Math.floor(a / 10) * 10 * b) + '; ' + (a % 10) + ' \u00D7 ' + b + ' = ' + (a % 10 * b) + '; total ' + (a * b) }; }
-        if (L === 4) { a = ri(13, 39); b = ri(13, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 45, hint: 'Split one number: ' + a + ' \u00D7 ' + (Math.floor(b / 10) * 10) + ' + ' + a + ' \u00D7 ' + (b % 10) + '.', work: 'Two products, then add: ' + (a * b) }; }
+        if (L === 4) { a = ri(13, 39); b = ri(13, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 45, hint: 'Split one number: ' + a + ' \u00D7 ' + (Math.floor(b / 10) * 10) + ' + ' + a + ' \u00D7 ' + (b % 10) + '.', work: '2 products, then add: ' + (a * b) }; }
         if (L === 5) { a = ri(112, 899); b = ri(3, 9); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 50, hint: 'Hundreds, tens, ones \u2014 multiply each by ' + b + ' and add.', work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
         if (L === 6) { a = ri(12, 48); b = pick([25, 50, 99]); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 40, hint: b === 99 ? '\u00D7 99 = \u00D7 100 minus ' + a + '.' : ('\u00D7 ' + b + ' = half of \u00D7 ' + (b * 2) + '.'), work: a + ' \u00D7 ' + b + ' = ' + (a * b) }; }
         if (L === 7) { a = ri(15, 95); b = ri(2, 9) * 10; return { q: (a / 10) + ' \u00D7 ' + b + ' = ?', a: a * b / 10, target: 40, hint: '\u00D7 ' + b + ' is \u00D7 ' + (b / 10) + ' then \u00D7 10.', work: (a / 10) + ' \u00D7 ' + (b / 10) + ' = ' + (a * b / 100) + ', \u00D7 10 = ' + (a * b / 10) }; }
-        a = ri(112, 499); b = ri(12, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 90, hint: 'Split ' + b + ' into tens and ones and take it in two products.', work: 'Two products, then add: ' + (a * b) };
+        a = ri(112, 499); b = ri(12, 39); return { q: a + ' \u00D7 ' + b + ' = ?', a: a * b, target: 90, hint: 'Split ' + b + ' into tens and ones and take it in 2 products.', work: '2 products, then add: ' + (a * b) };
       },
       div: function (L) {
         var a, b, q;
@@ -330,7 +330,7 @@
         var a, b, t, s, u, P;
         if (L === 1) { a = ri(14, 40); b = ri(12, 38); return { q: 'Ravi has ' + a + ' marbles and wins ' + b + ' more in a game. How many marbles does he have now?', a: a + b, target: 35, hint: 'Winning more means adding.', work: a + ' + ' + b + ' = ' + (a + b) }; }
         if (L === 2) { a = ri(2, 8) * 10 + 5; b = ri(2, 7) * 10 + 3; return { q: 'You buy a comic for \u20B9' + b + ' and pay with a \u20B9' + a + ' note. How much change do you get in \u20B9?', a: a - b, target: 40, hint: 'Change = what you paid \u2212 the price.', work: a + ' \u2212 ' + b + ' = \u20B9' + (a - b) }; }
-        if (L === 3) { a = ri(3, 8); b = a + ri(1, 5); t = (a + b) * ri(2, 6); return { q: t + ' sweets are shared between two friends in the ratio ' + a + ' : ' + b + '. How many sweets does the friend with the BIGGER share get?', a: t / (a + b) * b, target: 60, hint: 'One part = ' + t + ' \u00F7 ' + (a + b) + '. The bigger friend takes ' + b + ' parts.', work: '1 part = ' + (t / (a + b)) + '; bigger share = ' + (t / (a + b)) + ' \u00D7 ' + b + ' = ' + (t / (a + b) * b) }; }
+        if (L === 3) { a = ri(3, 8); b = a + ri(1, 5); t = (a + b) * ri(2, 6); return { q: t + ' sweets are shared between 2 friends in the ratio ' + a + ' : ' + b + '. How many sweets does the friend with the BIGGER share get?', a: t / (a + b) * b, target: 60, hint: 'One part = ' + t + ' \u00F7 ' + (a + b) + '. The bigger friend takes ' + b + ' parts.', work: '1 part = ' + (t / (a + b)) + '; bigger share = ' + (t / (a + b)) + ' \u00D7 ' + b + ' = ' + (t / (a + b) * b) }; }
         if (L === 4) { s = ri(4, 12); u = ri(6, 18); return { q: 'A batsman scores ' + (s * u) + ' runs in ' + s + ' overs. How many runs per over is that?', a: u, target: 60, hint: 'Share the runs equally among the overs.', work: (s * u) + ' \u00F7 ' + s + ' = ' + u + ' runs per over' }; }
         if (L === 5) {
           if (ri(0, 1) === 1) return sticksQ(false);
@@ -354,7 +354,7 @@
         if (L === 2) { a = ri(12, 96); return { q: 'Round ' + a + ' to the nearest 10.', a: Math.round(a / 10) * 10, target: 25, hint: 'Look at the ones digit: ' + (a % 10) + '.', work: Math.round(a / 10) * 10 }; }
         if (L === 3) { a = ri(120, 9899); return { q: 'Round ' + a + ' to the nearest 100.', a: Math.round(a / 100) * 100, target: 30, hint: 'The tens digit decides: 0\u20134 round down, 5\u20139 round up.', work: Math.round(a / 100) * 100 }; }
         if (L === 4) { d = ri(3, 9); b = ri(20, 60) * d; a = b - ri(1, d - 1); return { q: 'Which is divisible by ' + d + ': ' + a + ' or ' + b + '? Type the correct number.', a: b, target: 35, hint: 'Test each with the division rule for ' + d + '.', work: b + ' = ' + d + ' \u00D7 ' + (b / d) }; }
-        if (L === 5) { a = ri(10, 40); n = 0; for (i = a; i <= a + 20; i++) { if (isPrime(i)) n++; } return { q: 'How many PRIME numbers are there between ' + a + ' and ' + (a + 20) + ' (both included)?', a: n, target: 45, hint: 'A prime has exactly two factors: 1 and itself.', work: 'Check each candidate for small factors (2, 3, 5, 7).' }; }
+        if (L === 5) { a = ri(10, 40); n = 0; for (i = a; i <= a + 20; i++) { if (isPrime(i)) n++; } return { q: 'How many PRIME numbers are there between ' + a + ' and ' + (a + 20) + ' (both included)?', a: n, target: 45, hint: 'A prime has exactly 2 factors: 1 and itself.', work: 'Check each candidate for small factors (2, 3, 5, 7).' }; }
         if (L === 6) { a = ri(2, 9); d = ri(3, 12); seq = []; for (i = 0; i < 4; i++) seq.push(a + d * i); return { q: 'What comes next? ' + seq.join(', ') + ', ?', a: a + d * 4, target: 40, hint: 'How much does it jump each time?', work: 'Each step adds ' + d + ': ' + (a + d * 3) + ' + ' + d + ' = ' + (a + d * 4) }; }
         if (L === 7) { a = ri(2, 4); seq = []; for (i = 0; i < 4; i++) seq.push(Math.pow(a, i + 1) + i); return { q: 'What comes next? ' + seq.join(', ') + ', ?', a: Math.pow(a, 5) + 4, target: 50, hint: 'Each term is roughly \u00D7 ' + a + ', plus a growing little bit.', work: 'Pattern: ' + a + ' to the next power, plus 0, 1, 2, 3\u2026 next is ' + (Math.pow(a, 5) + 4) }; }
         d = ri(6, 12); var base = ri(100, 300); a = Math.floor(base / d) * d + d;
@@ -369,7 +369,7 @@
         if (L === 5) {
           var A5 = 10 * ri(4, 8), t5 = ri(2, 4), s5 = A5 - 10, s5b = A5 + 10 * t5;
           return { q: 'A truck drives for ' + t5 + ' hours at ' + s5 + ' km/h, and then for 1 more hour at ' + s5b + ' km/h. What is its average speed for the WHOLE trip in km/h?', a: A5, target: 70,
-            hint: 'Average speed = total distance \u00F7 total time. It is NOT the average of the two speeds!',
+            hint: 'Average speed = total distance \u00F7 total time. It is NOT the average of the 2 speeds!',
             work: 'Distance: ' + (s5 * t5) + ' + ' + s5b + ' = ' + (s5 * t5 + s5b) + ' km; time: ' + (t5 + 1) + ' h; ' + (s5 * t5 + s5b) + ' \u00F7 ' + (t5 + 1) + ' = ' + A5 + ' km/h' };
         }
         if (L === 6) {
@@ -386,7 +386,7 @@
             for (var sh7 = o7.length - 1; sh7 > 0; sh7--) { var sj7 = ri(0, sh7); var st7 = o7[sh7]; o7[sh7] = o7[sj7]; o7[sj7] = st7; }
             var opt7 = o7.map(function (o, ix) { return String.fromCharCode(65 + ix) + ') ' + o + ' km/h'; }).join('   ');
             return { q: head7 + ' What was his average speed from town A to town C? ' + opt7 + ' (Type just the number.)', a: avg7, target: 90,
-              hint: 'Two of those are traps: one is only the average of the two speeds, one is only the B to C speed. Use total distance \u00F7 total time.',
+              hint: 'Two of those are traps: one is only the average of the 2 speeds, one is only the B to C speed. Use total distance \u00F7 total time.',
               work: 'A\u2192B: ' + s7 + ' \u00D7 ' + t7 + ' = ' + d7 + ' km. B\u2192C: ' + d7b + ' km at ' + s7b + ' km/h = ' + t7b + ' h. (' + d7 + ' + ' + d7b + ') \u00F7 (' + t7 + ' + ' + t7b + ') = ' + avg7 + ' km/h. (' + trap7 + ' only averages the speeds \u2014 it ignores time; ' + s7b + ' is just the B\u2192C speed.)' };
           }
           return { q: head7 + ' What was his average speed from town A to town C in km/h?', a: avg7, target: 90,
@@ -394,7 +394,7 @@
             work: 'A\u2192B: ' + s7 + ' \u00D7 ' + t7 + ' = ' + d7 + ' km. B\u2192C: ' + d7b + ' km at ' + s7b + ' km/h = ' + t7b + ' h. (' + d7 + ' + ' + d7b + ') \u00F7 (' + t7 + ' + ' + t7b + ') = ' + avg7 + ' km/h' };
         }
         if (ri(0, 1) === 0) {
-          m = ri(1, 9) * 5; return { q: 'How many seconds are there in 1 hour and ' + m + ' minutes?', a: 3600 + m * 60, target: 60, hint: 'Hours \u2192 minutes \u2192 seconds, two steps.', work: '65 min would be 3900; here it is 3600 + ' + (m * 60) + ' = ' + (3600 + m * 60) + ' seconds' };
+          m = ri(1, 9) * 5; return { q: 'How many seconds are there in 1 hour and ' + m + ' minutes?', a: 3600 + m * 60, target: 60, hint: 'Hours \u2192 minutes \u2192 seconds, 2 steps.', work: '65 min would be 3900; here it is 3600 + ' + (m * 60) + ' = ' + (3600 + m * 60) + ' seconds' };
         }
         var RT = [[60, 30, 40], [90, 45, 60], [30, 15, 20], [60, 20, 30], [90, 30, 45], [120, 40, 60], [84, 28, 42], [72, 24, 36]][ri(0, 7)];
         return { q: 'A car travels from town X to town Y at ' + RT[0] + ' km/h and returns along the same road at ' + RT[1] + ' km/h. What is its average speed for the whole round trip in km/h?', a: RT[2], target: 85,
@@ -679,12 +679,12 @@
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3); }
     #kidpad.show { display: block; }
     #kidpad .kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    #kidpad button { min-height: 54px; font-size: 24px; font-weight: 800; border: 0; border-radius: 12px;
+    #kidpad button { min-height: 54px; font-size:27.6px; font-weight: 800; border: 0; border-radius: 12px;
       background: #faf5ea; color: #2b2620; font-family: inherit; cursor: pointer;
       touch-action: manipulation; user-select: none; -webkit-user-select: none; }
     #kidpad button:active { transform: translateY(2px); background: #f2d8a7; }
-    #kidpad .kw { background: #e9e2d4; font-size: 21px; }
-    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size: 20px; letter-spacing: 0.4px; }
+    #kidpad .kw { background: #e9e2d4; font-size:24.1px; }
+    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size:23.0px; letter-spacing: 0.4px; }
   </style>
   <div id="kidpad" aria-hidden="true">
     <div class="kgrid">

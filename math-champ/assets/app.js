@@ -170,7 +170,7 @@
     }
     badges.forEach(function (b, i) {
       var t = document.createElement('div');
-      t.style.cssText = 'background:#2b2620;color:#faf5ea;padding:12px 22px;border-radius:12px;font-weight:800;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:opacity .4s;font-family:inherit;';
+      t.style.cssText = 'background:#2b2620;color:#faf5ea;padding:12px 22px;border-radius:12px;font-weight:800;font-size:16px;box-shadow:0 6px 20px rgba(0,0,0,.25);opacity:0;transition:opacity .4s;font-family:inherit;';
       t.textContent = 'Badge unlocked: ' + b.name + '!';
       toastHost.appendChild(t);
       setTimeout(function () { t.style.opacity = '1'; }, 60 + i * 250);

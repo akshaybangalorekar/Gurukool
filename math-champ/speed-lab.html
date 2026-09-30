@@ -22,12 +22,12 @@
     }
     .mode-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
     .question-big {
-      font-family: var(--font-mono); font-size: clamp(40px, 8vw, 72px); font-weight: 700;
+      font-family: var(--font-mono); font-size: clamp(40px, 8vw, 72px)46.0px, 8vw, 82.8px; font-weight: 700;
       text-align: center; letter-spacing: 2px; margin: 18px 0 6px; font-variant-numeric: tabular-nums;
     }
     .yn-row { display: flex; gap: 14px; justify-content: center; margin-top: 18px; }
     .yn-btn {
-      font-family: var(--font-display); font-weight: 800; font-size: 22px;
+      font-family: var(--font-display); font-weight: 800; font-size:25.3px;
       padding: 14px 46px; border-radius: 14px; border: 3px solid var(--border-bright);
       background: var(--surface); color: var(--ink); cursor: pointer; transition: all .12s ease;
     }
@@ -37,7 +37,7 @@
       background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
       padding: 12px 16px;
     }
-    .hud-item { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--ink-dim); }
+    .hud-item { font-family: var(--font-mono); font-size:14.9px; font-weight: 700; color: var(--ink-dim); }
     .hud-item b { color: var(--ink); }
     .progress-dots { display: flex; gap: 5px; margin-left: auto; }
     .pdot { width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--border-bright); }
@@ -59,7 +59,7 @@
 
     <div id="mode-select">
       <p class="section-label">Mission 2 · Speed Lab</p>
-      <h1 style="font-family:var(--font-display); font-size:clamp(30px,4.5vw,42px); margin:0 0 8px;">Fast is a trick. Tricks can be learned.</h1>
+      <h1 style="font-family:var(--font-display); font-size: clamp(30px,4.5vw,42px)34.5px,4.5vw,48.3px; margin:0 0 8px;">Fast is a trick. Tricks can be learned.</h1>
       <p class="muted" style="max-width:680px; margin:0 0 24px;">
         Shakuntala Devi multiplied 13-digit numbers in her head — using patterns, not muscle.
         Learn each trick, drill it ten times, and watch the clock surrender.
@@ -69,25 +69,25 @@
       <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
         <button class="mode-card card--accent" data-drill="fast-mult" type="button" style="border-top:4px solid var(--accent);">
           <span class="tag">Drill 1</span>
-          <h3 style="font-family:var(--font-display); font-size:21px; margin:10px 0 6px;">Lightning Multiplication</h3>
+          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Lightning Multiplication</h3>
           <p class="muted small" style="margin:0 0 10px;">×11 magic, ×5, ×25, ×50, ×9, ×99 and squares ending in 5 — the famous shortcuts.</p>
           <span class="stat-strip"><span>10 questions</span><span>~2 min</span></span>
         </button>
         <button class="mode-card" data-drill="divis" type="button" style="border-top:4px solid var(--teal);">
           <span class="tag tag--teal">Drill 2</span>
-          <h3 style="font-family:var(--font-display); font-size:21px; margin:10px 0 6px;">Divisibility Detective</h3>
+          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Divisibility Detective</h3>
           <p class="muted small" style="margin:0 0 10px;">Is it divisible by 3? 4? 9? 11? Spot the clue without dividing. Pure detective work.</p>
           <span class="stat-strip"><span>10 questions</span><span>~90 sec</span></span>
         </button>
         <button class="mode-card" data-drill="prime" type="button" style="border-top:4px solid var(--amber);">
           <span class="tag tag--amber">Drill 3</span>
-          <h3 style="font-family:var(--font-display); font-size:21px; margin:10px 0 6px;">Prime Patrol</h3>
+          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Prime Patrol</h3>
           <p class="muted small" style="margin:0 0 10px;">Prime or not prime? Use the square-root test like a champion — no lists needed.</p>
           <span class="stat-strip"><span>10 questions</span><span>~2 min</span></span>
         </button>
         <button class="mode-card" data-drill="mixed" type="button" style="border-top:4px solid var(--ink);">
           <span class="tag" style="background:var(--red-dim); color:var(--red);">Drill 4</span>
-          <h3 style="font-family:var(--font-display); font-size:21px; margin:10px 0 6px;">Mixed Sprint</h3>
+          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Mixed Sprint</h3>
           <p class="muted small" style="margin:0 0 10px;">All three skills shuffled together — exactly like a real olympiad round.</p>
           <span class="stat-strip"><span>10 questions</span><span>~2 min</span></span>
         </button>
@@ -123,7 +123,7 @@
     <div id="result-screen" style="display:none;">
       <section class="card card--hero" style="text-align:center;">
         <p class="section-label" style="justify-content:center;">Drill complete</p>
-        <h1 style="font-family:var(--font-display); font-size:clamp(32px,5vw,48px); margin:0 0 6px;" id="r-score"></h1>
+        <h1 style="font-family:var(--font-display); font-size: clamp(32px,5vw,48px)36.8px,5vw,55.2px; margin:0 0 6px;" id="r-score"></h1>
         <p class="muted" id="r-line" style="margin:0 0 18px;"></p>
         <div class="kpi-row" style="max-width:640px; margin:0 auto 22px;">
           <div class="kpi"><div class="kpi__value" id="r-avg"></div><div class="kpi__label">Avg / question</div></div>
@@ -342,7 +342,7 @@
       var head = correct
         ? (dt < 8 ? 'Snappy! ' + dt.toFixed(1) + ' seconds.' : 'Correct!')
         : 'Not this time — the answer: ' + (q.numeric ? q.a : (q.a ? 'YES' : 'NO'));
-      fb.innerHTML = '<div class="banner ' + cls + '"><h3 style="margin:0 0 8px; font-size:19px;">' + head + '</h3>' +
+      fb.innerHTML = '<div class="banner ' + cls + '"><h3 style="margin:0 0 8px; font-size:21.8px;">' + head + '</h3>' +
         '<p class="small" style="margin:0 0 14px;"><b>The trick:</b> ' + OC.esc(q.trick) + '</p>' +
         '<button class="btn btn--primary btn--small" id="d-next" type="button">' + (idx >= 9 ? 'See my results' : 'Next question →') + '</button></div>';
       fb.style.display = 'block';
@@ -412,12 +412,12 @@
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3); }
     #kidpad.show { display: block; }
     #kidpad .kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    #kidpad button { min-height: 54px; font-size: 24px; font-weight: 800; border: 0; border-radius: 12px;
+    #kidpad button { min-height: 54px; font-size:27.6px; font-weight: 800; border: 0; border-radius: 12px;
       background: #faf5ea; color: #2b2620; font-family: inherit; cursor: pointer;
       touch-action: manipulation; user-select: none; -webkit-user-select: none; }
     #kidpad button:active { transform: translateY(2px); background: #f2d8a7; }
-    #kidpad .kw { background: #e9e2d4; font-size: 21px; }
-    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size: 20px; letter-spacing: 0.4px; }
+    #kidpad .kw { background: #e9e2d4; font-size:24.1px; }
+    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size:23.0px; letter-spacing: 0.4px; }
   </style>
   <div id="kidpad" aria-hidden="true">
     <div class="kgrid">

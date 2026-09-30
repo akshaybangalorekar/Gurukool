@@ -23,18 +23,18 @@
     .stage__num {
       width: 34px; height: 34px; border-radius: 50%; flex: 0 0 34px;
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display); font-weight: 800; font-size: 17px; color: #fff;
+      font-family: var(--font-display); font-weight: 800; font-size:19.5px; color: #fff;
       background: var(--accent);
     }
     .stage__num--done { background: var(--green); }
-    .stage__title { font-family: var(--font-display); font-weight: 800; font-size: 18px; }
+    .stage__title { font-family: var(--font-display); font-weight: 800; font-size:20.7px; }
     .stage__body { padding: 18px; }
     .stage.is-locked .stage__body { display: none; }
     .stage.is-locked { opacity: 0.55; }
-    .field-label { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin: 0 0 6px; }
+    .field-label { font-family: var(--font-mono); font-size:13.2px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin: 0 0 6px; }
     .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .chip {
-      font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+      font-family: var(--font-mono); font-size:13.8px; font-weight: 700;
       border: 2px solid var(--border-bright); background: var(--surface);
       color: var(--ink-dim); padding: 6px 12px; border-radius: 999px; cursor: pointer;
       transition: all .12s ease;
@@ -43,12 +43,12 @@
     .chip.is-active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
     .chip .solved-dot { color: var(--green); }
     .chip.is-locked-chip { opacity: .45; }
-    .chip.is-locked-chip::after { content: ' 🔒'; font-size: 11px; }
+    .chip.is-locked-chip::after { content: ' 🔒'; font-size:12.6px; }
     .banner { border-radius: 12px; padding: 18px 20px; margin-top: 18px; animation: fadeScale .4s ease-out both; }
     .banner--win { background: var(--green-dim); border: 2px solid var(--green); }
     .banner--lose { background: var(--amber-dim); border: 2px solid var(--amber); }
-    .banner h3 { margin: 0 0 6px; font-family: var(--font-display); font-size: 21px; }
-    .answer-box { font-family: var(--font-mono); font-size: 26px; font-weight: 700; text-align: center; letter-spacing: 1px; }
+    .banner h3 { margin: 0 0 6px; font-family: var(--font-display); font-size:24.1px; }
+    .answer-box { font-family: var(--font-mono); font-size:29.9px; font-weight: 700; text-align: center; letter-spacing: 1px; }
     .confidence-btn { width: 100%; text-align: left; }
     .confidence-btn.is-picked { border-color: var(--teal); background: var(--teal-dim); color: var(--teal); }
     .star-row { display: inline-flex; gap: 4px; }
@@ -64,7 +64,7 @@
 
   <main class="wrap">
     <p class="section-label">Mission 1 · Word Problem Lab</p>
-    <h1 style="font-family:var(--font-display); font-size:clamp(30px,4.5vw,42px); margin:0 0 8px;">Crack the story. Build the equation.</h1>
+    <h1 style="font-family:var(--font-display); font-size: clamp(30px,4.5vw,42px)34.5px,4.5vw,48.3px; margin:0 0 8px;">Crack the story. Build the equation.</h1>
     <p class="muted" style="max-width:680px; margin:0 0 22px;">
       Every word problem is a story with numbers hiding inside. Your job: catch the numbers,
       find the question, write ONE equation — then solve it. Compare your thinking with the
@@ -93,8 +93,8 @@
         <span class="tag tag--teal" id="p-chapter"></span>
         <span style="margin-left:auto;" class="timer-target" id="p-solved-state"></span>
       </div>
-      <h2 style="font-family:var(--font-display); font-size:24px; margin:0 0 10px;" id="p-title"></h2>
-      <p id="p-story" style="font-size:18px; line-height:1.75; margin:0 0 18px; background:var(--surface-2); border:1px dashed var(--border-bright); border-radius:12px; padding:16px 18px;"></p>
+      <h2 style="font-family:var(--font-display); font-size:27.6px; margin:0 0 10px;" id="p-title"></h2>
+      <p id="p-story" style="font-size:20.7px; line-height:1.75; margin:0 0 18px; background:var(--surface-2); border:1px dashed var(--border-bright); border-radius:12px; padding:16px 18px;"></p>
 
       <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
         <span class="timer-pill" id="timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/></svg><span id="timer-text">0:00</span></span>
@@ -452,7 +452,7 @@ Rohan is 4 more than twice Meera"></textarea>
       var t = document.createElement('div');
       t.id = 'wp-toast';
       t.textContent = msg;
-      t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;background:#2b2620;color:#faf5ea;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:88%;text-align:center;';
+      t.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;background:#2b2620;color:#faf5ea;padding:12px 22px;border-radius:12px;font-weight:700;font-size:16.1px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:88%;text-align:center;';
       document.body.appendChild(t);
       setTimeout(function () { t.style.opacity = '0'; t.style.transition = 'opacity .4s'; }, 3400);
       setTimeout(function () { t.remove(); }, 3900);
@@ -758,12 +758,12 @@ Rohan is 4 more than twice Meera"></textarea>
       box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.3); }
     #kidpad.show { display: block; }
     #kidpad .kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    #kidpad button { min-height: 54px; font-size: 24px; font-weight: 800; border: 0; border-radius: 12px;
+    #kidpad button { min-height: 54px; font-size:27.6px; font-weight: 800; border: 0; border-radius: 12px;
       background: #faf5ea; color: #2b2620; font-family: inherit; cursor: pointer;
       touch-action: manipulation; user-select: none; -webkit-user-select: none; }
     #kidpad button:active { transform: translateY(2px); background: #f2d8a7; }
-    #kidpad .kw { background: #e9e2d4; font-size: 21px; }
-    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size: 20px; letter-spacing: 0.4px; }
+    #kidpad .kw { background: #e9e2d4; font-size:24.1px; }
+    #kidpad .kgo { background: #2a9d8f; color: #fff; font-size:23.0px; letter-spacing: 0.4px; }
   </style>
   <div id="kidpad" aria-hidden="true">
     <div class="kgrid">
