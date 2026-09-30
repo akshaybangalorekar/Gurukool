@@ -220,8 +220,10 @@
     links.forEach(function (l) {
       html += '<a href="' + l.href + '"' + (l.key === active ? ' class="is-active"' : '') + '>' + l.label + '</a>';
     });
-    html += '</nav></div>';
+    html += '</nav><button class="navsync" id="nav-sync" title="Sync now" aria-label="Sync now">\u2601\ufe0f</button></div>';
     nav.innerHTML = html;
+    var sb = document.getElementById('nav-sync');
+    if (sb) sb.addEventListener('click', function () { forceSync(sb); });
     refreshNav();
   }
 
@@ -435,8 +437,38 @@
     return true;
   }
 
+  /* ---------- \u2601\ufe0f force-sync (the cloud button in the top nav) ---------- */
+  function forceSync(btn) {
+    if (!window.ChampSync) return;
+    if (!ChampSync.ghCfg()) {
+      if (btn) {
+        btn.textContent = '\u26a0\ufe0f';
+        btn.title = 'Cloud sync is not set up on this device yet — a parent can set it up in the Admin Console (Gurukool home page).';
+        setTimeout(function () { btn.textContent = '\u2601\ufe0f'; }, 3000);
+      }
+      return;
+    }
+    if (btn) { btn.textContent = '\u23f3'; btn.title = 'Syncing\u2026'; }
+    ChampSync.sync({
+      silent: true, getSq: null, getOc: null,
+      onMerged: function (sq, oc) {
+        try {
+          if (window.MISSION && window.MISSION.M && window.MISSION.M.running) return;   /* never disturb a live mission */
+          if (oc && OC.setState && OC.STATE !== oc) OC.setState(oc);
+          if (typeof window.GK_REFRESH === 'function') { try { window.GK_REFRESH(); } catch (e) {} }
+        } catch (e) {}
+      }
+    }).then(function (r) {
+      if (!btn) return;
+      btn.textContent = (r === 'ok') ? '\u2705' : '\u274c';
+      btn.title = (r === 'ok') ? 'Synced — progress up to date!' : 'Sync problem — it will retry automatically';
+      setTimeout(function () { btn.textContent = '\u2601\ufe0f'; }, 3000);
+    });
+  }
+
   window.OC = {
     STATE: STATE,
+    forceSync: forceSync,
     switchChild: switchChild,
     setState: setState,
     readProfiles: readProfiles,

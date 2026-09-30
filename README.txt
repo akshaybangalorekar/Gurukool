@@ -83,6 +83,15 @@ Recent changes (round 6 — v6)
   cloud sync with the same GitHub locker (owner/repo/token), then
   enter the child's name on the Gurukool home page.
 
+Recent changes (round 7 — v7)
+------------------------
+- NEW force-sync cloud button (☁️): Math-Champ has it in the top nav on
+  every page (after Dashboard); Science-Champ has it in the home top bar
+  (next to the sound button). One tap pulls the latest progress from the
+  family cloud, merges it, shows it on screen and pushes everything back.
+  The button shows ⏳ while syncing, ✅ when done, ⚠️ if cloud sync is not
+  set up on that device (a parent can set it up in the Admin Console).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

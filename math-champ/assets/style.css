@@ -522,3 +522,8 @@ footer q { font-style: italic; }
     grid-template-columns: 1fr !important;
   }
 }
+
+/* force-sync cloud button in the top nav */
+.navsync { background: var(--surface-2); color: var(--ink-dim); border: 1px solid var(--border); border-radius: 10px; padding: 6px 11px; font-size: 16.5px; line-height: 1; cursor: pointer; margin-left: 8px; transition: all .15s ease; }
+.navsync:hover { background: var(--accent-dim); color: var(--accent); }
+.navsync:active { transform: scale(.94); }
