@@ -92,6 +92,15 @@ Recent changes (round 7 — v7)
   The button shows ⏳ while syncing, ✅ when done, ⚠️ if cloud sync is not
   set up on that device (a parent can set it up in the Admin Console).
 
+Recent changes (round 8 — v8)
+------------------------
+- Math-Champ dashboard: the speed curve now tracks ALL timed activity —
+  word problems (dots) AND Training Mission questions (squares) — so it
+  updates with everything the child does. Speed-Lab drills are left out
+  because they time a whole 10-question round, not one question. The top
+  KPI cards ("Questions solved", "Question accuracy", "Avg solve time")
+  also count both word problems and missions now.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

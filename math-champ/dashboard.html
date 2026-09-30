@@ -57,8 +57,8 @@
       <div class="kpi"><div class="kpi__value" id="k-streak">0</div><div class="kpi__label">Day streak</div></div>
     </div>
     <div class="kpi-row" style="margin-bottom:16px;">
-      <div class="kpi"><div class="kpi__value" id="k-solved">0</div><div class="kpi__label">Word problems solved</div></div>
-      <div class="kpi"><div class="kpi__value" id="k-acc">–</div><div class="kpi__label">Word-problem accuracy</div></div>
+      <div class="kpi"><div class="kpi__value" id="k-solved">0</div><div class="kpi__label">Questions solved</div></div>
+      <div class="kpi"><div class="kpi__value" id="k-acc">–</div><div class="kpi__label">Question accuracy</div></div>
       <div class="kpi"><div class="kpi__value" id="k-time">–</div><div class="kpi__label">Avg solve time</div></div>
     </div>
     <div class="card card--hero" style="margin-bottom:26px;">
@@ -74,14 +74,14 @@
       <p class="section-label">Your speed curve — it should slope DOWN</p>
       <div id="chart-empty" class="empty-note" style="display:none;">
         <b>No timed attempts yet</b>
-        Solve a few word problems and your speed curve will appear here.
-        Every dot is one attempt — champions watch their dots climb down the chart.
+        Solve word problems or training missions and your speed curve will appear here.
+        Every mark is one question — champions watch their marks climb down the chart.
         <div style="margin-top:14px;"><a class="btn btn--primary" href="word-problems.html" style="text-decoration:none;">Solve my first problem</a></div>
       </div>
       <div class="chart-box" id="chart-box" style="display:none;">
         <canvas id="time-chart" height="260"></canvas>
         <p class="small muted" style="margin:10px 0 0; text-align:center;">
-          Each dot = one word problem attempt (time taken). Green dots = correct. The dashed line = the Olympian target. The line through the dots is your trend — downward is victory.
+          Each mark = one timed question from anywhere in Math-Champ — dots are word problems, squares are training missions. Green = correct. The dashed line = the Olympian target. The trend line should slope DOWN as you get faster.
         </p>
       </div>
     </section>
@@ -152,7 +152,8 @@
     var el = function (id) { return document.getElementById(id); };
 
     /* ---------- KPIs ---------- */
-    var words = S.attempts.filter(function (a) { return a.kind === 'word'; });
+    /* every timed activity counts: word problems + training missions */
+    var words = S.attempts.filter(function (a) { return a.kind === 'word' || a.kind === 'mission'; });
     var wordsCorrect = words.filter(function (a) { return a.correct; });
     var lv = OC.levelOf(S.xp);
 
@@ -171,7 +172,8 @@
       : 'You’ve reached the highest rank. Legendary — now defend it!';
 
     /* ---------- time chart ---------- */
-    var chartData = words.map(function (a, i) { return { t: a.timeSec, ok: a.correct, target: a.targetSec, n: i + 1 }; });
+    var chartData = words.map(function (a, i) { return { t: a.timeSec, ok: a.correct, target: a.targetSec || 60, n: i + 1, kind: a.kind }; });
+    window.__CHART__ = chartData;   /* test hook */
 
     function drawChart() {
       var canvas = el('time-chart');
@@ -232,7 +234,8 @@
       /* dots */
       chartData.forEach(function (d, i) {
         ctx.beginPath();
-        ctx.arc(x(i), y(d.t), 6, 0, Math.PI * 2);
+        if (d.kind === 'mission') ctx.rect(x(i) - 5, y(d.t) - 5, 10, 10);   /* missions = squares */
+        else ctx.arc(x(i), y(d.t), 6, 0, Math.PI * 2);                       /* word problems = dots */
         ctx.fillStyle = d.ok ? '#047857' : '#b45309';
         ctx.fill();
         ctx.strokeStyle = '#fffdf7'; ctx.lineWidth = 2; ctx.stroke();
