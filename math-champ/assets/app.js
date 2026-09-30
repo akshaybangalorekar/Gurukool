@@ -506,7 +506,7 @@
    IDENTICAL COPY embedded in Math-Champ (assets/app.js) and ScienceQuest.
    One tap on EITHER champ syncs BOTH to the family's GitHub repo and downloads
    a dated local backup file. Merge rules: progress is never destroyed.
-   Cloud file format: { champSync: 3, sq: <ScienceQuest state>, oc: <Math-Champ state>, ocs: { childName: <Math-Champ state> } }
+   Cloud file format: { champSync: 4, sq: <ScienceQuest state>, oc: <Math-Champ state>, ocs: { childName: <Math-Champ state> }, mc: <Mind-Champ state>, mcs: { childName: <Mind-Champ state> } }
    Older formats (science-only {profiles:...}, legacy single-profile {xp:...}) still load. */
 window.ChampSync = (function () {
   'use strict';
@@ -574,28 +574,58 @@ window.ChampSync = (function () {
   var PROFILES_KEY = 'oc_profiles';
   function readProfiles() { try { var p = JSON.parse(localStorage.getItem(PROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
   function writeProfiles(p) { try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+  var MC_KEY = 'mc_state', MPROFILES_KEY = 'mc_profiles';
+  function readMCProfiles() { try { var p = JSON.parse(localStorage.getItem(MPROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
+  function writeMCProfiles(p) { try { localStorage.setItem(MPROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+  function uniqList(arr) { var o = {}, out = []; (arr || []).forEach(function (x) { if (!o[x]) { o[x] = 1; out.push(x); } }); return out; }
+  function mergeMC(a, b) {
+    if (!b || typeof b !== 'object' || !b.cases) return a;
+    if (!a || !a.cases) return b;
+    var out = JSON.parse(JSON.stringify(b));
+    out.xp = Math.max(a.xp || 0, b.xp || 0);
+    out.name = ((b.xp || 0) > (a.xp || 0)) ? (b.name || a.name || '') : (a.name || b.name || '');
+    out.techniques = uniqList((a.techniques || []).concat(b.techniques || []));
+    out.journal = uniqList((a.journal || []).concat(b.journal || []));
+    for (var k in a.cases) {
+      var ac = a.cases[k], bc = out.cases[k] = out.cases[k] || { done: false, stars: 0, used: [], journal: [] };
+      bc.done = bc.done || !!ac.done;
+      bc.stars = Math.max(bc.stars || 0, ac.stars || 0);
+      bc.used = uniqList((bc.used || []).concat(ac.used || []));
+      bc.journal = uniqList((bc.journal || []).concat(ac.journal || []));
+    }
+    if ((a.streak && a.streak.count || 0) > (out.streak && out.streak.count || 0)) out.streak = a.streak;
+    out.pin = out.pin || a.pin || '';
+    return out;
+  }
 
-  /* cloud file carries EVERY child's maths progress: { champSync: 3, sq, oc, ocs } */
-  function payload(sq, oc) {
+  /* cloud file carries every champ + every child: { champSync: 4, sq, oc, ocs, mc, mcs } */
+  function payload(sq, oc, mc) {
     var ocs = readProfiles();
     var n = (oc && oc.name ? oc.name : '').trim().toLowerCase();
     if (n) ocs[n] = oc;
-    return { champSync: 3, sq: sq || null, oc: oc || null, ocs: ocs };
+    var mcs = readMCProfiles();
+    var mn = (mc && mc.name ? mc.name : '').trim().toLowerCase();
+    if (mn) mcs[mn] = mc;
+    return { champSync: 4, sq: sq || null, oc: oc || null, ocs: ocs, mc: mc || null, mcs: mcs };
   }
 
   /* understands the current format plus every older one */
   function parseRemote(txt) {
     var o = JSON.parse(txt);
-    if (o && (o.champSync === 3 || o.champSync === 2)) {
+    if (o && (o.champSync === 4 || o.champSync === 3 || o.champSync === 2)) {
       var ocs = {}, k;
       if (o.ocs && typeof o.ocs === 'object') for (k in o.ocs) { var v = o.ocs[k]; if (v && typeof v === 'object' && v.attempts) ocs[String(k).toLowerCase()] = v; }
       var onc = (o.oc && o.oc.name ? o.oc.name : '').trim().toLowerCase();
       if (o.oc && o.oc.attempts && !ocs[onc]) ocs[onc || 'current'] = o.oc;
-      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null };
+      var mcs = {};
+      if (o.mcs && typeof o.mcs === 'object') for (k in o.mcs) { var mv = o.mcs[k]; if (mv && typeof mv === 'object' && mv.cases) mcs[String(k).toLowerCase()] = mv; }
+      var mcn = (o.mc && o.mc.name ? o.mc.name : '').trim().toLowerCase();
+      if (o.mc && o.mc.cases && !mcs[mcn]) mcs[mcn || 'current'] = o.mc;
+      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null, mcs: mcs, mc: (o.mc && o.mc.cases) ? o.mc : null };
     }
-    if (o && o.profiles) return { sq: o, oc: null, ocs: {} };
-    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {} };
-    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2 }; }
+    if (o && o.profiles) return { sq: o, oc: null, ocs: {}, mcs: {}, mc: null };
+    if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {}, mcs: {}, mc: null };
+    if (o && o.attempts) { var c2 = {}; c2[(o.name ? o.name : 'current').trim().toLowerCase()] = o; return { sq: null, oc: o, ocs: c2, mcs: {}, mc: null }; }
     return null;
   }
 
@@ -616,13 +646,16 @@ window.ChampSync = (function () {
     } catch (e) { return false; }
   }
 
-  function mergeInto(pr, getSq, getOc) {
+  function mergeInto(pr, getSq, getOc, getMc) {
     var sq = getSq ? getSq() : readLS(SQ_KEY);
     var oc = getOc ? getOc() : readLS(OC_KEY);
+    var mc = getMc ? getMc() : readLS(MC_KEY);
     if (pr) {
       if (pr.legacy && sq && sq.profiles) mergeProfile(sq.profiles[sq.current || 'p1'], pr.legacy);
       else if (pr.sq && sq && sq.profiles) mergeSQ(sq, pr.sq);
       else if (pr.sq && !sq) sq = pr.sq;
+      var ccName = '';
+      try { ccName = (localStorage.getItem('cc_name') || '').trim().toLowerCase(); } catch (e) {}
       /* maths: merge EVERY child's profile by name, then make the
          child named on this device (cc_name) the active one */
       var curName = (oc && oc.name ? oc.name : '').trim().toLowerCase();
@@ -633,19 +666,31 @@ window.ChampSync = (function () {
       for (k in local) merged[k] = remote[k] ? mergeOC(local[k], remote[k]) : local[k];
       for (k in remote) if (!merged[k]) merged[k] = remote[k];
       if (Object.keys(merged).length) {
-        var ccName = '';
-        try { ccName = (localStorage.getItem('cc_name') || '').trim().toLowerCase(); } catch (e) {}
         var active = (ccName && merged[ccName]) ? ccName : (curName && merged[curName] ? curName : Object.keys(merged)[0]);
         oc = merged[active];
         writeProfiles(merged);
       } else if (pr.oc && oc && oc.attempts) { oc = mergeOC(oc, pr.oc); }
       else if (pr.oc && !oc) { oc = pr.oc; }
+      /* mind-champ: the same per-child merge */
+      var mcur = (mc && mc.name ? mc.name : '').trim().toLowerCase();
+      var mlocal = readMCProfiles();
+      if (mcur) mlocal[mcur] = mc;
+      var mrem = pr.mcs || {};
+      if (pr.mc && pr.mc.cases && !mrem[(pr.mc.name || 'current').trim().toLowerCase()]) mrem[(pr.mc.name || 'current').trim().toLowerCase()] = pr.mc;
+      var mmerged = {};
+      for (k in mlocal) mmerged[k] = mrem[k] ? mergeMC(mlocal[k], mrem[k]) : mlocal[k];
+      for (k in mrem) if (!mmerged[k]) mmerged[k] = mrem[k];
+      if (Object.keys(mmerged).length) {
+        var mactive = (ccName && mmerged[ccName]) ? ccName : (mcur && mmerged[mcur] ? mcur : Object.keys(mmerged)[0]);
+        mc = mmerged[mactive];
+        writeMCProfiles(mmerged);
+      }
     }
-    return { sq: sq, oc: oc, ocs: null };
+    return { sq: sq, oc: oc, mc: mc };
   }
 
   /* one tap: pull cloud -> merge -> push merged -> download local backup.
-     opts: { silent, getSq, getOc, onMerged(sq,oc), toast(msg), onNeedSetup() }
+     opts: { silent, getSq, getOc, getMc, onMerged(sq,oc,mc), toast(msg), onNeedSetup() }
      returns a Promise resolving to 'setup' | 'ok' | 'error'. */
   function sync(opts) {
     opts = opts || {};
@@ -667,10 +712,10 @@ window.ChampSync = (function () {
       .then(function (txt) {
         var pr = null;
         if (txt) { try { pr = parseRemote(txt); } catch (e) { pr = null; } }
-        merged = mergeInto(pr, opts.getSq, opts.getOc);
-        writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc);
-        if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc); } catch (e) {} }
-        var pl = payload(merged.sq, merged.oc);
+        merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc);
+        writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc);
+        if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc); } catch (e) {} }
+        var pl = payload(merged.sq, merged.oc, merged.mc);
         return fetch(ghUrl(c), {
           method: 'PUT',
           headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' },
@@ -679,7 +724,7 @@ window.ChampSync = (function () {
       })
       .then(function (r) {
         if (!r.ok) throw new Error('GitHub says ' + r.status);
-        if (!opts.silent && opts.toast) opts.toast('✅ Synced — maths + science safe!');
+        if (!opts.silent && opts.toast) opts.toast('✅ Synced — all champs safe!');
         return 'ok';
       })
       .catch(function (err) {
@@ -687,7 +732,7 @@ window.ChampSync = (function () {
         return 'error';
       })
       .then(function (status) {
-        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY)));
+        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY), merged ? merged.mc : readLS(MC_KEY)));
         return status;
       });
   }
@@ -698,13 +743,13 @@ window.ChampSync = (function () {
     var pr = null;
     try { pr = parseRemote(txt); } catch (e) { pr = null; }
     if (!pr) throw new Error('this does not look like a Gurukool backup');
-    var merged = mergeInto(pr, opts.getSq, opts.getOc);
-    writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc);
-    if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc); } catch (e) {} }
+    var merged = mergeInto(pr, opts.getSq, opts.getOc, opts.getMc);
+    writeLS(SQ_KEY, merged.sq); writeLS(OC_KEY, merged.oc); writeLS(MC_KEY, merged.mc);
+    if (opts.onMerged) { try { opts.onMerged(merged.sq, merged.oc, merged.mc); } catch (e) {} }
     return merged;
   }
 
-  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
+  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, mergeMC: mergeMC, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
 })();
 
 /* ---------- AUTO-SAVE — silent cloud sync every 10 minutes ----------

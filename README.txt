@@ -101,6 +101,22 @@ Recent changes (round 8 — v8)
   KPI cards ("Questions solved", "Question accuracy", "Avg solve time")
   also count both word problems and missions now.
 
+Recent changes (round 9 — v9)
+------------------------
+- NEW CHAMP: Mind-Champ (🧠) replaces the LR-Champ placeholder — hands-on
+  reasoning through story cases instead of learn-then-test. World 1 is
+  "Minecraft Quests": 5 quest levels x 5 puzzles (25 total), easy -> boss.
+  Puzzle types: number/word answers, multiple choice, two-part answers
+  (conclusion + the clue that PROVES it), tap-to-order sequences, tap-to-fill
+  logic grids, an interactive balance scale, and a sketch pad for drawing
+  routes. Wrong answers get Socratic hints; "how a champion thinks" shows the
+  worked technique. Each closed case unlocks a named TECHNIQUE into the
+  child's toolkit, plus a guru-note ("how I cracked it") saved to the case
+  file. Same XP + rank ladder, streaks, per-child profiles by name.
+- Cloud sync locker format is now champSync:4 — it carries Mind-Champ
+  progress too (mc + per-child mcs), alongside maths (oc/ocs) and science
+  (sq). Older locker files still load fine.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
@@ -113,7 +129,7 @@ passport.html        Shared Progress Passport: both champs on one
                      page, one combined code (GK1.) to move both,
                      PIN-gated import, file download/load.
 parent-guide.html    The plain-language manual for parents.
-lr-champ/            Logical Reasoning (in construction).
+mind-champ/          Mind-Champ: hands-on reasoning cases (Minecraft Quests world).
 icon.png              The Gurukool ॐ app icon (also used for the
                      iPad home screen and browser tab).
 manifest.json        Home-screen app metadata (standalone, full screen).
