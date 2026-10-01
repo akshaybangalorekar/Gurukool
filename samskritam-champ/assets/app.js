@@ -87,8 +87,12 @@
   }
 
   /* ---------- speech ---------- */
-  var voiceNoteShown = false;
-  function voices() { try { return (window.speechSynthesis && window.speechSynthesis.getVoices()) || []; } catch (e) { return []; } }
+  var voiceNoteShown = false, voiceCache = [], primed = false;
+
+  function refreshVoices() {
+    try { var v = (window.speechSynthesis && window.speechSynthesis.getVoices()) || []; if (v.length) voiceCache = v; } catch (e) {}
+    return voiceCache;
+  }
   function voiceFor(prefixes, list) {
     for (var i = 0; i < prefixes.length; i++) {
       for (var j = 0; j < (list || []).length; j++) {
@@ -98,44 +102,89 @@
     }
     return null;
   }
-  function hasIndianVoice() { var v = voices(); return !!(voiceFor(['hi', 'sa'], v) || voiceFor(['en-in'], v)); }
+  /* iPad Safari often reports NO voices until the speech engine has been used once.
+     A silent "unlock" utterance on the first touch fixes that. */
+  function primeOnce() {
+    if (primed) return;
+    primed = true;
+    try {
+      refreshVoices();
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+      var u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0; u.rate = 1;
+      window.speechSynthesis.speak(u);
+      refreshVoices();
+    } catch (e) {}
+  }
+  try {
+    if (window.speechSynthesis && window.speechSynthesis.addEventListener) {
+      window.speechSynthesis.addEventListener('voiceschanged', function () { refreshVoices(); });
+    }
+  } catch (e) {}
+  document.addEventListener('pointerdown', primeOnce, true);
+  document.addEventListener('touchstart', primeOnce, true);
+
+  function hasIndianVoice() { var v = refreshVoices(); return !!(voiceFor(['hi', 'sa'], v) || voiceFor(['en-in'], v)); }
 
   function sayNote(latin) {
-    /* no usable voice — never leave the child with silence */
     if (!voiceNoteShown) {
       voiceNoteShown = true;
-      toast('\ud83d\udd07 This device has no spoken voice installed — say it like this: \u201c' + (latin || '') + '\u201d. (A parent can add a Hindi voice in iPad Settings \u2192 Accessibility \u2192 Spoken Content \u2192 Voices.)');
+      toast('\ud83d\udd07 I could not hear a voice. Say it like this: \u201c' + (latin || '') + '\u201d. If the iPad is on silent (the side switch) or the volume is down, that also mutes it \u2014 a parent can check both, or add a Hindi voice in Settings \u2192 Accessibility \u2192 Spoken Content \u2192 Voices.');
     } else {
       toast('\ud83d\udd07 Say it like this: \u201c' + (latin || '') + '\u201d');
     }
   }
 
-  /* speak(devText, latinText): use a Hindi/Sanskrit voice for the Devanagari,
-     otherwise read the transliteration with an Indian-English voice, and if
-     there is no voice at all, show the pronunciation key instead of silence. */
+  /* speak(devText, latinText) — always tries hard to be heard */
   function speak(devText, latinText) {
     var synth = window.speechSynthesis;
     var U = window.SpeechSynthesisUtterance;
     if (!synth || !U) { sayNote(latinText || devText); return; }
-    var list = voices();
+    primeOnce();
+    var list = refreshVoices();
     var hindi = voiceFor(['hi', 'sa'], list);
     var en = voiceFor(['en-in', 'en-gb', 'en'], list);
-    var text, u = new U();
+    var fallback = list.length ? list[0] : null;
+    var u = new U();
+    var text;
     if (hindi) { text = devText; u.voice = hindi; u.lang = hindi.lang || 'hi-IN'; }
     else if (en) { text = latinText || devText; u.voice = en; u.lang = en.lang || 'en-IN'; }
+    else if (fallback) { text = latinText || devText; u.voice = fallback; u.lang = fallback.lang || 'en-IN'; }
     else { text = latinText || devText; u.lang = 'en-IN'; }
-    u.text = text;
-    u.rate = 0.8; u.pitch = 1; u.volume = 1;
+    u.text = text; u.rate = 0.8; u.pitch = 1; u.volume = 1;
     var started = false;
     u.onstart = function () { started = true; };
     u.onerror = function () { if (!started) sayNote(latinText || devText); };
-    /* iOS quirk: cancelling right before speak() can silence the new utterance */
     try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) {}
     try { synth.speak(u); } catch (e) { sayNote(latinText || devText); return; }
     setTimeout(function () {
-      try { if (!started && !synth.speaking) sayNote(latinText || devText); } catch (e) {}
+      try {
+        if (!started && !synth.speaking) {
+          var u2 = new U();
+          u2.text = latinText || devText; u2.rate = 0.8; u2.volume = 1;
+          if (fallback) { u2.voice = fallback; u2.lang = fallback.lang || 'en-IN'; } else { u2.lang = 'en-IN'; }
+          u2.onstart = function () { started = true; };
+          u2.onerror = function () { sayNote(latinText || devText); };
+          try { synth.speak(u2); } catch (e) { sayNote(latinText || devText); }
+          setTimeout(function () { if (!started) sayNote(latinText || devText); }, 1200);
+        }
+      } catch (e) {}
     }, 1000);
   }
+
+  /* a parent-facing check: does this device actually speak? */
+  window.skTestVoice = function () {
+    primeOnce();
+    var list = refreshVoices();
+    var hindi = voiceFor(['hi', 'sa'], list);
+    var en = voiceFor(['en-in', 'en-gb', 'en'], list);
+    var who = hindi ? 'a Hindi/Sanskrit voice (' + hindi.name + ')' : (en ? 'an English voice (' + en.name + ')' : (list.length ? 'the device default voice' : 'NO voice at all'));
+    toast('\ud83d\udd0a Testing\u2026 found ' + who + '. Listen now.');
+    speak('नमस्ते। अहं गुरुः अस्मि।', 'namaste. aham guruh asmi.');
+    setTimeout(function () {
+      if (!voiceNoteShown) toast('\u2705 If you heard that, the speaker works! If not, check the iPad side switch (mute) and volume, or add a Hindi voice in Settings.');
+    }, 2600);
+  };
 
   function attrJs(x) {
     /* safe inside a double-quoted onclick attribute: no nested double quotes */
@@ -219,6 +268,7 @@
     var pats = (S.patterns || []).map(function (p) { return '<div class="sk-pattern"><b>' + esc(p.t) + '</b><span>' + esc(p.d) + '</span></div>'; }).join('');
     return '<h1 style="text-align:center">🪔 Samskritam-Champ</h1>' +
       '<p class="sk-lead">Learn Sanskrit the way it is really learned — <b>by talking</b>. The guru speaks, you answer out loud or by tapping. No grammar tables first: patterns appear as you use them.</p>' +
+      '<p style="text-align:center;margin:0 0 14px"><button class="sk-btn sec tiny" onclick="skTestVoice()">\ud83d\udd0a Test the speaker</button></p>' +
       '<div class="sk-grid">' + cards + '</div>' +
       '<a class="sk-treasury" href="#" onclick="skTreasury();return false"><span>📚</span><div><b>My Shabda-Kosha — word treasury</b><span>' + Object.keys(S.words || {}).length + ' words collected · tap to review and quiz yourself</span></div><span class="sk-go">▶</span></a>' +
       (pats ? '<p class="sk-label">🧠 Patterns you discovered</p><div class="sk-patterns">' + pats + '</div>' : '') +

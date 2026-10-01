@@ -288,6 +288,24 @@ Recent changes (round 19 — v19, Phase 4: Eureka moments + book recommendations
 - Maths training areas now say plainly: this is not a test — practice
   is how a discovered trick becomes fast.
 
+Recent changes (round 20 — v20, speaker hardened + Phase 4 complete)
+------------------------
+- SANSKRIT SPEAKER, hardened for iPad Safari:
+    * voices are primed on the first touch (Safari often reports NO
+      voices until the speech engine has been used once);
+    * it listens for voiceschanged and caches the list;
+    * voice order: Hindi/Sanskrit -> Indian English -> any English ->
+      the device's default voice (before, a device with none of the
+      first three stayed silent);
+    * if nothing starts within a second it retries once with the device
+      default, and only then shows the pronunciation key;
+    * a "Test the speaker" button on the Samskritam home (top of the
+      page) reports which voice was found and reminds a parent that a
+      muted iPad (side switch) or low volume silences speech.
+- PHASE 4 COMPLETE: the maths training areas are now framed as
+  Technique Training (not a test) — Mission, Word Problems Lab and
+  Speed Lab all say plainly what they are for.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
