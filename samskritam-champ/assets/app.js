@@ -87,6 +87,11 @@
   }
 
   /* ---------- speech ---------- */
+  /* ---- speaking text preparation ----
+     Visarga (ः) is a soft breath, not a hard stop: rāmaḥ is said "rāmaha".
+     Most device voices swallow it, so we spell it out for them. */
+  function sayDev(t) { return String(t || '').replace(/ः/g, 'ह').replace(/ं/g, 'म्'); }
+  function sayLatin(t) { return String(t || '').replace(/ḥ/g, 'ha').replace(/ṃ/g, 'm').replace(/\u1E25/g, 'ha'); }
   var voiceNoteShown = false, voiceCache = [], primed = false;
 
   function refreshVoices() {
@@ -147,11 +152,13 @@
     var fallback = list.length ? list[0] : null;
     var u = new U();
     var text;
-    if (hindi) { text = devText; u.voice = hindi; u.lang = hindi.lang || 'hi-IN'; }
-    else if (en) { text = latinText || devText; u.voice = en; u.lang = en.lang || 'en-IN'; }
-    else if (fallback) { text = latinText || devText; u.voice = fallback; u.lang = fallback.lang || 'en-IN'; }
-    else { text = latinText || devText; u.lang = 'en-IN'; }
-    u.text = text; u.rate = 0.8; u.pitch = 1; u.volume = 1;
+    var devSay = sayDev(devText), latSay = sayLatin(latinText || devText);
+    if (hindi) { text = devSay; u.voice = hindi; u.lang = hindi.lang || 'hi-IN'; }
+    else if (en) { text = latSay; u.voice = en; u.lang = en.lang || 'en-IN'; }
+    else if (fallback) { text = latSay; u.voice = fallback; u.lang = fallback.lang || 'en-IN'; }
+    else { text = latSay; u.lang = 'en-IN'; }
+    /* pitch 1.5 + a gentle pace = the young, friendly voice of a boy like Krishna */
+    u.text = text; u.rate = 0.82; u.pitch = 1.5; u.volume = 1;
     var started = false;
     u.onstart = function () { started = true; };
     u.onerror = function () { if (!started) sayNote(latinText || devText); };
@@ -161,7 +168,7 @@
       try {
         if (!started && !synth.speaking) {
           var u2 = new U();
-          u2.text = latinText || devText; u2.rate = 0.8; u2.volume = 1;
+          u2.text = latSay; u2.rate = 0.82; u2.pitch = 1.5; u2.volume = 1;
           if (fallback) { u2.voice = fallback; u2.lang = fallback.lang || 'en-IN'; } else { u2.lang = 'en-IN'; }
           u2.onstart = function () { started = true; };
           u2.onerror = function () { sayNote(latinText || devText); };
@@ -180,7 +187,7 @@
     var en = voiceFor(['en-in', 'en-gb', 'en'], list);
     var who = hindi ? 'a Hindi/Sanskrit voice (' + hindi.name + ')' : (en ? 'an English voice (' + en.name + ')' : (list.length ? 'the device default voice' : 'NO voice at all'));
     toast('\ud83d\udd0a Testing\u2026 found ' + who + '. Listen now.');
-    speak('नमस्ते। अहं गुरुः अस्मि।', 'namaste. aham guruh asmi.');
+    speak('नमस्ते! धन्यवादः। अहं गुरुः अस्मि।', 'namaste! dhanyavādaḥ. aham guruḥ asmi.');
     setTimeout(function () {
       if (!voiceNoteShown) toast('\u2705 If you heard that, the speaker works! If not, check the iPad side switch (mute) and volume, or add a Hindi voice in Settings.');
     }, 2600);
@@ -779,7 +786,7 @@
   setInterval(function () { if (ghCfg()) cloudSync(true); }, 180000);
 
   /* test hooks */
-  window.SK = { S: function () { return S; }, switchChild: switchChild, view: function () { return view; }, open: window.skOpen, start: window.skStart,
+  window.SK = { sayDev: sayDev, sayLatin: sayLatin, S: function () { return S; }, switchChild: switchChild, view: function () { return view; }, open: window.skOpen, start: window.skStart,
     choose: window.skChoose, missionDone: window.skMissionDone, treasury: window.skTreasury, quiz: window.skQuiz, quizPick: window.skQuizPick,
     similarity: similarity, words: SK_WORDS, scenes: SK_SCENES, state: function () { return T; } };
 

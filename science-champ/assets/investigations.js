@@ -182,7 +182,8 @@ var INV_LIST = [
       }).join('') + '</div><div class="inv-opts">' + s.items.map(function (it) {
         var used = P.seq.indexOf(it.id) >= 0;
         return '<button class="inv-opt' + (used ? ' used' : '') + '" onclick="invTap(\'' + it.id + '\')">' + it.t + '</button>';
-      }).join('') + '</div><div class="inv-actions"><button class="inv-btn tiny sec" onclick="invUndo()">⌫ undo</button></div>';
+      }).join('') + '</div><div class="inv-actions"><button class="inv-btn" onclick="invCheck()">✓ Check my order</button> <button class="inv-btn tiny sec" onclick="invUndo()">⌫ undo</button></div>' +
+        '<p class="inv-small" id="inv-hintline" style="margin-top:8px">' + (P.seq.length >= s.answer.length ? 'All cards placed — tap Check (or it will check itself).' : 'Place all ' + s.answer.length + ' cards, then tap Check.') + '</p>';
     } else if (s.type === 'draw') {
       h += '<div class="inv-padwrap"><canvas id="inv-pad" class="inv-pad" width="420" height="230"></canvas><br><button class="inv-btn tiny sec" onclick="invClearPad()">🧽 Clear</button></div>' +
         (s.drawPrompt ? '<p class="inv-small" style="text-align:center">' + esc(s.drawPrompt) + '</p>' : '') +
@@ -214,7 +215,22 @@ var INV_LIST = [
   window.invHome = function () { view = { page: 'home' }; render(); };
   window.invTap = function (id) {
     var s = invById(view.id).steps[view.step];
-    if (P.seq.indexOf(id) < 0 && P.seq.length < s.answer.length) { P.seq.push(id); render(); }
+    if (P.seq.indexOf(id) < 0 && P.seq.length < s.answer.length) {
+      P.seq.push(id);
+      render();
+      /* if that was the last card, check it automatically — a child should never be stuck.
+         The guard makes sure the timer cannot fire after the step has moved on. */
+      if (P.seq.length >= s.answer.length) {
+        var invAt = view.id, stepAt = view.step;
+        setTimeout(function () {
+          try {
+            if (view.page !== 'step' || view.id !== invAt || view.step !== stepAt) return;
+            if (stepDone(currentProfile(), invAt, stepAt)) return;
+            window.invCheck();
+          } catch (e) {}
+        }, 700);
+      }
+    }
   };
   window.invUndo = function () { P.seq.pop(); render(); };
   window.invPickClue = function (i) { P.cluePick = i; render(); };
@@ -234,15 +250,22 @@ var INV_LIST = [
 
   function solve(s) {
     var inv = invById(view.id);
+    /* never solve the same step twice (two timers can race) */
+    if (stepDone(currentProfile(), inv.id, view.step)) return;
     var last = (view.step === inv.steps.length - 1);
     mark(inv.id, view.step, last);
     award(10 + (last ? 10 : 0));
     var el = $('inv-note');
     if (el && s.note) el.innerHTML = '<div class="inv-note-inline">🔎 ' + esc(s.note) + '</div>';
     fb('✅ +' + (10 + (last ? 10 : 0)) + ' XP — real investigating!', 'win');
+    /* advance only if the child is still on this very step when the timer fires */
+    var doneId = inv.id, doneStep = view.step;
     setTimeout(function () {
-      if (last) { view = { page: 'home' }; render(); }
-      else { view.step++; P = { wrong: 0, seq: [], cluePick: -1, picked: -1, drawn: false }; render(); }
+      try {
+        if (view.page !== 'step' || view.id !== doneId || view.step !== doneStep) return;
+        if (last) { view = { page: 'home' }; render(); }
+        else { view.step = doneStep + 1; P = { wrong: 0, seq: [], cluePick: -1, picked: -1, drawn: false }; render(); }
+      } catch (e) {}
     }, 2600);
   }
 
@@ -258,7 +281,11 @@ var INV_LIST = [
     var inp = $('inv-in');
     if (s.type === 'order') {
       if (!P.seq.length) { fb('Tap the cards in order first! 🙂'); return; }
-      if (P.seq.join('|') !== s.answer.join('|')) { P.wrong++; fb('Hmm — one card is out of place. Which step must come first?', 'bad'); return; }
+      if (P.seq.join('|') !== s.answer.join('|')) {
+        P.wrong++;
+        fb('Not the right order yet — one or more cards are out of place. Tap ⌫ undo and think about which step must come FIRST. 🔍', 'bad');
+        return;
+      }
       solve(s); return;
     }
     if (!inp || !inp.value.trim()) { fb('Type your answer first! 🙂'); return; }

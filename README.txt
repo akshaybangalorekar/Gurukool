@@ -306,6 +306,25 @@ Recent changes (round 20 — v20, speaker hardened + Phase 4 complete)
   Technique Training (not a test) — Mission, Word Problems Lab and
   Speed Lab all say plainly what they are for.
 
+Recent changes (round 21 — v21, ordering bug + a Krishna-like voice)
+------------------------
+- BUG FIXED (science investigations): ordering questions had NO Check
+  button, so after placing all the cards there was nothing to press and
+  the page looked hung. Now:
+    * there is a "Check my order" button;
+    * the answer is ALSO checked automatically when the last card is
+      placed (so it can never feel stuck);
+    * a wrong order says so kindly and suggests tapping undo and
+      thinking about which step comes first.
+- SANSKRIT VOICE, two improvements:
+    * it now sounds like a young boy (Krishna-like): pitch raised to
+      1.5 and a slightly gentler pace;
+    * VISARGA is now spoken clearly: ḥ is a soft breath, so the app
+      spells it out for the device (धन्यवादः -> धन्यवादह, dhanyavādaḥ ->
+      "dhanyavaadaha"). Anusvara (ं) is spoken as "m".
+  The Test-the-speaker button now says "namaste! dhanyavādaḥ. aham
+  guruḥ asmi." so a parent can hear the visarga fix immediately.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
