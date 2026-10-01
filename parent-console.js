@@ -381,21 +381,88 @@
     renderPlayers();
   }
 
+
+  /* ---------- delete a learner completely (all champs) ---------- */
+  function namesOnDevice() {
+    var seen = {}, out = [];
+    allProfiles().forEach(function (r) { var k = (r.name || '').trim().toLowerCase(); if (k && !seen[k]) { seen[k] = 1; out.push(r.name); } });
+    return out;
+  }
+
+  function deletePlayer(name) {
+    name = String(name || '').trim();
+    if (!name) return;
+    var lv = name.toLowerCase();
+    var typed = window.prompt('Delete ' + name + ' completely?\n\nThis removes ALL of ' + name + "'s progress in every champ on this device (maths, science, mind and Sanskrit). If cloud sync is set up, the deletion also spreads to your other devices on their next sync.\n\nThis CANNOT be undone. Type the name exactly to confirm:", '');
+    if (typed === null) return;
+    if (String(typed).trim().toLowerCase() !== lv) { window.alert('The name did not match, so nothing was deleted.'); return; }
+
+    /* maths */
+    var ocs = read('oc_profiles') || {}, oc = read('oc_state');
+    delete ocs[lv];
+    localStorage.setItem('oc_profiles', JSON.stringify(ocs));
+    if (oc && (oc.name || '').trim().toLowerCase() === lv) localStorage.removeItem('oc_state');
+
+    /* mind */
+    var mcs = read('mc_profiles') || {}, mc = read('mc_state');
+    delete mcs[lv];
+    localStorage.setItem('mc_profiles', JSON.stringify(mcs));
+    if (mc && (mc.name || '').trim().toLowerCase() === lv) localStorage.removeItem('mc_state');
+
+    /* science */
+    var sq = read('sq_v3') || {}, sp = sq.profiles || {}, keep = {}, removed = false;
+    for (var k in sp) { if ((sp[k].name || '').trim().toLowerCase() === lv) removed = true; else keep[k] = sp[k]; }
+    if (removed) {
+      sq.profiles = keep;
+      var ids = Object.keys(keep);
+      if (!ids.length) localStorage.removeItem('sq_v3');
+      else { if (!keep[sq.current]) sq.current = ids[0]; localStorage.setItem('sq_v3', JSON.stringify(sq)); }
+    }
+
+    /* samskritam */
+    var sks = read('sk_profiles') || {}, sk = read('sk_state');
+    delete sks[lv];
+    localStorage.setItem('sk_profiles', JSON.stringify(sks));
+    if (sk && (sk.name || '').trim().toLowerCase() === lv) localStorage.removeItem('sk_state');
+
+    /* a tombstone, so no cloud merge can bring them back */
+    try {
+      if (window.ChampSync && ChampSync.markDeleted) ChampSync.markDeleted(name);
+      else { var d = read('gk_deleted') || {}; d[lv] = Date.now(); localStorage.setItem('gk_deleted', JSON.stringify(d)); }
+    } catch (e) {}
+
+    /* if that was the active player, hand over to someone else (or clear the name) */
+    var cc = '';
+    try { cc = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
+    if (cc.toLowerCase() === lv) {
+      var others = namesOnDevice();
+      try {
+        if (others.length) localStorage.setItem('cc_name', others[0]);
+        else localStorage.removeItem('cc_name');
+      } catch (e) {}
+    }
+
+    renderPlayers();
+    if (typeof window.GK_SYNC_NOW === 'function') { try { window.GK_SYNC_NOW(); } catch (e) {} }
+    window.alert(name + ' was deleted from every champ on this device. If cloud sync is set up, tap Sync now so your other devices remove them too.');
+  }
+
   function renderPlayers() {
     var host = el('pc-players');
     if (!host) return;
     var rows = allProfiles();
     if (!rows.length) { host.innerHTML = '<div class="pc-empty">No players yet — the first name typed on the Gurukool home page creates one.</div>'; return; }
-    var h = '<p class="pc-lead">Every name on this device keeps its own progress. <b>Rename</b> keeps that player\'s XP, stars and notes. To <b>switch</b> players, type the name on the Gurukool home page — or just open that champ.</p>';
+    var h = '<p class="pc-lead">Every name on this device keeps its own progress. <b>Rename</b> keeps that player\'s XP, stars and notes. <b>Delete</b> removes them from every champ on this device — permanently, and it also spreads to your other devices on their next sync. To <b>switch</b> players, type the name on the Gurukool home page.</p>';
     h += rows.map(function (r) {
       return '<div class="pc-row"><b>' + esc(r.name) + '</b><span class="pc-meta">' + esc(r.champ) + ' · ' + r.xp + ' XP</span>' +
         (r.isCurrent ? '<span style="background:#e8f5e9;color:#047857;font-weight:800;border-radius:999px;padding:3px 10px;font-size:14.5px">▶ current player</span>' : '') +
-        '<button class="gk-mini" style="margin-left:auto" onclick="ParentConsole.rename(\'' + r.store + '\',\'' + String(r.key).replace(/'/g, "") + '\',\'' + String(r.name).replace(/'/g, "") + '\')">✏️ rename</button></div>';
+        '<button class="gk-mini" style="margin-left:auto" onclick="ParentConsole.rename(\'' + r.store + '\',\'' + String(r.key).replace(/'/g, "") + '\',\'' + String(r.name).replace(/'/g, "") + '\')">✏️ rename</button>' +
+        '<button class="gk-mini" style="background:#fdecea;border-color:#e57373;color:#b71c1c" onclick="ParentConsole.del(\'' + String(r.name).replace(/'/g, "") + '\')">🗑️ delete</button></div>';
     }).join('');
     host.innerHTML = h;
   }
 
-  window.ParentConsole = { render: renderAll, rename: renamePlayer, players: allProfiles, setChild: function (n) { current = n; renderAll(); } };
+  window.ParentConsole = { render: renderAll, rename: renamePlayer, del: deletePlayer, players: allProfiles, names: namesOnDevice, setChild: function (n) { current = n; renderAll(); } };
 
   /* ---------- wire into admin.html ---------- */
   function build() {

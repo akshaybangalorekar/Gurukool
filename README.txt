@@ -325,6 +325,23 @@ Recent changes (round 21 — v21, ordering bug + a Krishna-like voice)
   The Test-the-speaker button now says "namaste! dhanyavādaḥ. aham
   guruḥ asmi." so a parent can hear the visarga fix immediately.
 
+Recent changes (round 22 — v22, delete a learner)
+------------------------
+- NEW: a Delete button in the Parent Console's "Players on this device"
+  card. Deleting removes that learner from EVERY champ on the device
+  (maths, science, mind and Sanskrit), so a test name or a wrongly
+  typed name can be cleaned up.
+- Deletion is guarded: the parent must type the name exactly, and the
+  console warns that it cannot be undone.
+- If the deleted learner was the active player, the device hands over
+  to another player (or clears the name so the home page asks again).
+- IMPORTANT, because progress MERGES from the cloud: a plain delete
+  would have been resurrected by the next sync. So a deletion now
+  writes a "tombstone" that travels inside the locker (champSync 5
+  gains a del field). Every champ's merge skips tombstoned names, and
+  the push never re-uploads them, so the deletion spreads to the other
+  devices on their next sync and stays deleted.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

@@ -614,6 +614,16 @@ window.ChampSync = (function () {
   var SK_KEY = 'sk_state', SKPROFILES_KEY = 'sk_profiles';
   function readSKProfiles() { try { var p = JSON.parse(localStorage.getItem(SKPROFILES_KEY) || '{}'); return (p && typeof p === 'object' && !Array.isArray(p)) ? p : {}; } catch (e) { return {}; } }
   function writeSKProfiles(p) { try { localStorage.setItem(SKPROFILES_KEY, JSON.stringify(p || {})); } catch (e) {} }
+  var DEL_KEY = 'gk_deleted';
+  function readDeleted() { try { var o = JSON.parse(localStorage.getItem(DEL_KEY) || '{}'); return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {}; } catch (e) { return {}; } }
+  function writeDeleted(o) { try { localStorage.setItem(DEL_KEY, JSON.stringify(o || {})); } catch (e) {} }
+  function markDeleted(name) {
+    var n = String(name || '').trim().toLowerCase();
+    if (!n) return false;
+    var d = readDeleted(); d[n] = Date.now(); writeDeleted(d);
+    return true;
+  }
+  function isDeleted(name) { var n = String(name || '').trim().toLowerCase(); return !!(n && readDeleted()[n]); }
   function mergeSK(a, b) {
     if (!b || typeof b !== 'object' || !b.scenes) return a;
     if (!a || !a.scenes) return b;
@@ -663,16 +673,18 @@ window.ChampSync = (function () {
 
   /* cloud file carries every champ + every learner: { champSync: 5, sq, oc, ocs, mc, mcs, sk, sks } */
   function payload(sq, oc, mc, sk) {
+    var del = readDeleted();
     var ocs = readProfiles();
     var n = (oc && oc.name ? oc.name : '').trim().toLowerCase();
-    if (n) ocs[n] = oc;
+    if (n && !del[n]) ocs[n] = oc;
     var mcs = readMCProfiles();
     var mn = (mc && mc.name ? mc.name : '').trim().toLowerCase();
-    if (mn) mcs[mn] = mc;
+    if (mn && !del[mn]) mcs[mn] = mc;
     var sks = readSKProfiles();
     var sn = (sk && sk.name ? sk.name : '').trim().toLowerCase();
-    if (sn) sks[sn] = sk;
-    return { champSync: 5, sq: sq || null, oc: oc || null, ocs: ocs, mc: mc || null, mcs: mcs, sk: sk || null, sks: sks };
+    if (sn && !del[sn]) sks[sn] = sk;
+    for (var dk in del) { delete ocs[dk]; delete mcs[dk]; delete sks[dk]; }
+    return { champSync: 5, sq: sq || null, oc: oc || null, ocs: ocs, mc: mc || null, mcs: mcs, sk: sk || null, sks: sks, del: del };
   }
 
   /* understands the current format plus every older one */
@@ -689,7 +701,9 @@ window.ChampSync = (function () {
       if (o.sks && typeof o.sks === 'object') for (k in o.sks) { var sv = o.sks[k]; if (sv && typeof sv === 'object' && sv.scenes) sks[String(k).toLowerCase()] = sv; }
       var scn = (o.sk && o.sk.name ? o.sk.name : '').trim().toLowerCase();
       if (o.sk && o.sk.scenes && !sks[scn]) sks[scn || 'current'] = o.sk;
-      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null, mcs: mcs, mc: (o.mc && o.mc.cases) ? o.mc : null, sks: sks, sk: (o.sk && o.sk.scenes) ? o.sk : null };
+      var del = {};
+      if (o.del && typeof o.del === 'object' && !Array.isArray(o.del)) for (k in o.del) del[String(k).toLowerCase()] = o.del[k];
+      return { sq: (o.sq && o.sq.profiles) ? o.sq : null, ocs: ocs, oc: (o.oc && o.oc.attempts) ? o.oc : null, mcs: mcs, mc: (o.mc && o.mc.cases) ? o.mc : null, sks: sks, sk: (o.sk && o.sk.scenes) ? o.sk : null, del: del };
     }
     if (o && o.profiles) return { sq: o, oc: null, ocs: {}, mcs: {}, mc: null, sks: {}, sk: null };
     if (o && typeof o.xp === 'number' && !o.profiles) return { legacy: o, oc: null, ocs: {}, mcs: {}, mc: null, sks: {}, sk: null };
@@ -752,7 +766,7 @@ window.ChampSync = (function () {
       if (Object.keys(mmerged).length) {
         var mactive = (ccName && mmerged[ccName]) ? ccName : (mcur && mmerged[mcur] ? mcur : Object.keys(mmerged)[0]);
         mc = mmerged[mactive];
-        writeMCProfiles(mmerged);
+        writeLS(MPROFILES_KEY, mmerged);
       }
       /* samskritam: the same per-learner merge */
       var scur = (sk && sk.name ? sk.name : '').trim().toLowerCase();
@@ -766,9 +780,46 @@ window.ChampSync = (function () {
       if (Object.keys(smerged).length) {
         var sactive = (ccName && smerged[ccName]) ? ccName : (scur && smerged[scur] ? scur : Object.keys(smerged)[0]);
         sk = smerged[sactive];
-        writeSKProfiles(smerged);
+        writeLS(SKPROFILES_KEY, smerged);
       }
     }
+    /* tombstones: a deleted learner must never come back through a merge.
+       This runs AFTER the merge but BEFORE anything is persisted, and it also
+       filters science profiles (keyed by id, matched by name). */
+    var del = readDeleted();
+    if (pr && pr.del) { for (var dk0 in pr.del) { if (!del[dk0] || pr.del[dk0] > del[dk0]) del[dk0] = pr.del[dk0]; } }
+    writeDeleted(del);
+    try {
+      function gone(o) { return !!(o && o.name && del[String(o.name).trim().toLowerCase()]); }
+      /* maths */
+      if (typeof merged !== 'undefined' && merged) {
+        for (var d1 in del) delete merged[d1];
+        writeLS(PROFILES_KEY, merged);
+        if (gone(oc)) { var mk = Object.keys(merged); oc = mk.length ? merged[mk[0]] : null; }
+      }
+      /* mind */
+      if (typeof mmerged !== 'undefined' && mmerged) {
+        for (var d2 in del) delete mmerged[d2];
+        writeMCProfiles(mmerged);
+        if (gone(mc)) { var mk2 = Object.keys(mmerged); mc = mk2.length ? mmerged[mk2[0]] : null; }
+      }
+      /* samskritam */
+      if (typeof smerged !== 'undefined' && smerged) {
+        for (var d3 in del) delete smerged[d3];
+        writeSKProfiles(smerged);
+        if (gone(sk)) { var mk3 = Object.keys(smerged); sk = mk3.length ? smerged[mk3[0]] : null; }
+      }
+      /* science: profiles are keyed p1/p2, so match on the stored name */
+      if (sq && sq.profiles) {
+        for (var pid in sq.profiles) {
+          var pnm = String((sq.profiles[pid] || {}).name || '').trim().toLowerCase();
+          if (pnm && del[pnm]) { delete sq.profiles[pid]; if (sq.current === pid) sq.current = null; }
+        }
+        var sids = Object.keys(sq.profiles);
+        if (!sq.current || !sq.profiles[sq.current]) sq.current = sids.length ? sids[0] : sq.current;
+        writeLS(SQ_KEY, sq);
+      }
+    } catch (e) {}
     return { sq: sq, oc: oc, mc: mc, sk: sk };
   }
 
@@ -832,7 +883,7 @@ window.ChampSync = (function () {
     return merged;
   }
 
-  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, mergeMC: mergeMC, mergeSK: mergeSK, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
+  return { ghCfg: ghCfg, saveGhCfg: saveGhCfg, mergeOC: mergeOC, mergeSQ: mergeSQ, mergeMC: mergeMC, mergeSK: mergeSK, markDeleted: markDeleted, isDeleted: isDeleted, deletedNames: function () { return Object.keys(readDeleted()); }, parseRemote: parseRemote, payload: payload, backupName: backupName, downloadBackup: downloadBackup, sync: sync, applyBackupText: applyBackupText };
 })();
 
 /* ---------- AUTO-SAVE — silent cloud sync every 10 minutes ----------
