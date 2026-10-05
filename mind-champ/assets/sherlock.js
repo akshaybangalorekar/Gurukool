@@ -260,7 +260,7 @@
         hints: ['Solid clues remove people from your list.',
           'Four are cleared, and five were questioned.',
           'Five take away four leaves how many?'],
-        sol: 'One suspect survives - the arithmetic of elimination. Detectives do not need to be clever about the culprit; they only need to be thorough about crossing off everyone else.' },
+        sol: 'One suspect survives - the arithmetic of elimination. Detectives do not need a flash of inspiration about the culprit; they only need to be thorough about crossing off everyone else.' },
 
       { id: 'q10p3', type: 'clue', xp: 10, title: 'Which crossing-off is solid?',
         q: 'Which clue lets you cross someone off for GOOD - and what makes it solid?',
