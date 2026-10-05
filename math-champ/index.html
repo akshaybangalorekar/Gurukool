@@ -24,7 +24,8 @@
   .gk-primary__ico { font-size: 22px; opacity: .95; }
   .gk-primary b { display: block; font: 800 23px/1.2 Nunito, system-ui, sans-serif; }
   .gk-primary span span { display: block; font-size: 16px; opacity: .92; margin-top: 3px; }
-  .gk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 6px; }
+  .gk-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 6px; }
+  @media (min-width: 700px) { .gk-grid { grid-template-columns: repeat(2, 1fr); } }
   .gk-mode { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px;
     box-shadow: 0 2px 10px rgba(15,23,42,.04); }
   .gk-mode:hover { box-shadow: 0 10px 26px rgba(15,23,42,.09); }
