@@ -145,7 +145,9 @@
     answer: 75, unit: 'km/h',
     know: ['Distance: 150 km', 'Time: 2 hours', 'Average speed = distance divided by time'],
     steps: [
-      { ask: 'What is 150 divided by 2?', ans: 75, note: 'That is the speed per hour.' }
+      { ask: 'How far does the car travel altogether, in kilometres?', ans: 150, note: 'That is the distance.' },
+      { ask: 'How long does the journey take, in hours?', ans: 2, note: 'That is the time.' },
+      { ask: 'So how far does it go in ONE hour? (150 divided by 2)', ans: 75, note: 'That is the average speed.' }
     ],
     hints: ['Speed is a rate: how far in ONE hour.',
       'Distance divided by time gives the average speed.'],
