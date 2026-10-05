@@ -559,6 +559,18 @@ Recent changes (round 30 - v30, batch 1 is complete at eight topics)
   Level 3 the parent console says "Time to ask for the next batch", and
   lists the next eight topics.
 
+Recent changes (round 31 - v31, the site was not deploying)
+------------------------
+- FOUND THE REAL REASON THE APP LOOKED OLD: the GitHub Pages build was
+  failing ("Page build failed"), so Pages kept serving an older deploy.
+  The site had no .nojekyll file, so Pages was running Jekyll over the
+  whole site on every push and choking on something in it.
+  Fix: .nojekyll added at the root, so Pages now serves the files exactly
+  as they are.
+- Also added a version stamp to every local script and stylesheet
+  (?v=31). That defeats both the Pages CDN cache and the iPad Home Screen
+  app cache, so a new push shows up on the next reload.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
