@@ -223,6 +223,7 @@
       { href: 'quests.html', label: 'Quests', key: 'quests' },
       { href: 'mission.html', label: 'Mission', key: 'mission' },
       { href: 'word-problems.html', label: 'Word Problems', key: 'word' },
+      { href: 'olympiad.html', label: 'Olympiad', key: 'oly' },
       { href: 'speed-lab.html', label: 'Speed Lab', key: 'speed' },
       { href: 'toolbox.html', label: 'Toolbox', key: 'toolbox' },
       { href: 'dashboard.html', label: 'Dashboard', key: 'dash' }

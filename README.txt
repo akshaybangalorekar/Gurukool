@@ -374,6 +374,34 @@ Recent changes (round 23 - v23, Phase 5: the learning rhythm)
   (they were missing before), so they can be renamed or deleted like
   every other player.
 
+Recent changes (round 24 - v24, The Olympiad Ladder)
+------------------------
+- NEW PAGE: math-champ/olympiad.html - "The Olympiad Ladder". Real
+  Olympiad-style questions starting at Grade 5 (age 11) and climbing to
+  Grade 7. 32 problems to begin with, across fractions, ratio, percentage,
+  prime numbers, balancing equations, adding and subtracting, logic and
+  multiples, average speed, profit and loss, time, counting, geometry and
+  data. Linked from the maths navigation bar and the maths home page.
+- HOW EACH PROBLEM TEACHES (built to the rule "do not give the answer
+  until he starts thinking"):
+    1. "What do we know?" pulls the DATA out of the words - the facts
+       only, never the method.
+    2. "Guide me step by step" runs a Socratic ladder: one small question
+       at a time, each checked. The ladder never states the final answer.
+    3. Nudges appear after a wrong try; the full worked solution is
+       offered only after a real attempt, and even then he must still
+       type the final answer himself.
+- No problem ever repeats: solved problems are marked and the "Next
+  problem" button serves the next unsolved one at the same grade.
+- Accurate diagrams drawn as SVG (a 10-part bar for the car park, a bar
+  model for the linked-age ratio, and the four congruent 3-4-5 triangles
+  inside a square of side 5, where the shaded area is exactly 1/25).
+- XP for each problem (20 first try, 10 after help, 5 after the worked
+  solution) is recorded through the normal maths log, so it shows on the
+  dashboard and syncs like everything else.
+- Also wired into the learning rhythm: the success sandwich can fire here
+  too, so two hard wrong answers in a row still earns a friendly warm-up.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — The Olympiad Ladder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+  .oly-wrap { max-width: 900px; margin: 0 auto; padding: 20px 16px 60px; }
+  .oly-lead { color: #475569; font-size: 17px; line-height: 1.6; }
+  .oly-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 18px 0 8px; }
+  .oly-tab { font: 800 16px Nunito, system-ui, sans-serif; padding: 10px 16px; border-radius: 999px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; }
+  .oly-tab.on { background: #2a9d8f; border-color: #2a9d8f; color: #fff; }
+  .oly-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+  .oly-card { text-align: left; background: #fff; border: 1px solid #e2e8f0; border-left: 6px solid #2a9d8f; border-radius: 14px; padding: 14px 16px; cursor: pointer; font-family: Nunito, system-ui, sans-serif; }
+  .oly-card:hover { box-shadow: 0 6px 18px rgba(15,23,42,.09); }
+  .oly-card.done { border-left-color: #047857; background: #f0fdf4; }
+  .oly-card b { display: block; font-size: 18px; color: #0f172a; }
+  .oly-chip { display: inline-block; font-size: 13px; font-weight: 800; padding: 3px 9px; border-radius: 999px; background: #eef2ff; color: #3730a3; margin-top: 8px; }
+  .oly-chip.g { background: #ecfdf5; color: #047857; }
+  .oly-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; margin-top: 16px; }
+  .oly-story { background: #f8fafc; border-left: 4px solid #94a3b8; border-radius: 10px; padding: 12px 14px; font-size: 17.5px; line-height: 1.65; color: #1f2937; }
+  .oly-q { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 21px; margin: 16px 0 10px; color: #0f172a; }
+  .oly-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .oly-btn.p { background: #2a9d8f; border-color: #2a9d8f; color: #fff; }
+  .oly-btn.w { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+  .oly-btn:disabled { opacity: .5; }
+  .oly-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .oly-know li { font-size: 17px; line-height: 1.6; margin: 4px 0; }
+  .oly-step { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+  .oly-step p { margin: 0 0 8px; font-size: 17px; font-weight: 700; color: #075985; }
+  .oly-step.done { background: #f0fdf4; border-color: #86efac; }
+  .oly-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 10px 12px; border: 2px solid #cbd5e1; border-radius: 12px; width: 160px; }
+  .oly-fb { font-size: 17px; margin: 10px 0 0; min-height: 24px; font-weight: 700; }
+  .oly-fb.ok { color: #047857; }
+  .oly-fb.no { color: #b45309; }
+  .oly-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .oly-art { text-align: center; margin: 14px 0; }
+  .oly-art figcaption { font-size: 15px; color: #64748b; margin-top: 6px; }
+  .oly-note { font-size: 15.5px; color: #64748b; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+  <div class="oly-wrap">
+    <h1 style="font-family:Baloo 2, Nunito, sans-serif; font-size:32px; margin:6px 0 4px;">🏅 The Olympiad Ladder</h1>
+    <p class="oly-lead">Real Olympiad questions, starting at <b>Grade 5</b> and climbing. Every problem has three helpers, in this order:</p>
+    <ol class="oly-lead" style="margin:8px 0 0 18px;">
+      <li><b>What do we know?</b> pulls the facts out of the words - no method, just the data.</li>
+      <li><b>Guide me step by step</b> asks you small questions, one at a time, and checks each one.</li>
+      <li><b>Nudges</b> if you are stuck, and a full worked solution only after you have had a real go.</li>
+    </ol>
+    <p class="oly-note" style="margin-top:12px;">The answer is never shown before you have tried. That is the whole point.</p>
+    <div class="oly-tabs" id="oly-tabs"></div>
+    <div id="oly-list" class="oly-grid"></div>
+    <div id="oly-panel"></div>
+  </div>
+
+  <script src="../version.js"></script>
+  <script src="../rhythm.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/olympiad.js"></script>
+  <script>
+  (function () {
+    var el = function (id) { return document.getElementById(id); };
+    var cur = null, tries = 0, stepI = 0, knowShown = false, solShown = false;
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    /* ---- answers are checked generously, but never revealed ---- */
+    function fracVal(s) {
+      var m = String(s).trim().match(/^(-?\d+)\s*\/\s*(\d+)$/);
+      if (!m) return null;
+      return (+m[1]) / (+m[2]);
+    }
+    function norm(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/\s+/g, ' '); }
+    function matches(given, want) {
+      var g = norm(given), w = norm(want);
+      if (!g) return false;
+      if (g === w) return true;
+      var gv = fracVal(g), wv = fracVal(w);
+      var gn = parseFloat(g.replace(/[^0-9.\-]/g, '')), wn = parseFloat(w.replace(/[^0-9.\-]/g, ''));
+      var gnum = (gv !== null) ? gv : (isNaN(gn) ? null : gn);
+      var wnum = (wv !== null) ? wv : (isNaN(wn) ? null : wn);
+      if (gnum !== null && wnum !== null && Math.abs(gnum - wnum) < 1e-9) return true;
+      if (g === w + 's' || g + 's' === w) return true;
+      return false;
+    }
+    function solvedSet() {
+      var s = {};
+      (OC.STATE.attempts || []).forEach(function (a) { if (a.kind === 'oly' && a.correct) s[a.id] = true; });
+      return s;
+    }
+    function listFor(grade) {
+      var solved = solvedSet();
+      return OLY.list.filter(function (p) { return grade === 'all' || p.grade === grade; }).map(function (p) {
+        return '<button class="oly-card' + (solved[p.id] ? ' done' : '') + '" onclick="olyOpen(\'' + p.id + '\')">' +
+          '<b>' + (solved[p.id] ? '✅ ' : '') + esc(p.title) + '</b>' +
+          '<span class="oly-chip g">Grade ' + p.grade + '</span> <span class="oly-chip">' + esc(p.topic) + '</span>' +
+          '</button>';
+      }).join('');
+    }
+    var grade = 'all';
+    function renderList() {
+      el('oly-tabs').innerHTML = ['all', 5, 6, 7].map(function (g) {
+        return '<button class="oly-tab' + (String(g) === String(grade) ? ' on' : '') + '" onclick="olyGrade(\'' + g + '\')">' +
+          (g === 'all' ? 'All levels' : 'Grade ' + g) + '</button>';
+      }).join('');
+      var html = listFor(grade);
+      el('oly-list').innerHTML = html || '<p class="oly-note">Nothing here yet.</p>';
+    }
+
+    /* ---------- the pictures ---------- */
+    function art(name) {
+      if (name === 'carpark') {
+        var cells = '';
+        for (var i = 0; i < 10; i++) {
+          var small = i < 3;
+          cells += '<rect x="' + (10 + i * 46) + '" y="20" width="44" height="54" rx="6" fill="' + (small ? '#bae6fd' : '#fde68a') + '" stroke="#64748b" stroke-width="2"/>' +
+            '<text x="' + (32 + i * 46) + '" y="54" font-size="17" font-weight="700" fill="#334155" text-anchor="middle">' + (i + 1) + '</text>';
+        }
+        return '<figure class="oly-art"><svg viewBox="0 0 480 110" style="max-width:480px;width:100%">' + cells +
+          '<text x="10" y="100" font-size="15" fill="#0369a1" font-weight="700">3 spaces in 10: small cars</text>' +
+          '<text x="300" y="100" font-size="15" fill="#b45309" font-weight="700">7 in 10: large cars</text></svg>' +
+          '<figcaption>250 spaces split three tenths small, seven tenths large.</figcaption></figure>';
+      }
+      if (name === 'ageratio') {
+        var parts = [{ n: 'David 35', v: 35, c: '#93c5fd' }, { n: 'Michael 56', v: 56, c: '#fca5a5' }, { n: 'Sara 24', v: 24, c: '#86efac' }];
+        var total = 115, x = 10, out = '';
+        parts.forEach(function (p) {
+          var w = Math.round(460 * p.v / total);
+          out += '<rect x="' + x + '" y="20" width="' + w + '" height="46" fill="' + p.c + '" stroke="#475569" stroke-width="2"/>' +
+            '<text x="' + (x + w / 2) + '" y="49" font-size="16" font-weight="800" fill="#1f2937" text-anchor="middle">' + p.v + '</text>';
+          x += w;
+        });
+        return '<figure class="oly-art"><svg viewBox="0 0 480 90" style="max-width:480px;width:100%">' + out +
+          '<text x="10" y="84" font-size="15" fill="#475569" font-weight="700">David : Michael : Sara = 35 : 56 : 24, and 35 + 56 + 24 = 115</text></svg>' +
+          '<figcaption>Bar model: the three ages as parts of the same 115.</figcaption></figure>';
+      }
+      if (name === 'triangles') {
+        /* four congruent right triangles, legs 3 and 4, inside a square of side 5.
+           inner shaded square has side 1, so the shaded fraction is 1/25. */
+        var S = 60, P = [[1.8, 2.4], [2.6, 1.8], [3.2, 2.6], [2.4, 3.2]];
+        function pt(p) { return (10 + p[0] * S) + ',' + (10 + p[1] * S); }
+        var tri = '';
+        var t1 = [[0, 0], [5, 0], P[0]], t2 = [[5, 0], [5, 5], P[1]], t3 = [[5, 5], [0, 5], P[2]], t4 = [[0, 5], [0, 0], P[3]];
+        [t1, t2, t3, t4].forEach(function (t) {
+          tri += '<polygon points="' + t.map(pt).join(' ') + '" fill="#e0f2fe" stroke="#0f172a" stroke-width="2"/>';
+        });
+        var inner = '<polygon points="' + P.map(pt).join(' ') + '" fill="#f472b6" stroke="#0f172a" stroke-width="2"/>';
+        var side = '<rect x="10" y="10" width="' + (5 * S) + '" height="' + (5 * S) + '" fill="none" stroke="#0f172a" stroke-width="3"/>';
+        return '<figure class="oly-art"><svg viewBox="0 0 340 340" style="max-width:330px;width:100%">' + side + tri + inner +
+          '<text x="' + (10 + 2.5 * S) + '" y="' + (10 + 2.9 * S) + '" font-size="15" font-weight="800" fill="#831843" text-anchor="middle">shaded</text>' +
+          '<text x="' + (10 + 2.5 * S) + '" y="' + (10 + 2.5 * S + 30) + '" font-size="14" font-weight="700" fill="#831843" text-anchor="middle">1 unit</text></svg>' +
+          '<figcaption>Four congruent right triangles (sides 3, 4 and 5) inside a square of side 5. The shaded square is what is left over.</figcaption></figure>';
+      }
+      return '';
+    }
+
+    /* ---------- one problem ---------- */
+    function renderPanel() {
+      if (!cur) { el('oly-panel').innerHTML = ''; return; }
+      var p = cur;
+      var h = '<div class="oly-panel">' +
+        '<button class="oly-btn" onclick="olyBack()">‹ All problems</button>' +
+        '<span class="oly-chip g">Grade ' + p.grade + '</span> <span class="oly-chip">' + esc(p.topic) + '</span>' +
+        '<h2 style="font-family:Baloo 2, Nunito, sans-serif; font-size:26px; margin:10px 0 6px;">' + esc(p.title) + '</h2>' +
+        '<div class="oly-story">' + esc(p.story) + '</div>' +
+        art(p.art) +
+        '<p class="oly-q">' + esc(p.q) + '</p>' +
+        '<div><button class="oly-btn w" id="oly-know-btn" onclick="olyKnow()">🔎 What do we know?</button>' +
+        '<button class="oly-btn" id="oly-guide-btn" onclick="olyGuide()">🧭 Guide me step by step</button></div>' +
+        '<div id="oly-know"></div><div id="oly-steps"></div>' +
+        '<div style="margin-top:14px;"><input class="oly-in" id="oly-in" inputmode="text" autocomplete="off" placeholder="your answer"> ' +
+        '<button class="oly-btn p" onclick="olyCheck()">Check my answer</button></div>' +
+        '<p class="oly-fb" id="oly-fb"></p>' +
+        '<div id="oly-hint"></div><div id="oly-sol"></div>' +
+        '<div id="oly-next"></div>' +
+        '</div>';
+      el('oly-panel').innerHTML = h;
+      var inp = el('oly-in');
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); olyCheck(); } });
+      inp.focus();
+    }
+
+    window.olyOpen = function (id) {
+      cur = OLY.byId(id); tries = 0; stepI = 0; knowShown = false; solShown = false;
+      renderPanel();
+      window.scrollTo({ top: el('oly-panel').offsetTop - 70, behavior: 'smooth' });
+    };
+    window.olyBack = function () { cur = null; renderList(); renderPanel(); };
+    window.olyGrade = function (g) { grade = g; renderList(); };
+
+    window.olyKnow = function () {
+      knowShown = true;
+      el('oly-know').innerHTML = '<div class="oly-know"><b>The data, pulled out of the words:</b><ul>' +
+        cur.know.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul>' +
+        '<p class="oly-note" style="margin:8px 0 0;">That is everything the question GIVES you. Now decide what it ASKS for.</p></div>';
+      el('oly-know-btn').disabled = true;
+    };
+
+    window.olyGuide = function () {
+      stepI = 0;
+      renderStep();
+      el('oly-guide-btn').disabled = true;
+    };
+    function renderStep() {
+      var p = cur, st = p.steps[stepI];
+      if (!st) {
+        el('oly-steps').innerHTML = '<div class="oly-step done"><p>You have every piece now. Put them together and type the final answer below.</p></div>';
+        return;
+      }
+      el('oly-steps').innerHTML = '<div class="oly-step" id="oly-step-box"><p>Step ' + (stepI + 1) + ' of ' + p.steps.length + ': ' + esc(st.ask) + '</p>' +
+        '<input class="oly-in" id="oly-step-in" inputmode="text" autocomplete="off" placeholder="type it"> ' +
+        '<button class="oly-btn p" onclick="olyStepCheck()">Check this step</button>' +
+        '<p class="oly-fb" id="oly-step-fb"></p></div>';
+      var si = el('oly-step-in');
+      si.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); olyStepCheck(); } });
+      si.focus();
+    }
+    window.olyStepCheck = function () {
+      var st = cur.steps[stepI];
+      var v = el('oly-step-in').value;
+      var fb = el('oly-step-fb');
+      if (!norm(v)) { fb.className = 'oly-fb no'; fb.textContent = 'Type something first - a guess is fine.'; return; }
+      if (matches(v, st.ans)) {
+        fb.className = 'oly-fb ok';
+        fb.innerHTML = 'Yes. ' + esc(st.note);
+        stepI++;
+        var box = el('oly-step-box');
+        box.className = 'oly-step done';
+        el('oly-step-in').disabled = true;
+        var btn = box.querySelector('button');
+        if (btn) { btn.textContent = stepI < cur.steps.length ? 'Next step →' : 'Done ✓'; btn.onclick = renderStep; }
+      } else {
+        fb.className = 'oly-fb no';
+        fb.textContent = 'Not yet - read the story again and take just this one piece. You are looking for one number.';
+        el('oly-step-in').value = '';
+        el('oly-step-in').focus();
+      }
+    };
+
+    window.olyCheck = function () {
+      var v = el('oly-in').value;
+      var fb = el('oly-fb');
+      if (!norm(v)) { fb.className = 'oly-fb no'; fb.textContent = 'Type your answer first - then I will tell you if it is right.'; return; }
+      var ok = matches(v, cur.answer);
+      if (ok) {
+        var xp = tries === 0 && !solShown ? 20 : (solShown ? 5 : 10);
+        OC.record({ kind: 'oly', id: cur.id, grade: cur.grade, correct: true, tries: tries + 1, xp: xp, timeSec: 0, targetSec: 0 });
+        fb.className = 'oly-fb ok';
+        fb.innerHTML = 'Correct — and you got there yourself. +' + xp + ' XP.';
+        if (window.Rhythm) Rhythm.note(true);
+        el('oly-next').innerHTML = '<button class="oly-btn p" onclick="olyNext()">Next problem →</button>';
+        renderList();
+        return;
+      }
+      tries++;
+      if (window.Rhythm) Rhythm.note(false);
+      fb.className = 'oly-fb no';
+      if (tries === 1) {
+        fb.textContent = 'Not yet - that is how these feel at first. Press "What do we know?" and take the first step.';
+        hint(cur.hints[0]);
+      } else if (tries === 2) {
+        fb.textContent = 'Still not it. Look at the nudge below and try the ladder, one small step at a time.';
+        hint(cur.hints[1]);
+      } else {
+        fb.textContent = 'Let us walk through it together. Press "Show me the thinking" and follow each step.';
+        hint(cur.hints[1]);
+        if (!solShown) {
+          el('oly-sol').innerHTML = '<button class="oly-btn" id="oly-sol-btn" onclick="olyShowSol()">📖 Show me the thinking</button>';
+        }
+      }
+      OC.record({ kind: 'oly', id: cur.id, grade: cur.grade, correct: false, tries: tries, xp: 0, timeSec: 0, targetSec: 0 });
+    };
+    function hint(text) {
+      if (!text) return;
+      el('oly-hint').innerHTML = '<div class="oly-know"><b>Nudge:</b> ' + esc(text) + '</div>';
+    }
+    window.olyShowSol = function () {
+      solShown = true;
+      el('oly-sol').innerHTML = '<div class="oly-sol"><b>Worked solution</b><p style="margin:8px 0 0;">' + esc(cur.sol) + '</p>' +
+        '<p class="oly-note" style="margin:10px 0 0;">Now type the final answer yourself - you have all the pieces.</p></div>';
+    };
+    window.olyNext = function () {
+      var solved = solvedSet();
+      var pool = OLY.list.filter(function (p) { return !solved[p.id]; });
+      var same = pool.filter(function (p) { return p.grade === cur.grade; });
+      var next = same[0] || pool[0];
+      if (next) window.olyOpen(next.id); else { cur = null; renderList(); el('oly-panel').innerHTML = '<div class="oly-panel"><b>Every problem on the ladder is done. 🏅</b></div>'; }
+    };
+
+    OC.buildNav('oly');
+    renderList();
+  })();
+  </script>
+</body>
+</html>
