@@ -504,6 +504,27 @@ Recent changes (round 27 - v27, four boxes and the first real projects)
   Every step teaches one idea, shows an animation, then asks one question.
 - Animations are hand-drawn SVG (no libraries, works offline).
 
+Recent changes (round 28 - v28, all six projects built)
+------------------------
+- BUILD SOMETHING REAL now has all six projects fully built, each with
+  its own animations:
+      ROCKET to the Moon and Mars  - the ball-throw slider, the launch
+        window with Earth and Mars orbiting, fuel fractions, Mars distance
+      THE PIZZA TRICK              - real areas drawn to scale
+      F1 CORNER SPEED              - a radius slider showing the maximum
+        speed, the square-root secret (double the radius, only 1.4x the
+        speed), the racing line, and worn tyres costing 11 per cent
+      ROLLER COASTER               - the first hill as the energy budget,
+        speed at the bottom (v = square root of 2gh), friction losses, and
+        designing the second hill
+      BRIDGE                       - why triangles never wobble (press push
+        and the square falls over), and how two supports share a load in a
+        ratio (2:1 off centre, 3:1 at a quarter)
+      TENNIS                       - the 45 degree best angle, why topspin
+        dips, aiming 3/4 deep, and a 200 km/h serve giving 0.43 seconds
+  Every step teaches one idea, shows an animation, then asks one question.
+  All six are locked until the skills they need reach Level 2.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

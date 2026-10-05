@@ -165,6 +165,193 @@
     };
   }
 
+
+  /* ---------- animation 4: the F1 corner, with a radius slider ---------- */
+  function f1Curve() {
+    return {
+      html:
+        '<div id="pa-f1"><svg viewBox="0 0 420 240" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="240" fill="#f1f5f9" rx="14"/>' +
+        '<path id="pa-track" d="" fill="none" stroke="#334155" stroke-width="26" stroke-linecap="round"/>' +
+        '<path id="pa-line" d="" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 5"/>' +
+        '<circle id="pa-car" cx="0" cy="0" r="8" fill="#ef4444"/>' +
+        '<text id="pa-vmax" x="16" y="30" fill="#0f172a" font-size="17" font-weight="800" font-family="Nunito,sans-serif"></text>' +
+        '<text id="pa-note" x="16" y="228" fill="#475569" font-size="14" font-weight="700" font-family="Nunito,sans-serif"></text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:12px"><input id="pa-r" type="range" min="20" max="120" step="1" value="50" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">Corner radius: <span id="pa-rv">50</span> m</div></div>',
+      start: function () {
+        var MU = 1.5;                                  /* sticky racing tyres */
+        function draw() {
+          var r = parseFloat(document.getElementById('pa-r').value);
+          document.getElementById('pa-rv').textContent = r;
+          var v = Math.sqrt(MU * 9.8 * r);              /* metres per second */
+          var kmh = Math.round(v * 3.6);
+          /* draw the bend as a quarter circle of the chosen radius, scaled to fit */
+          var scale = Math.min(150 / r, 4.2);
+          var rr = r * scale, cx = 40, cy = 210;
+          document.getElementById('pa-track').setAttribute('d', 'M' + cx + ' ' + cy + ' L' + (cx + 300) + ' ' + cy + ' A' + rr + ' ' + rr + ' 0 0 1 ' + (cx + 300) + ' ' + (cy - 2 * rr));
+          document.getElementById('pa-line').setAttribute('d', 'M' + cx + ' ' + (cy - rr) + ' A' + rr + ' ' + rr + ' 0 0 1 ' + (cx + 300 - rr) + ' ' + (cy - rr));
+          var car = document.getElementById('pa-car');
+          car.setAttribute('cx', (cx + 300 - rr * 0.3).toFixed(1));
+          car.setAttribute('cy', (cy - rr + rr * 0.05).toFixed(1));
+          document.getElementById('pa-vmax').textContent = 'max speed ' + kmh + ' km/h';
+          document.getElementById('pa-note').textContent = 'radius ' + r + ' m  \u00b7  grip 1.5  \u00b7  v = \u221a(grip \u00d7 9.8 \u00d7 radius)';
+        }
+        document.getElementById('pa-r').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
+  /* ---------- animation 5: doubling the radius does not double the speed ---------- */
+  function sqrtSecret() {
+    return {
+      html:
+        '<div id="pa-sqrt"><svg viewBox="0 0 420 230" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="230" fill="#f8fafc" rx="14"/>' +
+        '<line x1="50" y1="190" x2="400" y2="190" stroke="#94a3b8" stroke-width="2"/>' +
+        '<line x1="50" y1="190" x2="50" y2="20" stroke="#94a3b8" stroke-width="2"/>' +
+        '<text x="200" y="215" fill="#475569" font-size="13" font-weight="700" font-family="Nunito,sans-serif" text-anchor="middle">radius (metres)</text>' +
+        '<text x="16" y="110" fill="#475569" font-size="13" font-weight="700" font-family="Nunito,sans-serif" transform="rotate(-90 16 110)" text-anchor="middle">speed</text>' +
+        '<path id="pa-curve" d="" fill="none" stroke="#2a9d8f" stroke-width="3"/>' +
+        '<circle id="pa-d1" cx="0" cy="0" r="5" fill="#1d4ed8"/><circle id="pa-d2" cx="0" cy="0" r="5" fill="#ef4444"/>' +
+        '<text id="pa-sqrt-note" x="210" y="30" fill="#0f172a" font-size="15" font-weight="800" font-family="Nunito,sans-serif" text-anchor="middle"></text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:12px"><input id="pa-rs" type="range" min="20" max="120" step="1" value="30" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">Start radius: <span id="pa-rsv">30</span> m \u00b7 then double it</div></div>',
+      start: function () {
+        var MU = 1.5;
+        function speed(r) { return Math.sqrt(MU * 9.8 * r); }
+        function px(r) { return 50 + (r - 20) / 100 * 340; }
+        function py(v) { return 190 - (v - 15) / 20 * 165; }
+        function draw() {
+          var r0 = parseFloat(document.getElementById('pa-rs').value);
+          document.getElementById('pa-rsv').textContent = r0;
+          var d = '', r;
+          for (r = 20; r <= 120; r += 2) d += (d ? ' L' : 'M') + px(r).toFixed(1) + ' ' + py(speed(r)).toFixed(1);
+          document.getElementById('pa-curve').setAttribute('d', d);
+          var r1 = Math.min(120, r0 * 2);
+          document.getElementById('pa-d1').setAttribute('cx', px(r0)); document.getElementById('pa-d1').setAttribute('cy', py(speed(r0)));
+          document.getElementById('pa-d2').setAttribute('cx', px(r1)); document.getElementById('pa-d2').setAttribute('cy', py(speed(r1)));
+          var factor = (speed(r1) / speed(r0)).toFixed(2);
+          document.getElementById('pa-sqrt-note').textContent = r0 + ' m \u2192 ' + r1 + ' m doubles the radius, and the speed only \u00d7 ' + factor;
+        }
+        document.getElementById('pa-rs').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
+  /* ---------- animation 6: the coaster, hill height against the energy budget ---------- */
+  function coaster() {
+    return {
+      html:
+        '<div id="pa-co"><svg viewBox="0 0 420 240" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="240" fill="#eef2ff" rx="14"/>' +
+        '<path id="pa-hills" d="" fill="none" stroke="#4f46e5" stroke-width="4"/>' +
+        '<circle id="pa-carc" cx="0" cy="0" r="7" fill="#f59e0b"/>' +
+        '<text id="pa-co-v" x="16" y="28" fill="#1e1b4b" font-size="16" font-weight="800" font-family="Nunito,sans-serif"></text>' +
+        '<text id="pa-co-note" x="16" y="228" fill="#4338ca" font-size="14" font-weight="700" font-family="Nunito,sans-serif"></text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:12px"><input id="pa-h2" type="range" min="10" max="60" step="1" value="30" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">Second hill: <span id="pa-h2v">30</span> m (the first hill is 40 m)</div></div>',
+      start: function () {
+        function draw() {
+          var h2 = parseFloat(document.getElementById('pa-h2').value);
+          document.getElementById('pa-h2v').textContent = h2;
+          var H1 = 40, y0 = 210, top = 40;
+          function y(m) { return y0 - m * (y0 - top) / 60; }
+          /* the first hill, a valley, then the second hill of the chosen height */
+          document.getElementById('pa-hills').setAttribute('d',
+            'M20 ' + y0 + ' L60 ' + y(H1) + ' L120 ' + y0 + ' L200 ' + y(h2) + ' L260 ' + y0 + ' L330 ' + y(Math.min(h2, H1) * 0.6) + ' L400 ' + y0);
+          var makes = h2 <= H1;
+          var car = document.getElementById('pa-carc');
+          car.setAttribute('cx', makes ? 200 : 170);
+          car.setAttribute('cy', makes ? y(h2) : y(h2 * 0.92));
+          document.getElementById('pa-co-v').textContent = 'speed at the bottom: ' + Math.round(Math.sqrt(2 * 9.8 * H1) * 3.6) + ' km/h';
+          document.getElementById('pa-co-note').textContent = makes ? 'The car clears the second hill.' : 'The car runs out of energy and rolls back.';
+        }
+        document.getElementById('pa-h2').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
+  /* ---------- animation 7: square versus triangle, and where the load goes ---------- */
+  function bridge() {
+    return {
+      html:
+        '<div id="pa-br"><svg viewBox="0 0 420 250" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="250" fill="#f8fafc" rx="14"/>' +
+        '<g id="pa-square" stroke="#334155" stroke-width="5" fill="none"><rect x="30" y="40" width="110" height="110"/><line x1="30" y1="40" x2="140" y2="150" stroke-dasharray="0" stroke="#cbd5e1" stroke-width="3"/></g>' +
+        '<g id="pa-tri" stroke="#334155" stroke-width="5" fill="none"><polygon points="250,150 340,150 295,40"/></g>' +
+        '<text x="85" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#475569" font-family="Nunito,sans-serif">square</text>' +
+        '<text x="295" y="175" text-anchor="middle" font-size="14" font-weight="800" fill="#475569" font-family="Nunito,sans-serif">triangle</text>' +
+        '<line x1="20" y1="210" x2="400" y2="210" stroke="#94a3b8" stroke-width="4"/>' +
+        '<text id="pa-br-note" x="210" y="238" text-anchor="middle" font-size="14" font-weight="700" fill="#475569" font-family="Nunito,sans-serif">Press push and watch which shape keeps its shape.</text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:10px"><button class="pa-btn" id="pa-push">\ud83d\udca5 Push the top</button>' +
+        '<button class="pa-btn" id="pa-reset">\u21ba Reset</button></div>',
+      start: function () {
+        var sq = document.getElementById('pa-square'), note = document.getElementById('pa-br-note');
+        document.getElementById('pa-push').onclick = function () {
+          sq.setAttribute('transform', 'skewX(-14)');
+          note.textContent = 'The square fell over \u2014 it has no triangles to hold its corners.';
+        };
+        document.getElementById('pa-reset').onclick = function () { sq.removeAttribute('transform'); note.textContent = 'Press push and watch which shape keeps its shape.'; };
+      }
+    };
+  }
+
+  /* ---------- animation 8: the serve, angle against distance ---------- */
+  function tennis() {
+    return {
+      html:
+        '<div id="pa-ten"><svg viewBox="0 0 420 240" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="240" fill="#ecfdf5" rx="14"/>' +
+        '<line x1="20" y1="200" x2="400" y2="200" stroke="#059669" stroke-width="4"/>' +
+        '<path id="pa-ten-path" d="" fill="none" stroke="#0ea5e9" stroke-width="3"/>' +
+        '<path id="pa-ten-spin" d="" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6 4"/>' +
+        '<circle id="pa-ten-ball" cx="30" cy="190" r="6" fill="#fde047" stroke="#a16207" stroke-width="2"/>' +
+        '<text id="pa-ten-v" x="16" y="28" fill="#064e3b" font-size="16" font-weight="800" font-family="Nunito,sans-serif"></text>' +
+        '<text id="pa-ten-note" x="16" y="228" fill="#047857" font-size="14" font-weight="700" font-family="Nunito,sans-serif">blue = flat serve \u00b7 orange = with topspin</text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:12px"><input id="pa-ang" type="range" min="10" max="80" step="1" value="45" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">Serve angle: <span id="pa-angv">45</span>\u00b0</div></div>',
+      start: function () {
+        function draw() {
+          var a = parseFloat(document.getElementById('pa-ang').value);
+          document.getElementById('pa-angv').textContent = a;
+          var rad = a * Math.PI / 180, v = 45;         /* a fast serve, in metres per second */
+          var range = v * v * Math.sin(2 * rad) / 9.8;
+          var scale = Math.min(340 / 110, 3.4);
+          var d = '', x, y, t;
+          for (t = 0; t <= 4; t += 0.08) {
+            x = 30 + v * Math.cos(rad) * t * scale;
+            y = 190 - (v * Math.sin(rad) * t - 4.9 * t * t) * scale;
+            if (y > 200) break;
+            d += (d ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+          }
+          document.getElementById('pa-ten-path').setAttribute('d', d);
+          /* the topspin version: same speed, but it dips early and lands shorter */
+          var d2 = '';
+          for (t = 0; t <= 4; t += 0.08) {
+            x = 30 + v * Math.cos(rad) * t * scale;
+            y = 190 - (v * Math.sin(rad) * t - 4.9 * t * t - 6 * t * t) * scale;
+            if (y > 200) break;
+            d2 += (d2 ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+          }
+          document.getElementById('pa-ten-spin').setAttribute('d', d2);
+          document.getElementById('pa-ten-v').textContent = 'the ball would travel ' + Math.round(range) + ' m if nothing stopped it';
+          document.getElementById('pa-ten-ball').setAttribute('cx', 30); document.getElementById('pa-ten-ball').setAttribute('cy', 190);
+        }
+        document.getElementById('pa-ang').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
   var LIST = [
     { key: 'rocket', icon: '\ud83d\ude80', title: 'Reach the Moon, then Mars', status: 'ready',
       hook: 'Work out how fast a rocket must go \u2014 and the exact moment to launch it.',
@@ -218,18 +405,122 @@
           ans: 2, hint: '10\u00b2 = 100, so two of them are 200. 14\u00b2 = 196. Two hundreds beats one hundred-and-ninety-six \u2014 just.',
           sol: 'Two 10-inch pizzas give 2 \u00d7 \u03c0 \u00d7 25 = 157 sq in. One 14-inch gives \u03c0 \u00d7 49 = 154 sq in. The two small ones win \u2014 but only by three square inches, so the price decides it. Comparing the SQUARES of the widths is the whole trick: 200 beats 196.' }
       ] },
-    { key: 'f1', icon: '\ud83c\udfce\ufe0f', title: 'How fast can an F1 car take a corner?', status: 'soon',
+    { key: 'f1', icon: '\ud83c\udfce\ufe0f', title: 'How fast can an F1 car take a corner?', status: 'ready',
       hook: 'The tighter the corner, the slower you must go \u2014 and the reason is a square root.',
-      needs: ['speed', 'ratio', 'pct'], steps: [] },
-    { key: 'coaster', icon: '\ud83c\udfa2', title: 'Design a roller coaster', status: 'soon',
-      hook: 'How tall must the first hill be for the last one to work? Energy, slope and speed.',
-      needs: ['speed', 'frac', 'pct'], steps: [] },
-    { key: 'bridge', icon: '\ud83c\udfd7\ufe0f', title: 'Build a bridge that holds', status: 'soon',
-      hook: 'Why triangles never wobble, and how to spread a load so nothing snaps.',
-      needs: ['balance', 'ratio'], steps: [] },
-    { key: 'tennis', icon: '\ud83c\udfbe', title: 'The physics of a tennis shot', status: 'soon',
-      hook: 'Why a topspin shot dips, and where to aim a serve you cannot return.',
-      needs: ['speed', 'frac', 'ratio'], steps: [] }
+      needs: ['speed', 'ratio', 'pct'],
+      steps: [
+        { title: 'Why the curve decides',
+          say: 'A car turns because its tyres grip the road. The tighter the corner, the harder the car has to be pulled round \u2014 and past a certain speed the grip runs out and it slides off. Drag the radius slider and watch the maximum speed change.',
+          anim: f1Curve,
+          ask: 'On a 50 metre corner with racing grip, the maximum speed is about 98 km/h. On a 100 metre corner, is the maximum speed higher, lower or the same? Type higher, lower or the same.',
+          ans: 'higher', hint: 'A wider corner means the car is pulled round more gently.',
+          sol: 'A wider corner lets the car go faster. The tyres only have so much grip, and a bigger radius asks less of them \u2014 so a fast corner is a wide one. That is why racing lines cut wide wherever they can.' },
+        { title: 'The square-root secret',
+          say: 'Here is the surprise. If you DOUBLE the radius of a corner, the speed does not double \u2014 it only goes up by the square root of 2, about 1.41 times. Slide it and watch.',
+          anim: sqrtSecret,
+          ask: 'Double the radius and the maximum speed goes up by what factor? Give it to one decimal place.',
+          ans: 1.4, hint: 'The square root of 2 is about 1.41.',
+          sol: 'The speed goes up by \u221a2, about 1.4 times. So a corner twice as wide is only 41 per cent faster. Speeds that follow a square root grow slowly \u2014 which is exactly why engineers chase every centimetre of corner width.' },
+        { title: 'The racing line',
+          say: 'A driver can hug the inside of a corner (short distance, tight radius, slow) or swing wide (longer distance, wide radius, fast). The fastest line is the one that spends the most time at a wide radius.',
+          anim: null,
+          ask: 'Which line allows the HIGHER speed through the corner? Type wide or tight.',
+          ans: 'wide', hint: 'Which one has the bigger radius?',
+          sol: 'The wide line allows the higher speed, because a bigger radius needs less grip for the same speed. Drivers trade a slightly longer path for a much faster one \u2014 that is what a racing line is.' },
+        { title: 'Worn tyres, slower corners',
+          say: 'Tyres wear out, and grip falls with them. If grip drops to 80 per cent of what it was, the speed falls by the square root of 0.8.',
+          anim: null,
+          ask: 'The square root of 0.8 is 0.894. So the corner speed falls by about how many per cent? Round to the nearest whole number.',
+          ans: 11, hint: '0.894 means 89.4 per cent of the old speed. How much is lost?',
+          sol: '100 \u2212 89.4 = 10.6, so about 11 per cent slower. A fifth of the grip costs a tenth of the speed \u2014 again the square root at work.' }
+      ] },
+    { key: 'coaster', icon: '\ud83c\udfa2', title: 'Design a roller coaster', status: 'ready',
+      hook: 'Why the first hill is the whole budget \u2014 and how fast you go at the bottom.',
+      needs: ['speed', 'frac', 'pct'],
+      steps: [
+        { title: 'The first hill is the budget',
+          say: 'A coaster car cannot climb higher than the hill it came down from. Energy does not come from nowhere. Slide the second hill and watch what happens when it is taller than the first.',
+          anim: coaster,
+          ask: 'The first hill is 40 m. Can the car clear a second hill of 45 m? Type 1 for yes, 0 for no.',
+          ans: 0, hint: 'Watch the note at the bottom of the picture.',
+          sol: 'No. The car can never get higher than the hill it started from, because it only has the energy that hill gave it. Every coaster you have ever seen obeys this: the first hill is the tallest.' },
+        { title: 'How fast at the bottom',
+          say: 'Dropping height turns into speed. The formula is v = \u221a(2 \u00d7 9.8 \u00d7 height). A 40 m drop gives a very fast car.',
+          anim: coaster,
+          ask: 'Using v = \u221a(2 \u00d7 9.8 \u00d7 20), what is the speed after a 20 m drop, in metres per second, to one decimal place?',
+          ans: 19.8, hint: '2 \u00d7 9.8 \u00d7 20 = 392, then take the square root.',
+          sol: '\u221a392 = 19.8 m/s, which is about 71 km/h. Notice the height is multiplied by 9.8 twice over \u2014 the 2 and the square root come from the maths of falling.' },
+        { title: 'Friction eats some of it',
+          say: 'Real coasters lose energy to friction and air. If 15 per cent is lost, you only get 85 per cent of the height back on the next hill.',
+          anim: null,
+          ask: 'The first hill is 40 m and 15 per cent of the energy is lost. What is the highest the NEXT hill can be, in metres?',
+          ans: 34, hint: '85 per cent of 40 m.',
+          sol: '85 per cent of 40 is 34 m. That is why a coaster\u2019s hills get shorter as the ride goes on \u2014 friction is quietly taking its cut.' },
+        { title: 'Design it',
+          say: 'Now you are the designer. You have a 50 m first hill and you know you will lose 20 per cent to friction. Every hill after that has to fit inside what is left.',
+          anim: null,
+          ask: 'First hill 50 m, 20 per cent lost. What is the tallest your second hill can be, in metres?',
+          ans: 40, hint: '80 per cent of 50 m.',
+          sol: '80 per cent of 50 is 40 m. You have just designed the shape of a coaster: the tallest hill first, then every hill shorter than the one before it.' }
+      ] },
+    { key: 'bridge', icon: '\ud83c\udfd7\ufe0f', title: 'Build a bridge that holds', status: 'ready',
+      hook: 'Why triangles never wobble, and how two supports share a load.',
+      needs: ['balance', 'ratio'],
+      steps: [
+        { title: 'Why triangles never wobble',
+          say: 'A square frame can be pushed into a diamond \u2014 its corners are free to move. A triangle cannot: once the three sides are fixed, the shape is locked. Press the button and watch.',
+          anim: bridge,
+          ask: 'Which shape holds its shape when you push the top? Type square or triangle.',
+          ans: 'triangle', hint: 'Push it and see which one leans over.',
+          sol: 'The triangle holds. Its three sides fix every angle, so it cannot change shape without a side changing length. That is why every bridge truss and every crane is built from triangles.' },
+        { title: 'Two supports share the load',
+          say: 'Put a weight in the middle of a beam resting on two supports, and each support takes half. Move the weight and the share changes.',
+          anim: null,
+          ask: 'A 600 kg load sits exactly in the middle of a beam on two supports. How many kg does each support take?',
+          ans: 300, hint: 'Half each, because it is in the middle.',
+          sol: '300 kg each. In the middle, the load is shared equally \u2014 the simplest case of the ratio that decides every bridge.' },
+        { title: 'Off centre, and the ratio appears',
+          say: 'Move the load off centre and the two supports stop sharing equally. The nearer support takes more, in proportion to the distances.',
+          anim: null,
+          ask: 'The load sits one third of the way along the beam, so it is twice as close to the left support. If the load is 600 kg, how many kg does the LEFT support take?',
+          ans: 400, hint: 'The left support is twice as close, so it takes twice as much as the right one. The two shares add to 600.',
+          sol: 'The left support takes 400 kg and the right takes 200 kg. Twice as close means twice the share \u2014 that is a ratio of 2 : 1, and it is how engineers work out where to put the piers of a bridge.' },
+        { title: 'Put it together',
+          say: 'You now know the two rules that decide a bridge: triangles for stiffness, and shares in a ratio for strength.',
+          anim: null,
+          ask: 'A 900 kg lorry sits one quarter of the way along a beam, so the left support is three times as close. How many kg does the LEFT support take?',
+          ans: 675, hint: 'The shares are 3 : 1, and they add to 900.',
+          sol: 'The shares are 3 : 1, so the left takes 675 kg and the right 225 kg. Nearest support, biggest share \u2014 always in the ratio of the distances.' }
+      ] },
+    { key: 'tennis', icon: '\ud83c\udfbe', title: 'The physics of a tennis shot', status: 'ready',
+      hook: 'The angle that hits furthest, why topspin dips, and how long you have to react.',
+      needs: ['speed', 'frac', 'ratio'],
+      steps: [
+        { title: 'The best angle',
+          say: 'A ball thrown at some angle follows a curve. Too flat and it hits the ground early; too steep and it wastes its speed going up. Slide the angle and find the best one.',
+          anim: tennis,
+          ask: 'At what angle does the ball travel furthest? Give the number of degrees.',
+          ans: 45, hint: 'Slide slowly past 40 and 50 and watch the distance.',
+          sol: '45 degrees. It is the perfect split between going up and going along \u2014 the maths of sin(2\u03b8) is largest exactly at 45 degrees. Every ball sport has this number hiding in it.' },
+        { title: 'Why topspin dips',
+          say: 'A topspin shot spins forward. The spin pulls the ball down, so it lands shorter and lower \u2014 which is exactly why players can hit hard AND keep it in court. Look at the two curves.',
+          anim: tennis,
+          ask: 'Compared with a flat shot at the same speed, does a topspin shot land shorter or further? Type shorter or further.',
+          ans: 'shorter', hint: 'Look at the orange curve against the blue one.',
+          sol: 'The topspin shot lands shorter \u2014 the forward spin adds downward pull. That is the whole trick of modern tennis: hit as hard as you like, and the spin brings it down inside the lines.' },
+        { title: 'Where to aim',
+          say: 'A serve that lands deep is far harder to return than one that lands short. Players aim for the back three quarters of the service box.',
+          anim: null,
+          ask: 'The service box is 6 metres deep and you aim at 3/4 of the way back. How many metres from the net is that?',
+          ans: 4.5, hint: '3/4 of 6.',
+          sol: '4.5 metres from the net. Aiming deep gives your opponent less time \u2014 the same idea as the reaction-time maths in the next step.' },
+        { title: 'The reaction time',
+          say: 'A fast serve is about 200 km/h. The court is 23.77 m long. Work out how long the ball is in the air, and you have the time your opponent has to react.',
+          anim: null,
+          ask: '200 km/h is about 55.6 metres per second. How long does the ball take to cross 23.77 m? Give the answer in seconds to two decimal places.',
+          ans: 0.43, hint: 'Time = distance \u00f7 speed: 23.77 \u00f7 55.6.',
+          sol: '23.77 \u00f7 55.6 = 0.43 seconds. Less than half a second to see it, decide and move \u2014 which is why returning a big serve is one of the hardest things in sport.' }
+      ] }
   ];
 
   window.Projects = {
