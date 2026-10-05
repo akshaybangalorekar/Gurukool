@@ -21,14 +21,10 @@
     { key: 'build', icon: '\ud83d\ude80', label: 'Build', href: 'projects.html' }
   ];
   var MORE = [
+    /* only things that do NOT already live inside one of the four boxes,
+       so nothing is ever listed twice */
     { icon: '\ud83d\udcc8', label: 'Progress dashboard', href: 'dashboard.html' },
-    { icon: '\ud83c\udfaf', label: 'Test me today', href: 'test.html' },
-    { icon: '\ud83d\udcdd', label: 'Word problems', href: 'word-problems.html' },
-    { icon: '\ud83c\udfaf', label: 'Training mission', href: 'mission.html' },
-    { icon: '\u26a1', label: 'Speed Lab', href: 'speed-lab.html' },
-    { icon: '\u26cf\ufe0f', label: 'Technique quests', href: 'quests.html' },
-    { icon: '\ud83c\udfc5', label: 'Olympiad ladder', href: 'olympiad.html' },
-    { icon: '\ud83e\uddf0', label: 'Toolbox', href: 'toolbox.html' },
+    { icon: '\ud83e\uddf0', label: 'Toolbox (formulas)', href: 'toolbox.html' },
     { icon: '\ud83c\udfeb', label: 'Gurukool hub', href: '../index.html' }
   ];
   /* the old page keys, mapped onto the four boxes */
