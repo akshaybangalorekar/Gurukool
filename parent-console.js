@@ -313,10 +313,14 @@
     var n = new Date();
     var mk = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0');
     var flags = [];
-    if (oc && oc.streak && oc.streak.freezeMonth === mk) flags.push('maths');
-    if (mc && mc.streak && mc.streak.freezeMonth === mk) flags.push('mind');
-    if (sk && sk.streak && sk.streak.freezeMonth === mk) flags.push('Sanskrit');
-    if (sq && sq.freezeMonth === mk) flags.push('science');
+    /* check the profile copy AND the live state - either can be the fresher one */
+    var ocRaw = read('oc_state') || {}, mcRaw = read('mc_state') || {}, skRaw = read('sk_state') || {};
+    var sqRaw = read('sq_v3') || {}, sqCur = (sqRaw.profiles || {})[sqRaw.current] || {};
+    function has(o) { return !!(o && o.streak && o.streak.freezeMonth === mk); }
+    if (has(oc) || has(ocRaw)) flags.push('maths');
+    if (has(mc) || has(mcRaw)) flags.push('mind');
+    if (has(sk) || has(skRaw)) flags.push('Sanskrit');
+    if ((sq && sq.freezeMonth === mk) || sqCur.freezeMonth === mk) flags.push('science');
     return flags;
   }
 
