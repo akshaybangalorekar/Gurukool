@@ -368,7 +368,7 @@
       { ask: 'What is the area of ONE triangle?', ans: 6, note: 'Half of 3 times 4.' },
       { ask: 'What is the area of all four triangles together?', ans: 24, note: 'Four times six.' },
       { ask: 'So what area is left shaded?', ans: 1, note: '25 minus 24.' },
-      { ask: 'So what fraction is shaded? Give it like 1/25.', ans: '1/25', note: 'One square unit out of 25.' }
+      { ask: 'So what fraction is shaded? Give it like 3/16.', ans: '1/25', note: 'One square unit out of 25.' }
     ],
     hints: ['Areas are easier than lengths here - count square units.',
       'Find the whole area and the triangles area, then the shaded part is the difference.'],
