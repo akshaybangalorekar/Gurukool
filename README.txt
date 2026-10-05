@@ -437,6 +437,37 @@ Recent changes (round 25 - v25, a calmer Maths front door)
 - The learning rhythm still applies here: two hard wrong answers in a row
   earns a friendly warm-up.
 
+Recent changes (round 26 - v26, one navigation and a session that plans itself)
+------------------------
+- EVERY maths page now shares ONE navigation, grouped by what the child
+  wants to do rather than by app feature:
+      Today      - one prepared session, about an hour
+      Learn      - understand a topic, step by step
+      Practise   - word problems, training mission, and the daily test
+      Play       - technique quests, riddle bazaar, speed lab
+      Challenge  - Olympiad ladder and the hardest word problems
+      Progress   - the dashboard
+  Mission, Quests, Word problems, Speed Lab, Olympiad, Toolbox and the
+  dashboard are all still there - they now sit inside those groups or
+  behind "More". The old pages (mission, quests, word-problems, speed-lab,
+  toolbox, olympiad, dashboard) were remapped onto the same rail, so the
+  whole champ feels like one app instead of eight pages.
+- NEW "TODAY'S SESSION" (session.html + assets/session.js): for the days a
+  child arrives with no agenda. It reads his own history - skill estimates,
+  accuracy per topic and which lessons he has done - and prepares about an
+  hour in five familiar parts: warm up, learn the weakest topic, practise
+  it with fresh questions plus one NEW topic, a short mixed check, and an
+  optional hard Olympiad problem.
+- The next session is prepared the moment he finishes this one, so when he
+  comes back he presses one button. Leaving the page mid-session does not
+  lose his place.
+- The maths home now leads with "Start today's session", with the reason
+  in plain English underneath ("Built from fractions, the one that most
+  needs work, plus one new topic: ratio"), and four plain choices below:
+  Teach me a topic, Test me today, Play a game, Something harder.
+- Session answers are recorded as kind 'session' so the work still counts
+  towards XP, skills and the dashboard.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

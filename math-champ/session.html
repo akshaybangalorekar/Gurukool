@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — Today's session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
+  .s-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .s-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .s-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
+  .s-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f1f5f9; }
+  .s-row:last-child { border-bottom: none; }
+  .s-row .dot { width: 26px; height: 26px; border-radius: 50%; background: #f1f5f9; color: #94a3b8; font: 800 14px Nunito, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; flex: 0 0 26px; }
+  .s-row.now .dot { background: #2a9d8f; color: #fff; }
+  .s-row.done .dot { background: #34d399; color: #fff; }
+  .s-row b { font: 800 17px Nunito, system-ui, sans-serif; color: #0f172a; display: block; }
+  .s-row span { color: #64748b; font-size: 15px; }
+  .s-row .mins { margin-left: auto; color: #94a3b8; font-weight: 700; font-size: 14.5px; white-space: nowrap; }
+  .s-btn { font: 800 17px Nunito, system-ui, sans-serif; padding: 14px 20px; border-radius: 14px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 6px 8px 0 0; }
+  .s-btn.p { background: #2a9d8f; border-color: #2a9d8f; color: #fff; }
+  .s-bar { height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 4px 0 16px; }
+  .s-bar div { height: 100%; background: #2a9d8f; width: 0; transition: width .3s; }
+  .s-clock { color: #64748b; font-weight: 800; font-size: 15px; }
+  .s-q { font: 800 22px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 8px 0 14px; }
+  .s-in { font: 800 21px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 160px; }
+  .s-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .s-fb.ok { color: #047857; } .s-fb.no { color: #b45309; }
+  .s-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .s-know li { font-size: 17px; line-height: 1.6; }
+  .s-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .s-note { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; color: #166534; font-weight: 700; font-size: 15.5px; margin-top: 16px; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+  <main class="s-wrap"><div id="s-view"></div></main>
+  <script src="../version.js"></script>
+  <script src="../rhythm.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/gen.js"></script>
+  <script src="assets/session.js"></script>
+  <script src="../champ-rail.js"></script>
+  <script src="assets/nav.js"></script>
+  <script>
+  (function () {
+    var S = OC.STATE;
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function fracVal(v) { var m = String(v).trim().match(/^(-?\d+)\s*\/\s*(\d+)$/); return m ? (+m[1]) / (+m[2]) : null; }
+    function norm(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/\s+/g, ' '); }
+    function matches(g, w) {
+      var a = norm(g), b = norm(w); if (!a) return false; if (a === b) return true;
+      var av = fracVal(a), bv = fracVal(b), an = parseFloat(a.replace(/[^0-9.\-]/g, '')), bn = parseFloat(b.replace(/[^0-9.\-]/g, ''));
+      var x = (av !== null) ? av : (isNaN(an) ? null : an), y = (bv !== null) ? bv : (isNaN(bn) ? null : bn);
+      return (x !== null && y !== null && Math.abs(x - y) < 1e-9);
+    }
+    MathNav.mount('today'); MathNav.top();
+
+    var rec = Session.today(S);
+    var plan = rec.plan;
+    var si = Math.min(rec.progress || 0, plan.stages.length - 1);
+    var qi = 0, tries = 0, stageRight = 0, startedAt = null, elapsed = 0;
+
+    function stageRows() {
+      return plan.stages.map(function (st, i) {
+        var cls = i < si ? 'done' : (i === si ? 'now' : '');
+        return '<div class="s-row ' + cls + '"><span class="dot">' + (i < si ? '✓' : (i + 1)) + '</span>' +
+          '<span><b>' + esc(st.title) + '</b><span>' + esc(st.blurb || '') + '</span></span>' +
+          '<span class="mins">' + st.mins + ' min</span></div>';
+      }).join('');
+    }
+    function progressPct() { return Math.round(100 * si / plan.stages.length); }
+
+    function ready() {
+      var last = Session.lastResult(S);
+      el('s-view').innerHTML = '<h1 class="s-h1">Today\u2019s session</h1>' +
+        '<p class="s-lead">' + esc(plan.reason) + ' About ' + plan.mins + ' minutes, in five short parts. You do not have to decide anything — just press start.</p>' +
+        '<div class="s-panel">' + stageRows() + '</div>' +
+        '<button class="s-btn p" onclick="Sess.start()">▶ Start the session</button>' +
+        (last ? '<p class="s-lead" style="margin-top:14px">Last session: ' + last.right + ' of ' + last.total + ' questions right.</p>' : '') +
+        '<div class="s-note">Tomorrow\u2019s session is prepared for you as soon as you finish this one.</div>';
+    }
+
+    function renderStage() {
+      var st = plan.stages[si];
+      if (!st) return finish();
+      var head = '<div class="s-bar"><div style="width:' + progressPct() + '%"></div></div>' +
+        '<div class="s-clock">Part ' + (si + 1) + ' of ' + plan.stages.length + ' · ' + esc(st.title) + ' · ' + st.mins + ' min</div>';
+
+      if (st.type === 'learn') {
+        el('s-view').innerHTML = head + '<div class="s-panel" style="margin-top:14px"><p class="s-q">' + esc(st.blurb) + '</p>' +
+          '<p class="s-lead">Open the lesson, work through it, then come back here and carry on. Your place is saved.</p>' +
+          '<a class="s-btn p" style="text-decoration:none" href="teach.html#' + st.topic + '">Open the lesson</a>' +
+          '<button class="s-btn" onclick="Sess.nextStage()">I have done it — carry on →</button></div>';
+        return;
+      }
+      if (st.type === 'challenge') {
+        el('s-view').innerHTML = head + '<div class="s-panel" style="margin-top:14px"><p class="s-q">One hard one</p>' +
+          '<p class="s-lead">This is the optional part. Have a go at a real Olympiad problem — or skip it and finish for today.</p>' +
+          '<a class="s-btn p" style="text-decoration:none" href="olympiad.html">Open the Olympiad ladder</a>' +
+          '<button class="s-btn" onclick="Sess.nextStage()">Finish the session →</button></div>';
+        return;
+      }
+      /* a question stage */
+      var q = st.qs[qi];
+      el('s-view').innerHTML = head + '<div class="s-panel" style="margin-top:14px">' +
+        '<div class="s-clock">Question ' + (qi + 1) + ' of ' + st.qs.length + '</div>' +
+        '<p class="s-q">' + esc(q.q) + '</p>' +
+        '<input class="s-in" id="s-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
+        '<button class="s-btn p" onclick="Sess.check()">Check</button>' +
+        '<button class="s-btn" id="s-know-btn" onclick="Sess.know()">What do we know?</button>' +
+        '<p class="s-fb" id="s-fb"></p><div id="s-know"></div><div id="s-sol"></div></div>';
+      var i = el('s-in');
+      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); Sess.check(); } });
+      i.focus();
+    }
+
+    function finish() {
+      var stats = Session.finish(S);
+      el('s-view').innerHTML = '<h1 class="s-h1">Session complete ✅</h1>' +
+        '<div class="s-panel"><p class="s-q">' + stats.right + ' of ' + stats.total + ' questions right</p>' +
+        '<p class="s-lead">That is a real session — the kind that builds a champion. Stopping here is a smart move, not a small one.</p>' +
+        '<div class="s-note">🔒 Tomorrow\u2019s session is already prepared, built from what you did today.</div>' +
+        '<div style="margin-top:16px"><a class="s-btn p" style="text-decoration:none" href="index.html">Back home</a>' +
+        '<a class="s-btn" style="text-decoration:none" href="teach.html">Teach me a topic</a></div></div>';
+      MathNav.top();
+    }
+
+    window.Sess = {
+      start: function () { si = 0; qi = 0; stageRight = 0; startedAt = Date.now(); renderStage(); },
+      nextStage: function () {
+        Session.markDone(S, si, stageRight, (plan.stages[si].qs || []).length);
+        si++; qi = 0; stageRight = 0; tries = 0;
+        Session.progress(S, si);
+        if (si >= plan.stages.length) finish(); else renderStage();
+      },
+      know: function () {
+        var q = plan.stages[si].qs[qi];
+        el('s-know').innerHTML = '<div class="s-know"><b>What we know:</b><ul>' + q.know.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></div>';
+        el('s-know-btn').disabled = true;
+      },
+      check: function () {
+        var st = plan.stages[si], q = st.qs[qi], v = el('s-in').value, fb = el('s-fb');
+        if (!norm(v)) { fb.className = 's-fb no'; fb.textContent = 'Type your answer first — a guess is fine.'; return; }
+        if (matches(v, q.ans)) {
+          var xp = tries === 0 ? 12 : 6;
+          OC.record({ kind: 'session', id: 'sess:' + q.topic, correct: true, xp: xp, topic: q.topic, timeSec: 0, targetSec: 0 });
+          stageRight++;
+          fb.className = 's-fb ok'; fb.innerHTML = 'Correct. +' + xp + ' XP';
+          if (window.Rhythm) Rhythm.note(true);
+          qi++; tries = 0;
+          if (qi >= st.qs.length) {
+            fb.innerHTML += ' <b>That part is done.</b>';
+            el('s-sol').innerHTML = '<button class="s-btn p" onclick="Sess.nextStage()">Carry on →</button>';
+          } else setTimeout(renderStage, 700);
+          return;
+        }
+        tries++;
+        if (window.Rhythm) Rhythm.note(false);
+        OC.record({ kind: 'session', id: 'sess:' + q.topic, correct: false, xp: 0, topic: q.topic, timeSec: 0, targetSec: 0 });
+        fb.className = 's-fb no';
+        if (tries === 1) fb.textContent = 'Not yet. ' + q.hints[0];
+        else {
+          fb.textContent = 'Let us look at it — then carry on.';
+          el('s-sol').innerHTML = '<div class="s-sol"><b>How it works</b><p style="margin:8px 0 0">' + esc(q.sol) + '</p>' +
+            '<button class="s-btn p" style="margin-top:12px" onclick="Sess.skipOne()">Carry on</button></div>';
+        }
+      },
+      skipOne: function () {
+        var st = plan.stages[si];
+        qi++; tries = 0;
+        if (qi >= st.qs.length) Sess.nextStage(); else renderStage();
+      }
+    };
+    ready();
+  })();
+  </script>
+</body>
+</html>

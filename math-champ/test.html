@@ -46,6 +46,7 @@
   <script src="assets/app.js"></script>
   <script src="assets/gen.js"></script>
   <script src="../champ-rail.js"></script>
+  <script src="assets/nav.js"></script>
   <script>
   (function () {
     var S = OC.STATE;
@@ -111,25 +112,7 @@
       ChampRail.top({ title: 'Math-Champ', icon: '⚡', el: 'gk-head', hub: '../index.html', sync: OC.forceSync,
         info: function () { return { name: (S.name || '').trim(), level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; } });
     }
-    ChampRail.mount({
-      title: 'Math-Champ', brandIcon: '⚡', active: 'test',
-      items: [
-        { key: 'home', icon: '🏠', label: 'Home', href: 'index.html' },
-        { key: 'teach', icon: '📘', label: 'Teach', href: 'teach.html' },
-        { key: 'test', icon: '🎯', label: 'Test', href: 'test.html' },
-        { key: 'practice', icon: '🔁', label: 'Practise', href: 'speed-lab.html' },
-        { key: 'progress', icon: '📈', label: 'Progress', href: 'dashboard.html' }
-      ],
-      moreTitle: 'More', moreNote: 'Everything else, kept out of the way.',
-      more: [
-        { icon: '🎯', label: 'Training Mission', href: 'mission.html' },
-        { icon: '⛏️', label: 'Technique Quests', href: 'quests.html' },
-        { icon: '📝', label: 'Word problems', href: 'word-problems.html' },
-        { icon: '🏅', label: 'Olympiad ladder', href: 'olympiad.html' },
-        { icon: '🧰', label: 'Toolbox', href: 'toolbox.html' },
-        { icon: '📈', label: 'Progress dashboard', href: 'dashboard.html' }
-      ]
-    });
+    MathNav.mount('practise');
     renderHead();
 
     var idx = 0, tries = 0;

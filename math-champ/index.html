@@ -55,9 +55,9 @@
     <p class="gk-hello" id="gk-hello">Welcome.</p>
     <h1 class="gk-ask">What shall we do today?</h1>
 
-    <a class="gk-primary" id="gk-plan" href="teach.html">
+    <a class="gk-primary" id="gk-plan" href="session.html">
       <span class="gk-primary__ico">▶</span>
-      <span><b id="gk-plan-label">Today's plan</b><span id="gk-plan-why">A good next step, chosen for you.</span></span>
+      <span><b id="gk-plan-label">Start today's session</b><span id="gk-plan-why">About an hour, prepared for you.</span></span>
     </a>
 
     <div class="gk-grid">
@@ -69,27 +69,30 @@
       <a class="gk-mode" href="test.html">
         <span class="gk-mode__ico">🎯</span>
         <b>Test me today</b>
-        <span><span>Ten mixed questions. See how you do — just for you.</span></span>
+        <span><span>Ten mixed questions. Just for you — nobody else sees the score.</span></span>
       </a>
-      <a class="gk-mode" href="speed-lab.html">
-        <span class="gk-mode__ico">🔁</span>
-        <b>Practise a skill</b>
-        <span><span>Short drills on one technique, to make it quick.</span></span>
+      <a class="gk-mode" href="play.html">
+        <span class="gk-mode__ico">🎮</span>
+        <b>Play a game</b>
+        <span><span>Technique quests, riddles and timed drills — maths you can mess about with.</span></span>
       </a>
-      <a class="gk-mode" href="olympiad.html">
+      <a class="gk-mode" href="challenge.html">
         <span class="gk-mode__ico">🏅</span>
         <b>Something harder</b>
-        <span><span>Olympiad problems, for when you want a real challenge.</span></span>
+        <span><span>Real Olympiad problems, for when you want to be pushed.</span></span>
       </a>
     </div>
 
-    <p class="gk-hint">Not sure where to start? <b>Today's plan</b> is always a good answer.</p>
+    <p class="gk-hint">No idea what to do? <b>Start today's session</b> — it is already planned out for you.</p>
   </main>
 
   <script src="../version.js"></script>
   <script src="../rhythm.js"></script>
   <script src="assets/app.js"></script>
   <script src="../champ-rail.js"></script>
+  <script src="assets/nav.js"></script>
+  <script src="assets/gen.js"></script>
+  <script src="assets/session.js"></script>
   <script>
   (function () {
     var S = OC.STATE;
@@ -100,12 +103,8 @@
 
     function renderHead() {
       var n = (S.name || '').trim();
-      ChampRail.top({
-        title: 'Math-Champ', icon: '⚡', el: 'gk-head',
-        hub: '../index.html',
-        sync: OC.forceSync,
-        info: function () { return { name: n, level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; }
-      });
+      ChampRail.top({ title: 'Math-Champ', icon: '⚡', el: 'gk-head', hub: '../index.html', sync: OC.forceSync,
+        info: function () { return { name: n, level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; } });
       var hello = document.getElementById('gk-hello');
       var h = new Date().getHours();
       var part = h < 12 ? 'Good morning' : (h < 17 ? 'Good afternoon' : 'Good evening');
@@ -127,47 +126,12 @@
       inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') document.getElementById('gk-name-save').click(); });
     }
 
-    /* ---------- today's plan: one honest, plain-English suggestion ---------- */
-    var TOPIC = { add: 'adding and subtracting', mult: 'multiplication', div: 'division', frac: 'fractions', pct: 'percentages', word: 'word problems', sense: 'number sense', time: 'time', pattern: 'patterns' };
-    function plan() {
-      var att = S.attempts || [];
-      if (!att.length) return { href: 'teach.html', label: 'Teach me a topic', why: 'A good place to start: learn one idea properly, then try it.' };
-      var last = att[att.length - 1].ts || 0;
-      var days = (Date.now() - last) / 86400000;
-      if (days > 2) return { href: 'test.html', label: 'Test me today', why: 'It has been a few days. A short mixed set is a gentle way back in.' };
-      var sk = S.skills || {}, weak = null, wv = 999;
-      for (var k in sk) { if (typeof sk[k] === 'number' && sk[k] < wv) { wv = sk[k]; weak = k; } }
-      if (weak && wv < 65) return { href: 'teach.html#' + weak, label: 'Teach me ' + (TOPIC[weak] || weak), why: (TOPIC[weak] || weak) + ' is the one worth strengthening next.' };
-      if (att.length < 12) return { href: 'teach.html', label: 'Teach me a topic', why: 'One more idea learned properly is worth more than more drilling.' };
-      return { href: 'test.html', label: 'Test me today', why: 'You have been practising well. Let us see where you are.' };
-    }
-    var p = plan();
-    var pl = document.getElementById('gk-plan');
-    pl.href = p.href;
-    document.getElementById('gk-plan-label').textContent = p.label;
-    document.getElementById('gk-plan-why').textContent = p.why;
-
-    /* ---------- the rail ---------- */
-    ChampRail.mount({
-      title: 'Math-Champ', brandIcon: '⚡', brandHref: 'index.html', active: 'home',
-      items: [
-        { key: 'home', icon: '🏠', label: 'Home', href: 'index.html' },
-        { key: 'teach', icon: '📘', label: 'Teach', href: 'teach.html' },
-        { key: 'test', icon: '🎯', label: 'Test', href: 'test.html' },
-        { key: 'practice', icon: '🔁', label: 'Practise', href: 'speed-lab.html' },
-        { key: 'progress', icon: '📈', label: 'Progress', href: 'dashboard.html' }
-      ],
-      moreTitle: 'More',
-      moreNote: 'Everything else, kept out of the way.',
-      more: [
-        { icon: '🎯', label: 'Training Mission', href: 'mission.html' },
-        { icon: '⛏️', label: 'Technique Quests', href: 'quests.html' },
-        { icon: '📝', label: 'Word problems', href: 'word-problems.html' },
-        { icon: '🏅', label: 'Olympiad ladder', href: 'olympiad.html' },
-        { icon: '🧰', label: 'Toolbox', href: 'toolbox.html' },
-        { icon: '📈', label: 'Progress dashboard', href: 'dashboard.html' }
-      ]
-    });
+    /* ---------- the session decides for him ---------- */
+    var d = Session.diagnose(S);
+    document.getElementById('gk-plan-why').textContent = d.reason + ' About an hour.';
+    var rec = Session.today(S);
+    var last = Session.lastResult(S);
+    if (last) document.getElementById('gk-plan-why').textContent += ' Last time: ' + last.right + ' of ' + last.total + ' right.';
 
     renderHead();
   })();
