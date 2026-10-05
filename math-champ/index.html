@@ -15,300 +15,161 @@
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
 <style>
-  /* home-screen full-screen mode: keep content clear of the iPad status bar */
-  body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
-  .topnav, .top { top: env(safe-area-inset-top); }
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .gk-door { max-width: 820px; margin: 0 auto; padding: 30px 22px 70px; }
+  .gk-hello { color: #64748b; font-weight: 700; font-size: 17px; margin: 0 0 4px; }
+  .gk-ask { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 34px; line-height: 1.15; color: #0f172a; margin: 0 0 22px; }
+  .gk-primary { display: flex; align-items: center; gap: 16px; text-decoration: none; background: linear-gradient(135deg, #2a9d8f, #21867a); color: #fff;
+    border-radius: 20px; padding: 20px 22px; box-shadow: 0 14px 34px rgba(42,157,143,.28); margin-bottom: 16px; }
+  .gk-primary__ico { font-size: 22px; opacity: .95; }
+  .gk-primary b { display: block; font: 800 23px/1.2 Nunito, system-ui, sans-serif; }
+  .gk-primary span span { display: block; font-size: 16px; opacity: .92; margin-top: 3px; }
+  .gk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 6px; }
+  .gk-mode { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px;
+    box-shadow: 0 2px 10px rgba(15,23,42,.04); }
+  .gk-mode:hover { box-shadow: 0 10px 26px rgba(15,23,42,.09); }
+  .gk-mode__ico { font-size: 24px; display: block; margin-bottom: 8px; }
+  .gk-mode b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; }
+  .gk-mode span span { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
+  .gk-hint { color: #94a3b8; font-size: 15.5px; margin-top: 22px; }
+  .gk-namebox { background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px; margin-bottom: 22px; }
+  .gk-namebox b { font: 800 19px Nunito, system-ui, sans-serif; color: #0f172a; display: block; margin-bottom: 6px; }
+  .gk-namebox p { color: #64748b; font-size: 15.5px; margin: 0 0 12px; }
+  .gk-namebox input { font: 700 17px Nunito, system-ui, sans-serif; padding: 12px 14px; border: 2px solid #cbd5e1; border-radius: 12px; max-width: 240px; }
+  .gk-namebox button { font: 800 16px Nunito, system-ui, sans-serif; padding: 13px 18px; border-radius: 12px; border: 2px solid #2a9d8f; background: #2a9d8f; color: #fff; cursor: pointer; margin-left: 8px; }
+  .gk-change { background: none; border: none; color: #0f766e; font: 700 14.5px Nunito, system-ui, sans-serif; text-decoration: underline; cursor: pointer; padding: 0; margin-left: 8px; }
 </style>
 </head>
 <body>
-  <header class="topnav" id="topnav"></header>
+  <div id="gk-head"></div>
 
-  <section class="hero fade-in">
-    <p class="hero__hello" id="hero-hello">HELLO, FUTURE OLYMPIAN</p>
-    <h1 class="hero__title">Every maths champion<br>started exactly <em>here</em>.</h1>
-    <p class="hero__sub">
-      Word problems feel like puzzles in a secret language — but you're about to learn
-      to crack that code, one equation at a time. Slow is smooth, smooth is fast.
-    </p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a class="btn btn--primary" href="word-problems.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Start today's problem</a>
-      <a class="btn btn--ghost" href="speed-lab.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-        Speed drills</a>
-      <a class="btn btn--ghost" href="olympiad.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/></svg>
-        Olympiad ladder</a>
-    </div>
-  </section>
-
-  <main class="wrap">
-
-    <!-- ============ name card ============ -->
-    <section class="card card--hero fade-in" style="--i:1; display:flex; gap:22px; align-items:center; flex-wrap:wrap; margin-bottom:34px;">
-      <div style="flex:1 1 340px; min-width:0;">
-        <p class="section-label">Your journey starts now</p>
-        <h2 id="name-ask-title" style="font-family:var(--font-display); font-size:29.9px; margin:0 0 8px;">What should I call you, champion?</h2>
-        <p class="muted" id="name-ask-sub" style="margin:0 0 14px; font-size:17.2px;">Your name goes on this logbook. Everything you do here is saved on this computer only — just for you.</p>
-        <p id="name-greet" style="display:none; margin:0 0 10px; font-size:27.6px; font-family:var(--font-display);"><span id="name-greet-text"></span> <button id="name-edit" type="button" style="background:none; border:none; color:var(--teal, #2a9d8f); font-size:14.9px; text-decoration:underline; cursor:pointer; padding:0 0 0 6px; vertical-align:middle;">✏️ change name</button></p>
-        <div id="name-entry-row" style="display:flex; gap:10px; flex-wrap:wrap;">
-          <input type="text" id="name-input" placeholder="Type your name…" style="max-width:260px;" maxlength="20">
-          <button class="btn btn--teal" id="name-save" type="button">That's me!</button>
-        </div>
-      </div>
-      <div style="flex:0 1 300px; min-width:250px;" id="hero-progress">
-        <div class="kpi-row">
-          <div class="kpi"><div class="kpi__value" id="hp-xp">0</div><div class="kpi__label">Total XP</div></div>
-          <div class="kpi"><div class="kpi__value kpi__value--name" id="hp-level">Rookie</div><div class="kpi__label">Your Rank</div></div>
-        </div>
-        <div style="margin-top:12px; padding-bottom:6px;">
-          <div class="pbar"><div class="pbar__fill" id="hp-bar"></div></div>
-          <p class="timer-target" style="margin:8px 0 2px;" id="hp-next">Next rank: Explorer at 120 XP</p>
-        </div>
-      </div>
+  <main class="gk-door">
+    <section class="gk-namebox" id="gk-namebox" hidden>
+      <b>What should I call you?</b>
+      <p>Your name goes on this logbook. Everything stays on this device, just for you.</p>
+      <input type="text" id="gk-name-input" placeholder="Type your name" maxlength="20" autocomplete="off">
+      <button id="gk-name-save">That is me</button>
     </section>
 
-    <!-- ============ training mission ============ -->
-    <section class="card card--elevated fade-in" style="--i:1; margin-bottom:34px; display:flex; gap:22px; align-items:center; flex-wrap:wrap;">
-      <div style="flex:1 1 340px; min-width:0;">
-        <p class="section-label">Adaptive practice engine — new</p>
-        <h2 style="font-family:var(--font-display); font-size:29.9px; margin:0 0 8px;">🎯 Training Mission</h2>
-        <p class="muted" style="margin:0 0 14px; font-size:17.2px; max-width:520px;">The mission keeps posing questions and watches <b>how</b> you answer — right or wrong, and how fast. Cruise and it quietly climbs to tougher ones. Stumble and it practises the same kind until you crack it.</p>
-        <a class="btn btn--teal" href="mission.html" style="text-decoration:none;">🎯 Start a mission</a>
-        <span class="small muted" style="margin-left:10px;">pick 10, 30 or 60 minutes</span>
-      </div>
-    </section>
+    <p class="gk-hello" id="gk-hello">Welcome.</p>
+    <h1 class="gk-ask">What shall we do today?</h1>
 
-    <!-- ============ why you struggle = reframe ============ -->
-    <section class="fade-in" style="--i:2; margin-bottom:40px;">
-      <p class="section-label">Read this first — it matters</p>
-      <div class="compare">
-        <div class="compare__panel">
-          <div class="compare__head compare__head--me">The voice that holds you back</div>
-          <div class="compare__body" style="font-style:italic;">
-            "Word problems are too hard."<br>
-            "I can't find what the question is asking."<br>
-            "I'm just slow at maths."<br>
-            "I always make silly mistakes."
-          </div>
-        </div>
-        <div class="compare__panel">
-          <div class="compare__head compare__head--champ">What is actually true</div>
-          <div class="compare__body">
-            Word problems are stories — and every story hides numbers you can catch.<br>
-            Nobody is "bad at maths" — you just haven't been shown the <b>steps</b> yet.<br>
-            Fast calculation is a <b>trick</b>, not a talent — every trick can be learned.<br>
-            Every mistake tells you exactly what to fix. That's a superpower.
-          </div>
-        </div>
-      </div>
-    </section>
+    <a class="gk-primary" id="gk-plan" href="teach.html">
+      <span class="gk-primary__ico">▶</span>
+      <span><b id="gk-plan-label">Today's plan</b><span id="gk-plan-why">A good next step, chosen for you.</span></span>
+    </a>
 
-    <div class="divider">✦ ✦ ✦</div>
-
-    <!-- ============ technique quests (hands-on discovery) ============ -->
-    <section class="fade-in" style="--i:3; margin-bottom:44px;">
-      <p class="section-label">Technique quests — discover, don't memorise</p>
-      <a class="card card--elevated" href="quests.html" style="text-decoration:none; color:inherit; display:flex; gap:18px; align-items:center; flex-wrap:wrap; border:2px solid #9ccc65; background:linear-gradient(135deg,#f1f8e9,var(--surface) 70%);">
-        <span style="font-size:2.6rem;">⛏️</span>
-        <span style="flex:1; min-width:220px;">
-          <b style="font-size:1.15rem; display:block;">Technique Quests — The Equation Forge + The Riddle Bazaar</b>
-          <span class="muted" style="display:block; margin-top:4px; line-height:1.45;">Two hands-on quest lines: equations taught as a real balance beam (BODMAS, sign moves, common factors), and the Riddle Bazaar — word problems that train you to read every word and spot what is really being asked. Draw, weigh, prove — then the technique is yours.</span>
-        </span>
-        <span style="font-weight:900; color:var(--accent); font-size:1.4rem;">▶</span>
+    <div class="gk-grid">
+      <a class="gk-mode" href="teach.html">
+        <span class="gk-mode__ico">📘</span>
+        <b>Teach me a topic</b>
+        <span><span>Learn one idea properly, step by step, then practise it.</span></span>
       </a>
-    </section>
+      <a class="gk-mode" href="test.html">
+        <span class="gk-mode__ico">🎯</span>
+        <b>Test me today</b>
+        <span><span>Ten mixed questions. See how you do — just for you.</span></span>
+      </a>
+      <a class="gk-mode" href="speed-lab.html">
+        <span class="gk-mode__ico">🔁</span>
+        <b>Practise a skill</b>
+        <span><span>Short drills on one technique, to make it quick.</span></span>
+      </a>
+      <a class="gk-mode" href="olympiad.html">
+        <span class="gk-mode__ico">🏅</span>
+        <b>Something harder</b>
+        <span><span>Olympiad problems, for when you want a real challenge.</span></span>
+      </a>
+    </div>
 
-    <!-- ============ missions ============ -->
-    <section class="fade-in" style="--i:4; margin-bottom:44px;">
-      <p class="section-label">Your training grounds — sharpen a technique</p>
-      <p class="muted" style="margin:-6px 0 14px">This is not a test. Practice here is how a trick you discovered becomes <b>fast and automatic</b>.</p>
-      <div class="grid" id="mission-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;">
-
-        <a class="card card--elevated card--accent" href="word-problems.html" style="text-decoration:none; color:inherit; display:block;">
-          <span class="tag">Mission 1</span>
-          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Word Problem Lab</h3>
-          <p class="muted" style="margin:0 0 10px; font-size:16.7px;">Turn any story into an equation in 3 steps: Understand, Plan, Solve. Compare your thinking with a champion's method.</p>
-          <span class="stat-strip"><span id="m-word">0 solved</span></span>
-        </a>
-
-        <a class="card card--elevated card--teal" href="speed-lab.html" style="text-decoration:none; color:inherit; display:block;">
-          <span class="tag tag--teal">Mission 2</span>
-          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Speed Lab</h3>
-          <p class="muted" style="margin:0 0 10px; font-size:16.7px;">Lightning multiplication, divisibility detective work and prime-number patrol — beat the clock, grow your streak.</p>
-          <span class="stat-strip"><span id="m-speed">0 drills done</span></span>
-        </a>
-
-        <a class="card card--elevated card--amber" href="toolbox.html" style="text-decoration:none; color:inherit; display:block;">
-          <span class="tag tag--amber">Mission 3</span>
-          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">Champion's Toolbox</h3>
-          <p class="muted" style="margin:0 0 10px; font-size:16.7px;">Every rule on one page: divisibility, primes, calculation shortcuts and the word-problem translator. Peek any time.</p>
-          <span class="stat-strip"><span>Always open</span></span>
-        </a>
-
-        <a class="card card--elevated" href="dashboard.html" style="text-decoration:none; color:inherit; display:block; border-top:4px solid var(--ink);">
-          <span class="tag" style="background:var(--red-dim); color:var(--red);">Mission 4</span>
-          <h3 style="font-family:var(--font-display); font-size:24.1px; margin:10px 0 6px;">My Dashboard</h3>
-          <p class="muted" style="margin:0 0 10px; font-size:16.7px;">Watch your time come down, your accuracy climb, and badges pile up. Proof of how far you've come.</p>
-          <span class="stat-strip"><span id="m-dash">0 XP</span></span>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- ============ how it works ============ -->
-    <section class="card card--recessed fade-in" style="--i:4; margin-bottom:44px;">
-      <p class="section-label section-label--teal">How a champion solves a word problem</p>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;">
-        <div>
-          <div style="font-family:var(--font-mono); font-weight:700; font-size:25.3px; color:var(--accent);">1</div>
-          <b>Understand</b>
-          <p class="muted small" style="margin:4px 0 0;">Underline the numbers and facts hiding in the story. Ask: what is <i>given</i>, what is <i>asked</i>?</p>
-        </div>
-        <div>
-          <div style="font-family:var(--font-mono); font-weight:700; font-size:25.3px; color:var(--accent);">2</div>
-          <b>Plan</b>
-          <p class="muted small" style="margin:4px 0 0;">Choose an unknown, call it <i>x</i>, and translate the words into one equation.</p>
-        </div>
-        <div>
-          <div style="font-family:var(--font-mono); font-weight:700; font-size:25.3px; color:var(--accent);">3</div>
-          <b>Solve</b>
-          <p class="muted small" style="margin:4px 0 0;">Undo the operations step by step, gently, like opening a lock.</p>
-        </div>
-        <div>
-          <div style="font-family:var(--font-mono); font-weight:700; font-size:25.3px; color:var(--accent);">4</div>
-          <b>Check</b>
-          <p class="muted small" style="margin:4px 0 0;">Put your answer back into the story. Does it make sense? Champions always check.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ daily challenge ============ -->
-    <section class="card card--elevated fade-in" style="--i:5; margin-bottom:20px;">
-      <p class="section-label section-label--amber">Brain warm-up of the day</p>
-      <div style="display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap;">
-        <p id="daily-q" style="flex:1 1 380px; font-size:20.1px; margin:0; font-weight:700;"></p>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn--small btn--ghost" id="daily-reveal" type="button">Show answer</button>
-        </div>
-      </div>
-      <div class="callout callout--green" id="daily-a" style="display:none;"></div>
-    </section>
-
-    <!-- ============ legends ============ -->
-    <section class="fade-in" style="--i:6; margin-top:40px;">
-      <p class="section-label">Legends who were once beginners too</p>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;">
-
-        <div class="card">
-          <span class="tag tag--amber">India · 1887–1920</span>
-          <h3 style="font-family:var(--font-display); font-size:21.8px; margin:10px 0 6px;">Srinivasa Ramanujan</h3>
-          <p class="small" style="margin:0;">As a boy in Kumbakonam he loved numbers so much he filled notebooks with them — mostly on his own. One day in London he was ill, and his friend Hardy visited and mentioned his taxi number, <b>1729</b>, seemed dull. Ramanujan sat up at once: "No! It is a very interesting number — it is the smallest number expressible as the sum of two cubes in two different ways." He saw beauty in a taxi number. Numbers hide secrets — you just need to look closer.</p>
-        </div>
-
-        <div class="card">
-          <span class="tag tag--teal">India · 1929–2013</span>
-          <h3 style="font-family:var(--font-display); font-size:21.8px; margin:10px 0 6px;">Shakuntala Devi</h3>
-          <p class="small" style="margin:0;">The "Human Computer" of Bengaluru could multiply two 13-digit numbers in her head faster than a machine. Was she born with it? She said her gift came from <b>practice and fascination</b>, doing shows from age 6 and exploring numbers every single day. Fast calculation is trained, not inherited — exactly what the Speed Lab is for.</p>
-        </div>
-
-        <div class="card">
-          <span class="tag tag--green">For you · today</span>
-          <h3 style="font-family:var(--font-display); font-size:21.8px; margin:10px 0 6px;">The boy reading this page</h3>
-          <p class="small" style="margin:0;">Struggling doesn't mean you're behind — it means your brain is <b>growing</b>. Scientists found that the moments you feel stuck are the exact moments your brain builds new connections. Every wrong answer you understand today is a problem you'll smash tomorrow.</p>
-        </div>
-
-      </div>
-    </section>
-
+    <p class="gk-hint">Not sure where to start? <b>Today's plan</b> is always a good answer.</p>
   </main>
 
-  <footer>
-    <q>An equation for me has no meaning unless it expresses a thought of God.</q> — Srinivasa Ramanujan<br>
-    Math-Champ · your personal training log · all progress saved on this computer
-  </footer>
-
+  <script src="../version.js"></script>
+  <script src="../rhythm.js"></script>
   <script src="assets/app.js"></script>
+  <script src="../champ-rail.js"></script>
   <script>
   (function () {
-    OC.buildNav('home');
     var S = OC.STATE;
 
-    /* name card — one shared name (asked once, remembered; changeable via the pencil) */
-    var nameInput = OC.$('#name-input');
-    var sharedName = ''; try { sharedName = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
-    if (sharedName && !(S.name || '').trim()) { S.name = sharedName; OC.save(); }
-    function nameMode() {
-      var named = !!(localStorage.getItem('cc_name') || '').trim();
-      if (named) OC.$('#name-greet-text').textContent = 'Hello, ' + (localStorage.getItem('cc_name') || '').trim() + '! 👋';
-      OC.$('#name-greet').style.display = named ? 'block' : 'none';
-      OC.$('#name-entry-row').style.display = named ? 'none' : 'flex';
-      OC.$('#name-ask-title').style.display = named ? 'none' : 'block';
-      OC.$('#name-ask-sub').style.display = named ? 'none' : 'block';
-    }
-    nameMode();
-    function applyName() {
+    /* ---------- the shared name (asked once, changeable) ---------- */
+    var shared = ''; try { shared = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
+    if (shared && !(S.name || '').trim()) { S.name = shared; OC.save(); }
+
+    function renderHead() {
       var n = (S.name || '').trim();
-      var hello = OC.$('#hero-hello');
-      if (n) hello.textContent = 'HELLO, ' + n.toUpperCase() + ' — FUTURE OLYMPIAN';
+      ChampRail.top({
+        title: 'Math-Champ', icon: '⚡', el: 'gk-head',
+        hub: '../index.html',
+        sync: OC.forceSync,
+        info: function () { return { name: n, level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; }
+      });
+      var hello = document.getElementById('gk-hello');
+      var h = new Date().getHours();
+      var part = h < 12 ? 'Good morning' : (h < 17 ? 'Good afternoon' : 'Good evening');
+      hello.textContent = n ? (part + ', ' + n + '.') : (part + '.');
     }
-    applyName();
-    OC.$('#name-save').addEventListener('click', function () {
-      var v = nameInput.value.trim();
-      if (!v) return;
-      try { localStorage.setItem('cc_name', v); } catch (e) {}
-      if (window.OC && OC.switchChild) OC.switchChild(v); else { S.name = v; OC.save(); }
-      location.reload();
-    });
-    nameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') OC.$('#name-save').click(); });
-    OC.$('#name-edit').addEventListener('click', function () {
-      nameInput.value = (localStorage.getItem('cc_name') || '').trim();
-      OC.$('#name-entry-row').style.display = 'flex';
-      nameInput.focus();
+
+    /* ---------- the name box, only when there is no name ---------- */
+    var box = document.getElementById('gk-namebox');
+    if (!(S.name || '').trim()) {
+      box.hidden = false;
+      var inp = document.getElementById('gk-name-input');
+      document.getElementById('gk-name-save').onclick = function () {
+        var v = inp.value.trim();
+        if (!v) { inp.focus(); return; }
+        try { localStorage.setItem('cc_name', v); } catch (e) {}
+        if (OC.switchChild) OC.switchChild(v); else { S.name = v; OC.save(); }
+        location.reload();
+      };
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') document.getElementById('gk-name-save').click(); });
+    }
+
+    /* ---------- today's plan: one honest, plain-English suggestion ---------- */
+    var TOPIC = { add: 'adding and subtracting', mult: 'multiplication', div: 'division', frac: 'fractions', pct: 'percentages', word: 'word problems', sense: 'number sense', time: 'time', pattern: 'patterns' };
+    function plan() {
+      var att = S.attempts || [];
+      if (!att.length) return { href: 'teach.html', label: 'Teach me a topic', why: 'A good place to start: learn one idea properly, then try it.' };
+      var last = att[att.length - 1].ts || 0;
+      var days = (Date.now() - last) / 86400000;
+      if (days > 2) return { href: 'test.html', label: 'Test me today', why: 'It has been a few days. A short mixed set is a gentle way back in.' };
+      var sk = S.skills || {}, weak = null, wv = 999;
+      for (var k in sk) { if (typeof sk[k] === 'number' && sk[k] < wv) { wv = sk[k]; weak = k; } }
+      if (weak && wv < 65) return { href: 'teach.html#' + weak, label: 'Teach me ' + (TOPIC[weak] || weak), why: (TOPIC[weak] || weak) + ' is the one worth strengthening next.' };
+      if (att.length < 12) return { href: 'teach.html', label: 'Teach me a topic', why: 'One more idea learned properly is worth more than more drilling.' };
+      return { href: 'test.html', label: 'Test me today', why: 'You have been practising well. Let us see where you are.' };
+    }
+    var p = plan();
+    var pl = document.getElementById('gk-plan');
+    pl.href = p.href;
+    document.getElementById('gk-plan-label').textContent = p.label;
+    document.getElementById('gk-plan-why').textContent = p.why;
+
+    /* ---------- the rail ---------- */
+    ChampRail.mount({
+      title: 'Math-Champ', brandIcon: '⚡', brandHref: 'index.html', active: 'home',
+      items: [
+        { key: 'home', icon: '🏠', label: 'Home', href: 'index.html' },
+        { key: 'teach', icon: '📘', label: 'Teach', href: 'teach.html' },
+        { key: 'test', icon: '🎯', label: 'Test', href: 'test.html' },
+        { key: 'practice', icon: '🔁', label: 'Practise', href: 'speed-lab.html' },
+        { key: 'progress', icon: '📈', label: 'Progress', href: 'dashboard.html' }
+      ],
+      moreTitle: 'More',
+      moreNote: 'Everything else, kept out of the way.',
+      more: [
+        { icon: '🎯', label: 'Training Mission', href: 'mission.html' },
+        { icon: '⛏️', label: 'Technique Quests', href: 'quests.html' },
+        { icon: '📝', label: 'Word problems', href: 'word-problems.html' },
+        { icon: '🏅', label: 'Olympiad ladder', href: 'olympiad.html' },
+        { icon: '🧰', label: 'Toolbox', href: 'toolbox.html' },
+        { icon: '📈', label: 'Progress dashboard', href: 'dashboard.html' }
+      ]
     });
 
-    /* progress snapshot */
-    var lv = OC.levelOf(S.xp);
-    OC.$('#hp-xp').textContent = S.xp;
-    OC.$('#hp-level').textContent = lv.level.name;
-    OC.$('#hp-bar').style.width = lv.pct + '%';
-    OC.$('#hp-next').textContent = lv.next
-      ? 'Next rank: ' + lv.next.name + ' at ' + lv.next.min + ' XP — only ' + (lv.next.min - S.xp) + ' to go!'
-      : 'Highest rank achieved. Legendary!';
-
-    var words = S.attempts.filter(function (a) { return a.kind === 'word'; }).length;
-    var drills = S.attempts.filter(function (a) { return a.kind === 'drill'; }).length;
-    OC.$('#m-word').textContent = words + ' attempted · ' + S.attempts.filter(function (a) { return a.kind === 'word' && a.correct; }).length + ' correct';
-    OC.$('#m-speed').textContent = drills + ' drills done';
-    OC.$('#m-dash').textContent = S.xp + ' XP · ' + (S.streak.count || 0) + '-day streak';
-
-    /* daily challenge — deterministic by date */
-    var DAILY = [
-      { q: 'A snail climbs up a 10-metre wall. Each day it climbs 3 m but slips back 2 m at night. On which day does it reach the top?', a: 'Day 8. Each full day-night cycle gains 1 m (climb 3, slip 2). After 7 cycles it is at 7 m. On day 8 it climbs 3 m — 7 + 3 = 10 — and it is out, so it does not slip back. The trick: on the LAST day there is no slip!' },
-      { q: 'Using each of the digits 1, 2, 3 and 4 exactly once, and only + or − signs, can you make the number 10?', a: 'Yes — and the answer hides in plain sight: 1 + 2 + 3 + 4 = 10. Champions always try the simple path first before hunting for clever ones!' },
-      { q: 'I am a two-digit number. My digits add up to 9. When you reverse my digits, the new number is 27 less than me. Who am I?', a: 'Digits a + b = 9. Reversed number is 27 less, so (10a + b) − (10b + a) = 27, giving 9(a − b) = 27, so a − b = 3. Then a = 6, b = 3. The number is 63 — reverse 36, and indeed 63 − 36 = 27.' },
-      { q: 'How many times does the digit 7 appear when you write all numbers from 1 to 100?', a: '20 times. Units place: 7, 17, 27 … 97 — that is 10 times. Tens place: 70, 71, 72 … 79 — another 10. Total 10 + 10 = 20. Careful counting beats fast guessing!' },
-      { q: 'Three friends split a restaurant bill of ₹750 equally. Then one friend pays for everyone and the others pay him back. How much does each of the other two owe him?', a: 'Each share is 750 ÷ 3 = ₹250. The paying friend already spent his own ₹250, so each friend owes him exactly ₹250. Equal sharing is just division hiding inside a story.' }
-    ];
-    var dayIndex = Math.floor(Date.now() / 86400000) % DAILY.length;
-    var today = DAILY[dayIndex];
-    OC.$('#daily-q').textContent = today.q;
-    var revealBtn = OC.$('#daily-reveal');
-    var ansBox = OC.$('#daily-a');
-    revealBtn.addEventListener('click', function () {
-      if (ansBox.style.display === 'none') {
-        ansBox.innerHTML = '<h4>Answer</h4><p style="margin:0;">' + today.a + '</p>';
-        ansBox.style.display = 'block';
-        revealBtn.textContent = 'Hide answer';
-      } else {
-        ansBox.style.display = 'none';
-        revealBtn.textContent = 'Show answer';
-      }
-    });
+    renderHead();
   })();
   </script>
-<script src="../version.js"></script>
-<script src="assets/eureka.js"></script>
 </body>
 </html>

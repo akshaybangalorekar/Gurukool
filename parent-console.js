@@ -140,6 +140,7 @@
   function mathRows(oc) {
     var rows = [], groups = {}, order = [];
     (oc.attempts || []).forEach(function (a) {
+      if (a.kind === 'daily') return;   /* the daily test belongs to the child, not to the parent view */
       var key, label;
       if (a.kind === 'word') { key = 'word'; label = 'Word problems'; }
       else if (a.kind === 'mission') { var tid = String(a.id || '').split('-L')[0]; key = 'm:' + tid; label = MATH_TOPIC[tid] || ('Mission · ' + tid); }

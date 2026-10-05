@@ -402,6 +402,41 @@ Recent changes (round 24 - v24, The Olympiad Ladder)
 - Also wired into the learning rhythm: the success sandwich can fire here
   too, so two hard wrong answers in a row still earns a friendly warm-up.
 
+Recent changes (round 25 - v25, a calmer Maths front door)
+------------------------
+- NEW LAYOUT: the maths home is now one simple question - "What shall we
+  do today?" - with a single suggested first button (Today's plan) and
+  four plain choices:
+      Teach me a topic  - learn one idea properly, step by step
+      Test me today     - ten mixed questions, private to the child
+      Practise a skill  - short drills on one technique
+      Something harder  - the Olympiad ladder
+  Every choice has a one-line explanation in plain English. Nothing else
+  is on the screen.
+- NEW LEFT RAIL: a slim vertical index down the left (Home, Teach, Test,
+  Practise, Progress, More) so nothing needs scrolling to get somewhere.
+  Mission, Quests, Word problems, Olympiad, Toolbox and the dashboard now
+  live behind "More". The top bar is reduced to identity and progress
+  (name, rank, XP, streak, save, home) - no navigation clutter.
+- NEW "TEACH ME A TOPIC" (teach.html + assets/teach.js): six topics so far
+  (fractions, ratio, percentages, balancing equations, average speed,
+  primes). Each is taught the way a tutor does it - one small idea, then
+  one small check that must be answered before moving on - followed by six
+  fresh practice questions at easy, medium and hard.
+- NEW "TEST ME TODAY" (test.html): ten mixed questions built from the
+  topics he has actually met, fixed for the day so it cannot be gamed by
+  refreshing. Two nudges, then the worked solution rather than a dead end.
+  Ends with a score, stars and a per-topic breakdown. Results are kept on
+  the device for the child only - the Parent Console deliberately ignores
+  them.
+- NEW QUESTION GENERATORS (assets/gen.js): eight topics x three levels,
+  built with random numbers so practice never repeats. Every generated
+  question carries its data, two nudges and a worked solution, and the
+  test suite verifies the answers by re-deriving them (it caught a badly
+  built equation and a "greater than" that was not greater).
+- The learning rhythm still applies here: two hard wrong answers in a row
+  earns a friendly warm-up.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

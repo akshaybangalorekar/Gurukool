@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — Test me today</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .x-wrap { max-width: 720px; margin: 0 auto; padding: 26px 22px 70px; }
+  .x-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 31px; color: #0f172a; margin: 4px 0 6px; }
+  .x-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .x-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 22px; }
+  .x-bar { display: flex; gap: 6px; margin-bottom: 16px; }
+  .x-pip { flex: 1; height: 7px; border-radius: 999px; background: #e2e8f0; }
+  .x-pip.ok { background: #34d399; } .x-pip.no { background: #fbbf24; } .x-pip.now { background: #2a9d8f; }
+  .x-q { font: 800 22px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 6px 0 14px; }
+  .x-meta { color: #94a3b8; font-size: 15px; }
+  .x-in { font: 800 21px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 160px; }
+  .x-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .x-btn.p { background: #2a9d8f; border-color: #2a9d8f; color: #fff; }
+  .x-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .x-fb.ok { color: #047857; } .x-fb.no { color: #b45309; }
+  .x-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .x-score { font-family: Baloo 2, Nunito, sans-serif; font-size: 44px; font-weight: 800; color: #0f172a; }
+  .x-stars { font-size: 30px; margin: 4px 0 10px; }
+  .x-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #f1f5f9; font-size: 16.5px; }
+  .x-row b { color: #0f172a; } .x-row span { color: #64748b; }
+  .x-priv { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; color: #166534; font-weight: 700; font-size: 15.5px; margin-top: 16px; }
+</style>
+</head>
+<body>
+  <div id="gk-head"></div>
+  <main class="x-wrap"><div id="x-view"></div></main>
+  <script src="../version.js"></script>
+  <script src="../rhythm.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/gen.js"></script>
+  <script src="../champ-rail.js"></script>
+  <script>
+  (function () {
+    var S = OC.STATE;
+    var KEY = 'gk_daily';
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function today() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function child() { return ((S.name || '').trim() || 'champion').toLowerCase(); }
+    function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+    function fracVal(v) { var m = String(v).trim().match(/^(-?\d+)\s*\/\s*(\d+)$/); return m ? (+m[1]) / (+m[2]) : null; }
+    function norm(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/\s+/g, ' '); }
+    function matches(g, w) {
+      var a = norm(g), b = norm(w); if (!a) return false; if (a === b) return true;
+      var av = fracVal(a), bv = fracVal(b), an = parseFloat(a.replace(/[^0-9.\-]/g, '')), bn = parseFloat(b.replace(/[^0-9.\-]/g, ''));
+      var x = (av !== null) ? av : (isNaN(an) ? null : an), y = (bv !== null) ? bv : (isNaN(bn) ? null : bn);
+      return (x !== null && y !== null && Math.abs(x - y) < 1e-9);
+    }
+    /* which topics has he actually met? keep the test inside what he has been taught */
+    function metTopics() {
+      var kinds = {};
+      (S.attempts || []).forEach(function (a) { kinds[a.kind] = true; });
+      var out = [];
+      if (kinds.word) out.push('frac', 'ratio');
+      if (kinds.teach) TeachKeys().forEach(function (k) { if (out.indexOf(k) < 0) out.push(k); });
+      if (kinds.mission || kinds.quest) ['pct', 'ints', 'balance', 'time'].forEach(function (k) { if (out.indexOf(k) < 0) out.push(k); });
+      if (kinds.oly) ['speed', 'prime', 'ratio'].forEach(function (k) { if (out.indexOf(k) < 0) out.push(k); });
+      return out;
+    }
+    function TeachKeys() { var p = S.practice || {}, out = []; for (var k in p) if (k.indexOf('teach:') === 0) out.push(k.slice(6)); return out; }
+    function weakTopics() {
+      var sk = S.skills || {}, out = [];
+      for (var k in sk) if (typeof sk[k] === 'number' && sk[k] < 65 && window.Gen.byKey(k)) out.push(k);
+      return out;
+    }
+    function buildSet() {
+      var pool = metTopics();
+      var weak = weakTopics();
+      if (!pool.length) pool = ['frac', 'ratio', 'pct'];
+      var tiers = ['easy', 'easy', 'easy', 'easy', 'medium', 'medium', 'medium', 'medium', 'hard', 'hard'];
+      var qs = [];
+      tiers.forEach(function (tier, i) {
+        var key;
+        if (i < 2 && weak.length) key = weak[i % weak.length];
+        else key = pool[i % pool.length];
+        qs.push(Gen.make(key, tier));
+      });
+      return qs;
+    }
+    var day = null;
+    function dayState() {
+      var all = load(), c = child();
+      if (!all[c] || all[c].date !== today()) {
+        all[c] = { date: today(), qs: buildSet(), answers: [], done: false };
+        save(all);
+      }
+      day = all[c];
+      return day;
+    }
+    function persist() { var all = load(); all[child()] = day; save(all); }
+
+    function renderHead() {
+      ChampRail.top({ title: 'Math-Champ', icon: '⚡', el: 'gk-head', hub: '../index.html', sync: OC.forceSync,
+        info: function () { return { name: (S.name || '').trim(), level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; } });
+    }
+    ChampRail.mount({
+      title: 'Math-Champ', brandIcon: '⚡', active: 'test',
+      items: [
+        { key: 'home', icon: '🏠', label: 'Home', href: 'index.html' },
+        { key: 'teach', icon: '📘', label: 'Teach', href: 'teach.html' },
+        { key: 'test', icon: '🎯', label: 'Test', href: 'test.html' },
+        { key: 'practice', icon: '🔁', label: 'Practise', href: 'speed-lab.html' },
+        { key: 'progress', icon: '📈', label: 'Progress', href: 'dashboard.html' }
+      ],
+      moreTitle: 'More', moreNote: 'Everything else, kept out of the way.',
+      more: [
+        { icon: '🎯', label: 'Training Mission', href: 'mission.html' },
+        { icon: '⛏️', label: 'Technique Quests', href: 'quests.html' },
+        { icon: '📝', label: 'Word problems', href: 'word-problems.html' },
+        { icon: '🏅', label: 'Olympiad ladder', href: 'olympiad.html' },
+        { icon: '🧰', label: 'Toolbox', href: 'toolbox.html' },
+        { icon: '📈', label: 'Progress dashboard', href: 'dashboard.html' }
+      ]
+    });
+    renderHead();
+
+    var idx = 0, tries = 0;
+
+    function pips() {
+      return day.answers.map(function (a, i) {
+        var cls = a && a.correct ? 'ok' : (a ? 'no' : (i === idx ? 'now' : ''));
+        return '<div class="x-pip ' + cls + '"></div>';
+      }).join('');
+    }
+    function start() {
+      dayState();
+      if (day.done) return results();
+      idx = day.answers.length;
+      if (idx >= day.qs.length) return results();
+      tries = 0;
+      var q = day.qs[idx];
+      el('x-view').innerHTML = '<h1 class="x-h1">Test me today</h1>' +
+        '<p class="x-lead">Ten questions, mixed from things you have been learning. Take your time — this is just to see where you are.</p>' +
+        '<div class="x-panel"><div class="x-bar">' + pips() + '</div>' +
+        '<div class="x-meta">Question ' + (idx + 1) + ' of ' + day.qs.length + '</div>' +
+        '<p class="x-q">' + esc(q.q) + '</p>' +
+        '<input class="x-in" id="x-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
+        '<button class="x-btn p" onclick="X.check()">Check</button>' +
+        '<p class="x-fb" id="x-fb"></p><div id="x-sol"></div></div>';
+      var i = el('x-in');
+      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); X.check(); } });
+      i.focus();
+    }
+    function results() {
+      day.done = true; persist();
+      var right = day.answers.filter(function (a) { return a && a.correct; }).length, tot = day.qs.length;
+      var stars = right === tot ? 3 : (right >= Math.ceil(tot * 0.7) ? 2 : (right >= Math.ceil(tot * 0.5) ? 1 : 0));
+      var byTopic = {};
+      day.qs.forEach(function (q, i) {
+        var t = byTopic[q.topicName] = byTopic[q.topicName] || { n: 0, ok: 0 };
+        t.n++; if (day.answers[i] && day.answers[i].correct) t.ok++;
+      });
+      el('x-view').innerHTML = '<h1 class="x-h1">Today is done ✅</h1>' +
+        '<div class="x-panel"><div class="x-score">' + right + ' / ' + tot + '</div>' +
+        '<div class="x-stars">' + '⭐'.repeat(stars) + '☆'.repeat(3 - stars) + '</div>' +
+        '<p class="x-lead">' + (right === tot ? 'Everything right — that is the ideas working, not luck.' : (right >= tot * 0.7 ? 'A strong round. Look at the ones below that were not right yet.' : 'Good effort. The topics below are worth a lesson.') ) + '</p>' +
+        Object.keys(byTopic).map(function (k) {
+          var t = byTopic[k];
+          return '<div class="x-row"><b>' + esc(k) + '</b><span>' + t.ok + ' of ' + t.n + ' right</span></div>';
+        }).join('') +
+        '<div style="margin-top:16px"><button class="x-btn p" onclick="location.href=\'teach.html\'">Teach me a topic</button>' +
+        '<button class="x-btn" onclick="location.href=\'index.html\'">Back home</button></div>' +
+        '<div class="x-priv">🔒 These results are just for you. They are kept on this device and are not shown to anyone else.</div>' +
+        '<p class="x-meta" style="margin-top:14px">A new set is waiting tomorrow.</p></div>';
+      renderHead();
+    }
+
+    window.X = {
+      check: function () {
+        var q = day.qs[idx], v = el('x-in').value, fb = el('x-fb');
+        if (!norm(v)) { fb.className = 'x-fb no'; fb.textContent = 'Type your answer first.'; return; }
+        var ok = matches(v, q.ans);
+        if (ok) {
+          day.answers[idx] = { correct: true, tries: tries + 1, topic: q.topic };
+          persist();
+          OC.record({ kind: 'daily', id: 'daily:' + q.topic, correct: true, xp: 10, timeSec: 0, targetSec: 0 });
+          fb.className = 'x-fb ok'; fb.textContent = 'Correct. +10 XP';
+          if (window.Rhythm) Rhythm.note(true);
+          idx++;
+          setTimeout(function () { if (idx >= day.qs.length) results(); else start(); }, 700);
+          return;
+        }
+        tries++;
+        if (window.Rhythm) Rhythm.note(false);
+        fb.className = 'x-fb no';
+        if (tries === 1) {
+          fb.textContent = 'Not quite. ' + q.hints[0];
+        } else {
+          day.answers[idx] = { correct: false, tries: tries, topic: q.topic };
+          persist();
+          OC.record({ kind: 'daily', id: 'daily:' + q.topic, correct: false, xp: 0, timeSec: 0, targetSec: 0 });
+          fb.textContent = 'Let us look at it — this one is worth knowing.';
+          el('x-sol').innerHTML = '<div class="x-sol"><b>How it works</b><p style="margin:8px 0 0">' + esc(q.sol) + '</p>' +
+            '<button class="x-btn p" style="margin-top:12px" onclick="X.next()">Next question</button></div>';
+        }
+      },
+      next: function () { idx++; if (idx >= day.qs.length) results(); else start(); }
+    };
+    start();
+  })();
+  </script>
+</body>
+</html>
