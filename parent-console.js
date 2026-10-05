@@ -392,6 +392,83 @@
     return h;
   }
 
+
+  /* ---------- topic levels, and how fast he reached them ---------- */
+  function topicKeyOf(a) {
+    if (a.topic) return a.topic;
+    var id = String(a.id || '');
+    if (id.indexOf('teach:') === 0) return id.slice(6);
+    if (id.indexOf('daily:') === 0) return id.slice(6);
+    if (id.indexOf('sess:') === 0) return id.slice(5);
+    return null;
+  }
+  function paceFor(oc, key) {
+    var atts = (oc.attempts || []).filter(function (a) { return topicKeyOf(a) === key; })
+      .sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+    if (!atts.length) return null;
+    var first = atts[0].ts || 0;
+    var target = window.Levels ? Levels.of(oc, key) : 0;
+    /* when did he first stand at the level he is at now? */
+    var reached = first;
+    for (var i = 0; i < atts.length; i++) {
+      var slice = atts.slice(0, i + 1);
+      var lv = 0, n = slice.length, right = 0;
+      slice.forEach(function (x) { if (x.correct) right++; });
+      var acc = n ? 100 * right / n : null;
+      lv = n < 4 ? 1 : (acc >= 80 && n >= 6 ? 3 : (acc >= 60 ? 2 : 1));
+      if (lv >= target) reached = atts[i].ts || reached;
+    }
+    var days = Math.max(0, (Date.now() - first) / 86400000);
+    var toLevel = Math.max(0, ((reached || first) - first) / 86400000);
+    return { questions: atts.length, days: days, toLevel: toLevel };
+  }
+  function levelsHTML(name, oc) {
+    if (!window.Levels || !window.Batches) return '';
+    var keys = Batches.list[0].topics;
+    var h = '<h3>📈 Topic levels and pace</h3>' +
+      '<p class="pc-lead">Where he is on each topic, and how quickly he got there. Level 1 is getting it, 2 is solid, 3 is mastered. A topic needs about 6 questions at 80 per cent to be mastered.</p>';
+    keys.forEach(function (k) {
+      var lv = Levels.of(oc, k), st = Levels.statsFor(oc, k), pace = paceFor(oc, k);
+      var colour = ['#94a3b8', '#92400e', '#1e40af', '#166534'][lv] || '#94a3b8';
+      var bg = ['#f1f5f9', '#fef3c7', '#dbeafe', '#dcfce7'][lv] || '#f1f5f9';
+      h += '<div class="pc-row"><b>' + esc(Batches.nameOf(k)) + '</b>' +
+        '<span style="background:' + bg + ';color:' + colour + ';font-weight:800;border-radius:999px;padding:3px 10px;font-size:14px">' +
+        (lv ? 'Level ' + lv + ' · ' + Levels.label(lv) : 'Not started') + '</span>' +
+        '<span class="pc-meta">' + (st.n ? st.n + ' questions · ' + st.acc + '% right' : 'no questions yet') + '</span>' +
+        (pace && lv >= 2 ? '<span class="pc-meta">reached Level ' + lv + ' in ' + Math.max(1, Math.round(pace.toLevel)) + ' day' + (Math.round(pace.toLevel) === 1 ? '' : 's') + '</span>' : '') +
+        '</div>';
+    });
+    return h;
+  }
+  /* ---------- the batch tracker: when to ask for the next eight ---------- */
+  function batchesHTML(oc) {
+    if (!window.Batches) return '';
+    var cur = Batches.current(oc);
+    var next = Batches.nextPlanned();
+    var h = '<h3>📦 Topic batches</h3>' +
+      '<p class="pc-lead">The topics are added eight at a time. When every topic in the current batch is mastered, ask for the next eight.</p>';
+    if (cur) {
+      var pct = Math.round(100 * cur.mastered / cur.total);
+      h += '<div class="pc-stat"><b>' + cur.mastered + ' / ' + cur.total + '</b><span>mastered in batch ' + cur.n + '</span></div>' +
+        '<div style="height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin:8px 0 12px"><div style="height:100%;width:' + pct + '%;background:#2a9d8f"></div></div>';
+      h += cur.rows.map(function (r) {
+        return '<div class="pc-row"><b>' + esc(r.name) + '</b><span class="pc-meta">' + (r.level ? 'Level ' + r.level : 'not started') +
+          (r.questions ? ' · ' + r.questions + ' questions' : '') + '</span></div>';
+      }).join('');
+      if (cur.complete) {
+        h += '<p class="pc-lead" style="background:#ecfdf5;border:1px solid #86efac;border-radius:12px;padding:12px;color:#166534;font-weight:800">' +
+          '🎉 Batch ' + cur.n + ' is complete — every topic is mastered. Time to ask for the next batch.</p>';
+      } else {
+        h += '<p class="pc-lead">Still to master: ' + cur.rows.filter(function (r) { return r.level < 3; }).map(function (r) { return r.name; }).join(', ') + '.</p>';
+      }
+    }
+    if (next) {
+      h += '<p class="pc-lead" style="margin-top:14px"><b>Next batch (not built yet):</b> ' +
+        next.topics.map(function (k) { return Batches.nameOf(k); }).join(' · ') + '</p>';
+    }
+    return h;
+  }
+
   /* ---------- rendering ---------- */
   var current = '';
   function renderAll() {
@@ -420,6 +497,7 @@
         var extra = r.a && r.a.stars !== undefined ? '<span class="pc-meta">' + r.a.n + '/5 puzzles · ' + r.a.stars + '⭐' + (r.a.done ? ' · case closed' : '') + '</span>' : '';
         return rowHTML(r.label, r.a, extra);
       }).join('') : '<div class="pc-empty">No Mind-Champ cases started yet.</div>';
+      if (oc) { h += levelsHTML(current, oc); h += batchesHTML(oc); }
       ins.innerHTML = h;
     }
 

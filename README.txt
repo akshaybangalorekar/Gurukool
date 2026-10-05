@@ -525,6 +525,22 @@ Recent changes (round 28 - v28, all six projects built)
   Every step teaches one idea, shows an animation, then asks one question.
   All six are locked until the skills they need reach Level 2.
 
+Recent changes (round 29 - v29, the parent view of levels and batches)
+------------------------
+- PARENT CONSOLE now shows, under Insights:
+    "Topic levels and pace" - for every topic in the current batch: his
+      level (not started / getting it / solid / mastered), how many
+      questions, his accuracy, and how many days it took him to reach the
+      level he is on. So a parent can see not just where he is but how
+      fast he is moving.
+    "Topic batches" - a progress bar for the current batch of eight
+      topics, which ones are still to master, and a clear message when the
+      batch is complete: "Time to ask for the next batch". The next batch
+      of eight topics is listed underneath, so it is obvious what comes
+      next.
+- assets/batches.js holds the batch plan (three batches of eight topics)
+  and the topic names, used by both the console and the app.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
