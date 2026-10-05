@@ -541,6 +541,24 @@ Recent changes (round 29 - v29, the parent view of levels and batches)
 - assets/batches.js holds the batch plan (three batches of eight topics)
   and the topic names, used by both the console and the app.
 
+Recent changes (round 30 - v30, batch 1 is complete at eight topics)
+------------------------
+- Two more topics added so the first batch really is eight teachable
+  topics, each with a lesson AND questions:
+      TIME  - sixties counting, adding hours then minutes, carrying past
+              60, and 24-hour times
+      MONEY - equal items as multiplication, change as subtraction,
+              discounts, and the classic trap that profit is measured
+              against the cost price
+- The money generator had a real bug: a "how much change is left"
+  question could ask for change from a purchase that cost more than the
+  money he had, giving a negative answer. Fixed, and swept over 6000
+  generated questions to confirm.
+- Batch 1 (in the app now): fractions, ratio, percentages, primes,
+  balancing equations, average speed, time, money. When all eight reach
+  Level 3 the parent console says "Time to ask for the next batch", and
+  lists the next eight topics.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

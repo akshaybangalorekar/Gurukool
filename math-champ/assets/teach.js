@@ -62,6 +62,28 @@
         { say: 'And the total time is the same idea.',
           ask: 'Total distance 250 km, total time 4 hours. What is the average speed?', ans: 62.5, hint: '250 ÷ 4.' }
       ] },
+    { key: 'time', name: 'Time', icon: '\ud83d\udd70\ufe0f', what: 'Time is counted in sixties: 60 minutes in an hour. Add the hours first, then the minutes, and carry when the minutes pass 60.',
+      steps: [
+        { say: 'One hour is 60 minutes. So two hours is two lots of 60.',
+          ask: 'How many minutes are in 2 hours?', ans: 120, hint: '60 + 60.' },
+        { say: 'Two hours and 30 minutes is the hours plus the minutes \u2014 but in the same unit.',
+          ask: 'How many minutes are in 2 hours 30 minutes?', ans: 150, hint: '120 + 30.' },
+        { say: 'When you add minutes and pass 60, carry one hour and keep the leftover minutes. 8:40 plus 20 minutes reaches exactly the next hour.',
+          ask: '8:40 plus 20 minutes lands on what hour? Type the hour only.', ans: 9, hint: '40 + 20 = 60, which is a full hour.' },
+        { say: 'The trap: afternoon times have two faces. 9:35 in the evening is 2135 in 24-hour time \u2014 add 12 to the hour after midday.',
+          ask: 'What is 9:35 pm as a 4-digit 24-hour time?', ans: 2135, hint: '9 + 12 = 21, then the minutes.' }
+      ] },
+    { key: 'money', name: 'Money', icon: '\ud83d\udcb0', what: 'Money questions are multiplication, subtraction and percentages wearing a price tag. Always ask: what is the whole, and what is being taken away?',
+      steps: [
+        { say: 'Equal items mean multiplication. Four pens at 15 rupees is four lots of 15.',
+          ask: 'How many rupees do 4 pens cost at 15 rupees each?', ans: 60, hint: '15 \u00d7 4.' },
+        { say: 'Change is a subtraction: what you had, minus what you spent.',
+          ask: 'You have 100 rupees and buy 3 books at 24 rupees. How much is left?', ans: 28, hint: '24 \u00d7 3 = 72, then 100 \u2212 72.' },
+        { say: 'A discount is a percentage taken off. Build the percentage from 10 per cent pieces first.',
+          ask: 'A jumper of 80 rupees is cut by 15 per cent, which is 12 rupees. What is the new price?', ans: 68, hint: '80 \u2212 12.' },
+        { say: 'The trap in every money question: profit is measured against the price the shop PAID, not the price it charged.',
+          ask: 'A toy is bought for 40 rupees and sold for 50. What is the profit as a percentage of the buying price?', ans: 25, hint: 'The profit is 10, which is a quarter of 40.' }
+      ] },
     { key: 'prime', name: 'Primes and factors', icon: '🔢', what: 'A prime number has exactly two factors: 1 and itself. To test one, check the small primes in order — 2, 3, 5, 7 — and stop as soon as one divides.',
       steps: [
         { say: '9 is odd, but it is not prime, because 3 × 3 = 9. Being odd is not the test.',

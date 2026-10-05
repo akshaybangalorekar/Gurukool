@@ -7,7 +7,7 @@
 (function () {
   var BATCHES = [
     { n: 1, built: true, note: 'In the app now.',
-      topics: ['frac', 'ratio', 'pct', 'prime', 'balance', 'speed', 'time', 'money'] },
+      topics: ['frac', 'ratio', 'pct', 'prime', 'balance', 'speed', 'time', 'money'] }   /* all eight have a lesson and questions */,
     { n: 2, built: false, note: 'Ask for this batch when batch 1 is mastered.',
       topics: ['length', 'weight', 'capacity', 'roots', 'angles', 'area', 'perimeter', 'decimals'] },
     { n: 3, built: false, note: 'Ask for this batch when batch 2 is mastered.',

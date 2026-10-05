@@ -144,6 +144,28 @@
             hints: ['Work out the time for each leg separately.', 'Then divide the total distance by the total time — never average the two speeds.'],
             sol: 'Total distance ' + (d1 + d2) + ' km in ' + (t1 + t2) + ' hours gives ' + (Math.round((d1 + d2) / (t1 + t2) * 100) / 100) + ' km/h. Averaging the speeds themselves would be wrong.' }; }
       } },
+    { key: 'money', name: 'Money', icon: '\ud83d\udcb0', blurb: 'Prices, change and discounts.',
+      gen: {
+        easy: function () { var c = pick([12, 15, 18, 25, 40]), n = ri(2, 6);
+          return { q: 'A pen costs ' + c + ' rupees. How much do ' + n + ' pens cost?', ans: c * n, unit: 'rupees',
+            know: ['One pen: ' + c + ' rupees', 'Number of pens: ' + n, 'Multiply for a total'],
+            hints: ['Each pen costs the same, so add ' + c + ' to itself ' + n + ' times \u2014 or just multiply.', c + ' \u00d7 ' + n + '.'],
+            sol: c + ' \u00d7 ' + n + ' = ' + (c * n) + ' rupees. Equal items mean multiplication.' }; },
+        medium: function () {
+          var budget = pick([100, 150, 200, 250]);
+          var n = ri(2, 4);
+          var affordable = [12, 15, 18, 20, 24, 25, 30].filter(function (x) { return x * n <= budget * 0.85; });
+          var c = affordable.length ? pick(affordable) : Math.floor(budget * 0.85 / n);
+          return { q: 'You have ' + budget + ' rupees and buy ' + n + ' books at ' + c + ' rupees each. How much money is left?', ans: budget - c * n, unit: 'rupees',
+            know: ['You start with: ' + budget, 'Each book: ' + c, 'Books bought: ' + n, 'Spending is subtracted'],
+            hints: ['Work out the total spent first: ' + c + ' \u00d7 ' + n + '.', 'Then take that away from ' + budget + '.'],
+            sol: c + ' \u00d7 ' + n + ' = ' + (c * n) + ' rupees spent, so ' + budget + ' \u2212 ' + (c * n) + ' = ' + (budget - c * n) + ' rupees left.' }; },
+        hard: function () { var pct = pick([20, 25, 40]), orig = pick([400, 500, 800]), price = orig * (100 - pct) / 100;
+          return { q: 'A shirt is in the sale at ' + price + ' rupees after a ' + pct + ' per cent discount. What was the original price?', ans: orig, unit: 'rupees',
+            know: ['Sale price: ' + price, 'Discount: ' + pct + ' per cent', 'The sale price is the original MINUS the cut'],
+            hints: ['After a ' + pct + ' per cent cut you are paying ' + (100 - pct) + ' per cent of the original.', 'So the original is ' + price + ' divided by ' + ((100 - pct) / 100) + '.'],
+            sol: 'You paid ' + (100 - pct) + ' per cent of the original, so the original is ' + price + ' \u00f7 ' + ((100 - pct) / 100) + ' = ' + orig + ' rupees. Working backwards from a discount means dividing, not adding.' }; }
+      } },
     { key: 'time', name: 'Time', icon: '🕰️', blurb: 'Add and subtract times.',
       gen: {
         easy: function () { var h = ri(6, 9), m = pick([10, 15, 20, 40]), add = pick([30, 45, 60, 90]);
