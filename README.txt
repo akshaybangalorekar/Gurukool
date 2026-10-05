@@ -571,6 +571,28 @@ Recent changes (round 31 - v31, the site was not deploying)
   (?v=31). That defeats both the Pages CDN cache and the iPad Home Screen
   app cache, so a new push shows up on the next reload.
 
+Recent changes (round 32 - v32, batch 2: eight more topics)
+------------------------
+- BATCH 2 IS IN THE APP: eight new topics, each with a tutor-style lesson
+  AND its own questions, so it can genuinely be mastered:
+      LENGTH     - metres, centimetres, kilometres; which way to multiply
+      WEIGHT     - grams and kilograms, and adding weights
+      CAPACITY   - litres and millilitres, and how many glasses fit
+      SQUARE ROOTS - the backwards question, and area as a square root
+      ANGLES     - 180 in a triangle, 360 in a quadrilateral, 540 in a
+                   pentagon
+      AREA       - rectangle, triangle (half), circle (pi r squared)
+      PERIMETER  - a walk round the edge, and the 2 x (l + w) shortcut
+      DECIMALS   - tenths and hundredths, and moving the point
+  That makes 16 topics with lessons, and 17 with questions.
+- The parent console's batch tracker now shows batch 1 AND batch 2, so
+  when both are mastered it will point at batch 3.
+- Two more generator bugs found by sweeping thousands of questions:
+  the angles question could ask for a fourth angle when the first three
+  already added to more than 360 (giving a negative answer), and the
+  money change question could cost more than the money he had. Both fixed
+  and guarded.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

@@ -144,6 +144,154 @@
             hints: ['Work out the time for each leg separately.', 'Then divide the total distance by the total time — never average the two speeds.'],
             sol: 'Total distance ' + (d1 + d2) + ' km in ' + (t1 + t2) + ' hours gives ' + (Math.round((d1 + d2) / (t1 + t2) * 100) / 100) + ' km/h. Averaging the speeds themselves would be wrong.' }; }
       } },
+    { key: 'length', name: 'Length', icon: '\ud83d\udccf', blurb: 'Metres, centimetres and kilometres.',
+      gen: {
+        easy: function () { var m = ri(2, 9);
+          return { q: 'How many centimetres are in ' + m + ' metres?', ans: m * 100, unit: 'cm',
+            know: ['1 metre = 100 centimetres', 'Number of metres: ' + m, 'Going to a SMALLER unit means multiply'],
+            hints: ['Every metre holds 100 centimetres.', m + ' \u00d7 100.'],
+            sol: m + ' \u00d7 100 = ' + (m * 100) + ' cm. Big unit to small unit: multiply.' }; },
+        medium: function () { var km = pick([2, 3, 4, 5]) + ri(1, 9) / 10;
+          return { q: 'How many metres are in ' + km + ' kilometres?', ans: km * 1000, unit: 'm',
+            know: ['1 kilometre = 1000 metres', 'Distance: ' + km + ' km', 'Smaller unit means multiply'],
+            hints: ['Each kilometre is 1000 metres.', km + ' \u00d7 1000.'],
+            sol: km + ' \u00d7 1000 = ' + (km * 1000) + ' m.' }; },
+        hard: function () { var total = ri(3, 8) + ri(1, 9) / 10, n = pick([4, 5, 8, 10]);
+          var eachCm = Math.round(total * 100 / n);
+          return { q: 'A rope is ' + total + ' metres long and is cut into ' + n + ' equal pieces. How long is each piece, in centimetres?', ans: eachCm, unit: 'cm',
+            know: ['Total length: ' + total + ' metres', 'Pieces: ' + n, 'Divide first, then convert to centimetres'],
+            hints: ['Share the rope first: ' + total + ' \u00f7 ' + n + ' metres each.', 'Then turn metres into centimetres by multiplying by 100.'],
+            sol: total + ' \u00f7 ' + n + ' = ' + (Math.round(total / n * 1000) / 1000) + ' metres, which is ' + eachCm + ' cm. Divide, then convert.' }; }
+      } },
+    { key: 'weight', name: 'Weight', icon: '\u2696\ufe0f', blurb: 'Kilograms and grams.',
+      gen: {
+        easy: function () { var kg = ri(2, 8);
+          return { q: 'How many grams are in ' + kg + ' kilograms?', ans: kg * 1000, unit: 'g',
+            know: ['1 kilogram = 1000 grams', 'Weight: ' + kg + ' kg', 'Smaller unit means multiply'],
+            hints: ['Every kilogram is 1000 grams.', kg + ' \u00d7 1000.'],
+            sol: kg + ' \u00d7 1000 = ' + (kg * 1000) + ' g.' }; },
+        medium: function () { var kg = pick([1, 2, 3]) + pick([250, 500, 750]) / 1000;
+          return { q: 'How many grams are in ' + kg + ' kilograms?', ans: kg * 1000, unit: 'g',
+            know: ['1 kilogram = 1000 grams', 'Weight: ' + kg + ' kg'],
+            hints: ['Multiply by 1000.', kg + ' \u00d7 1000.'],
+            sol: kg + ' \u00d7 1000 = ' + (kg * 1000) + ' g.' }; },
+        hard: function () { var n = pick([3, 4, 5, 6]), g = pick([250, 500, 750]);
+          return { q: n + ' parcels each weigh ' + g + ' grams. What is the total weight, in kilograms?', ans: n * g / 1000, unit: 'kg',
+            know: ['Each parcel: ' + g + ' grams', 'Parcels: ' + n, 'The answer is wanted in KILOGRAMS'],
+            hints: ['Total grams first: ' + g + ' \u00d7 ' + n + '.', 'Then divide by 1000 to get kilograms.'],
+            sol: g + ' \u00d7 ' + n + ' = ' + (g * n) + ' grams, which is ' + (n * g / 1000) + ' kg. Read the unit the question asks for.' }; }
+      } },
+    { key: 'capacity', name: 'Capacity', icon: '\ud83e\udd64', blurb: 'Litres and millilitres.',
+      gen: {
+        easy: function () { var l = ri(2, 6);
+          return { q: 'How many millilitres are in ' + l + ' litres?', ans: l * 1000, unit: 'ml',
+            know: ['1 litre = 1000 millilitres', 'Amount: ' + l + ' litres'],
+            hints: ['Every litre holds 1000 millilitres.', l + ' \u00d7 1000.'],
+            sol: l + ' \u00d7 1000 = ' + (l * 1000) + ' ml.' }; },
+        medium: function () { var l = ri(2, 6) + pick([250, 500, 750]) / 1000;
+          return { q: 'How many millilitres are in ' + l + ' litres?', ans: l * 1000, unit: 'ml',
+            know: ['1 litre = 1000 millilitres', 'Amount: ' + l + ' litres'],
+            hints: ['Multiply by 1000.', l + ' \u00d7 1000.'],
+            sol: l + ' \u00d7 1000 = ' + (l * 1000) + ' ml.' }; },
+        hard: function () { var l = pick([2, 3, 4, 5]), ml = pick([200, 250, 500]);
+          return { q: 'A jug holds ' + l + ' litres. How many ' + ml + ' millilitre glasses can be filled from it?', ans: l * 1000 / ml, unit: 'glasses',
+            know: ['The jug holds ' + l + ' litres', 'Each glass holds ' + ml + ' millilitres', 'Both must be in the same unit first'],
+            hints: ['Turn the jug into millilitres: ' + l + ' \u00d7 1000.', 'Then divide by the size of one glass.'],
+            sol: l + ' litres is ' + (l * 1000) + ' ml, and ' + (l * 1000) + ' \u00f7 ' + ml + ' = ' + (l * 1000 / ml) + ' glasses. Same unit first, always.' }; }
+      } },
+    { key: 'roots', name: 'Square roots', icon: '\u221a', blurb: 'The number that multiplies by itself.',
+      gen: {
+        easy: function () { var n = ri(2, 9);
+          return { q: 'What is the square root of ' + (n * n) + '?', ans: n, unit: '',
+            know: ['A square root asks: what number times ITSELF gives this?', 'The number is ' + (n * n)],
+            hints: ['Which number, multiplied by itself, makes ' + (n * n) + '?', 'Try ' + n + ' \u00d7 ' + n + '.'],
+            sol: '\u221a' + (n * n) + ' = ' + n + ', because ' + n + ' \u00d7 ' + n + ' = ' + (n * n) + '. A square root undoes squaring.' }; },
+        medium: function () { var n = ri(10, 20);
+          return { q: 'What is the square root of ' + (n * n) + '?', ans: n, unit: '',
+            know: ['The square is ' + (n * n), 'You want the number that times itself makes it'],
+            hints: ['The answer is between 10 and 20.', n + ' \u00d7 ' + n + ' = ' + (n * n) + '.'],
+            sol: '\u221a' + (n * n) + ' = ' + n + '.' }; },
+        hard: function () { var n = ri(11, 25);
+          return { q: 'A square field has an area of ' + (n * n) + ' square metres. How long is each side, in metres?', ans: n, unit: 'm',
+            know: ['Area of a square: ' + (n * n) + ' square metres', 'Area of a square = side \u00d7 side', 'So the side is the square root of the area'],
+            hints: ['Side \u00d7 side = ' + (n * n) + '. What is the side?', 'Take the square root of ' + (n * n) + '.'],
+            sol: 'The side is \u221a' + (n * n) + ' = ' + n + ' m. Area questions about squares are square-root questions in disguise.' }; }
+      } },
+    { key: 'angles', name: 'Angles', icon: '\ud83d\udcd0', blurb: 'Degrees and the angles inside shapes.',
+      gen: {
+        easy: function () { var a = ri(20, 80);
+          return { q: 'Two angles of a triangle are ' + a + '\u00b0 and 90\u00b0. What is the third angle, in degrees?', ans: 180 - a - 90, unit: '\u00b0',
+            know: ['The angles in a triangle add to 180\u00b0', 'Two of them are ' + a + '\u00b0 and 90\u00b0'],
+            hints: ['Add the two you know: ' + (a + 90) + '.', 'Take that from 180.'],
+            sol: '180 \u2212 ' + (a + 90) + ' = ' + (180 - a - 90) + '\u00b0. The angles in any triangle add to 180.' }; },
+        medium: function () { var a = ri(30, 90), b = ri(20, 60);
+          return { q: 'Two angles of a triangle are ' + a + '\u00b0 and ' + b + '\u00b0. What is the third angle, in degrees?', ans: 180 - a - b, unit: '\u00b0',
+            know: ['Angles in a triangle add to 180\u00b0', 'The two known angles: ' + a + '\u00b0 and ' + b + '\u00b0'],
+            hints: ['Add them: ' + (a + b) + '.', 'Subtract from 180.'],
+            sol: '180 \u2212 ' + (a + b) + ' = ' + (180 - a - b) + '\u00b0.' }; },
+        hard: function () {
+          /* keep the three known angles well under 360, so the fourth is a sensible size */
+          var a, b, c, guard = 0;
+          do { a = ri(60, 120); b = ri(50, 110); c = ri(60, 110); guard++; } while (a + b + c > 300 && guard < 50);
+          return { q: 'Three angles of a quadrilateral are ' + a + '\u00b0, ' + b + '\u00b0 and ' + c + '\u00b0. What is the fourth, in degrees?', ans: 360 - a - b - c, unit: '\u00b0',
+            know: ['The angles in a QUADRILATERAL add to 360\u00b0', 'Three of them: ' + a + '\u00b0, ' + b + '\u00b0, ' + c + '\u00b0'],
+            hints: ['A quadrilateral is two triangles, so 2 \u00d7 180 = 360\u00b0.', 'Add the three and subtract from 360.'],
+            sol: '360 \u2212 ' + (a + b + c) + ' = ' + (360 - a - b - c) + '\u00b0. Every extra side adds another 180\u00b0 to the total.' }; }
+      } },
+    { key: 'area', name: 'Area', icon: '\ud83d\udfe6', blurb: 'The space inside a shape.',
+      gen: {
+        easy: function () { var w = ri(3, 12), h = ri(2, 10);
+          return { q: 'A rectangle is ' + w + ' cm by ' + h + ' cm. What is its area, in square centimetres?', ans: w * h, unit: 'cm\u00b2',
+            know: ['Width: ' + w + ' cm', 'Height: ' + h + ' cm', 'Area of a rectangle = width \u00d7 height'],
+            hints: ['Area of a rectangle is length times width.', w + ' \u00d7 ' + h + '.'],
+            sol: w + ' \u00d7 ' + h + ' = ' + (w * h) + ' cm\u00b2. Area is measured in SQUARE units.' }; },
+        medium: function () { var b = ri(6, 20), h = ri(4, 14);
+          return { q: 'A triangle has a base of ' + b + ' cm and a height of ' + h + ' cm. What is its area, in square centimetres?', ans: b * h / 2, unit: 'cm\u00b2',
+            know: ['Base: ' + b + ' cm', 'Height: ' + h + ' cm', 'A triangle is HALF of the rectangle around it'],
+            hints: ['Work out the rectangle first: ' + b + ' \u00d7 ' + h + '.', 'Then halve it.'],
+            sol: b + ' \u00d7 ' + h + ' = ' + (b * h) + ', and half of that is ' + (b * h / 2) + ' cm\u00b2. A triangle is always half the surrounding rectangle.' }; },
+        hard: function () { var r = pick([3, 4, 5, 6, 7, 10]);
+          return { q: 'A circle has a radius of ' + r + ' cm. Using 3.14 for \u03c0, what is its area, to one decimal place?', ans: Math.round(3.14 * r * r * 10) / 10, unit: 'cm\u00b2',
+            know: ['Radius: ' + r + ' cm', 'Area of a circle = \u03c0 \u00d7 radius \u00d7 radius', 'Use 3.14 for \u03c0'],
+            hints: ['Square the radius first: ' + r + ' \u00d7 ' + r + '.', 'Then multiply by 3.14.'],
+            sol: '3.14 \u00d7 ' + (r * r) + ' = ' + (Math.round(3.14 * r * r * 10) / 10) + ' cm\u00b2. The radius is squared \u2014 which is why a small change in radius makes a big change in area.' }; }
+      } },
+    { key: 'perimeter', name: 'Perimeter', icon: '\ud83d\udd32', blurb: 'The distance all the way round.',
+      gen: {
+        easy: function () { var w = ri(3, 12), h = ri(2, 10);
+          return { q: 'A rectangle is ' + w + ' cm by ' + h + ' cm. What is its perimeter, in centimetres?', ans: 2 * (w + h), unit: 'cm',
+            know: ['Width: ' + w + ' cm', 'Height: ' + h + ' cm', 'Perimeter = all four sides added'],
+            hints: ['There are two of each side.', '2 \u00d7 (' + w + ' + ' + h + ').'],
+            sol: '2 \u00d7 (' + w + ' + ' + h + ') = ' + (2 * (w + h)) + ' cm. Perimeter is a distance, so it is in plain units.' }; },
+        medium: function () { var n = ri(4, 12);
+          return { q: 'A square has an area of ' + (n * n) + ' square centimetres. What is its perimeter, in centimetres?', ans: 4 * n, unit: 'cm',
+            know: ['Area: ' + (n * n) + ' cm\u00b2', 'Area of a square = side \u00d7 side, so find the side first', 'Perimeter = 4 \u00d7 side'],
+            hints: ['What number times itself gives ' + (n * n) + '?', 'Then multiply the side by 4.'],
+            sol: 'The side is \u221a' + (n * n) + ' = ' + n + ' cm, so the perimeter is 4 \u00d7 ' + n + ' = ' + (4 * n) + ' cm. Area first, then perimeter.' }; },
+        hard: function () { var w = ri(5, 15), h = ri(4, 12);
+          return { q: 'A rectangle is ' + w + ' cm long and its perimeter is ' + (2 * (w + h)) + ' cm. How wide is it, in centimetres?', ans: h, unit: 'cm',
+            know: ['Length: ' + w + ' cm', 'Perimeter: ' + (2 * (w + h)) + ' cm', 'Perimeter = 2 \u00d7 (length + width)'],
+            hints: ['Half the perimeter is length + width: ' + (2 * (w + h)) + ' \u00f7 2.', 'Then take the length away.'],
+            sol: 'Half of ' + (2 * (w + h)) + ' is ' + (w + h) + ', and ' + (w + h) + ' \u2212 ' + w + ' = ' + h + ' cm. Halving first turns the perimeter back into one length plus one width.' }; }
+      } },
+    { key: 'decimals', name: 'Decimals', icon: '\ud83d\udd22', blurb: 'Tenths and hundredths, and moving the point.',
+      gen: {
+        easy: function () { var a = ri(2, 9) / 10, b = ri(2, 9) / 10;
+          return { q: a.toFixed(1) + ' + ' + b.toFixed(1) + ' = ?', ans: Math.round((a + b) * 10) / 10, unit: '',
+            know: ['Both numbers are tenths', 'Line up the decimal points'],
+            hints: ['Add them as if the point was not there, then put it back.', 'Count the tenths: ' + Math.round(a * 10) + ' + ' + Math.round(b * 10) + '.'],
+            sol: a.toFixed(1) + ' + ' + b.toFixed(1) + ' = ' + (Math.round((a + b) * 10) / 10) + '. Line up the points and the arithmetic is ordinary.' }; },
+        medium: function () { var a = pick([1.5, 2.5, 3.5, 4.5]), n = ri(2, 6);
+          return { q: a + ' \u00d7 ' + n + ' = ?', ans: Math.round(a * n * 100) / 100, unit: '',
+            know: ['A decimal times a whole number', 'Multiply as normal, then place the point'],
+            hints: ['Ignore the point: ' + Math.round(a * 10) + ' \u00d7 ' + n + '.', 'Then divide by 10 to put the point back.'],
+            sol: a + ' \u00d7 ' + n + ' = ' + (Math.round(a * n * 100) / 100) + '.' }; },
+        hard: function () { var n = pick([2, 4, 8, 5]), a = pick([0.25, 0.5, 1.25]);
+          return { q: a + ' \u00d7 ' + n + ' = ?', ans: Math.round(a * n * 1000) / 1000, unit: '',
+            know: ['A decimal times a whole number', 'The answer may come out as a whole number'],
+            hints: ['Multiply without the point, then count the decimal places.', a + ' \u00d7 ' + n + '.'],
+            sol: a + ' \u00d7 ' + n + ' = ' + (Math.round(a * n * 1000) / 1000) + '. Multiplying by 4 or 8 can clear a quarter or an eighth into a whole number.' }; }
+      } },
     { key: 'money', name: 'Money', icon: '\ud83d\udcb0', blurb: 'Prices, change and discounts.',
       gen: {
         easy: function () { var c = pick([12, 15, 18, 25, 40]), n = ri(2, 6);

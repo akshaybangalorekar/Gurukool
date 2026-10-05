@@ -73,6 +73,84 @@
         { say: 'The trap: afternoon times have two faces. 9:35 in the evening is 2135 in 24-hour time \u2014 add 12 to the hour after midday.',
           ask: 'What is 9:35 pm as a 4-digit 24-hour time?', ans: 2135, hint: '9 + 12 = 21, then the minutes.' }
       ] },
+    { key: 'length', name: 'Length', icon: '\ud83d\udccf', what: 'Length is measured in metres, centimetres and kilometres. Going to a SMALLER unit means multiply; going to a BIGGER unit means divide.',
+      steps: [
+        { say: 'One metre is 100 centimetres, and one kilometre is 1000 metres. Those two facts solve almost every length question.',
+          ask: 'How many centimetres are in 3 metres?', ans: 300, hint: 'Each metre holds 100 centimetres.' },
+        { say: 'Big unit to small unit means multiply, because you are packing in more, smaller pieces.',
+          ask: 'How many metres are in 4 kilometres?', ans: 4000, hint: 'Each kilometre is 1000 metres.' },
+        { say: 'The other way round, small to big, means divide \u2014 fewer, bigger pieces.',
+          ask: 'How many metres are in 500 centimetres?', ans: 5, hint: '100 centimetres make one metre, so divide by 100.' },
+        { say: 'The trap: a question can hand you one unit and ask for another. Always finish by converting to the unit it asked for.',
+          ask: 'A 6 metre rope is cut into 4 equal pieces. How long is each piece, in centimetres?', ans: 150, hint: '6 \u00f7 4 = 1.5 metres each, then multiply by 100.' }
+      ] },
+    { key: 'weight', name: 'Weight', icon: '\u2696\ufe0f', what: 'Weight is measured in grams and kilograms. One kilogram is 1000 grams, and the same multiply-or-divide rule applies.',
+      steps: [
+        { say: 'One kilogram is 1000 grams \u2014 the word kilo always means a thousand.',
+          ask: 'How many grams are in 3 kilograms?', ans: 3000, hint: 'kilo means 1000.' },
+        { say: 'Half a kilogram is 500 grams, and a quarter is 250 grams. Those two come up constantly in real life.',
+          ask: 'How many grams are in 2.5 kilograms?', ans: 2500, hint: '2 kilograms is 2000, plus 500.' },
+        { say: 'When you add up several weights, add them in the same unit first, then convert at the end.',
+          ask: 'Three parcels weigh 500 grams each. What is the total, in kilograms?', ans: 1.5, hint: '1500 grams in total, then divide by 1000.' }
+      ] },
+    { key: 'capacity', name: 'Capacity', icon: '\ud83e\udd64', what: 'Capacity is how much a container holds, in millilitres and litres. One litre is 1000 millilitres.',
+      steps: [
+        { say: 'A litre is 1000 millilitres. A 500 ml bottle is half a litre; a 250 ml glass is a quarter.',
+          ask: 'How many millilitres are in 3 litres?', ans: 3000, hint: 'Multiply by 1000.' },
+        { say: 'To find how many glasses fit in a jug, both amounts must be in the SAME unit first \u2014 usually millilitres.',
+          ask: 'A 2 litre jug holds how many 500 ml glasses?', ans: 4, hint: '2 litres is 2000 ml, and 2000 \u00f7 500.' },
+        { say: 'The trap: dividing litres by millilitres without converting. The units must match before you divide.',
+          ask: 'A 5 litre jug holds how many 250 ml glasses?', ans: 20, hint: '5 litres is 5000 ml.' }
+      ] },
+    { key: 'roots', name: 'Square roots', icon: '\u221a', what: 'A square root asks a backwards question: what number, multiplied by itself, gives this? It undoes squaring.',
+      steps: [
+        { say: 'Squaring means multiplying a number by itself: 7 squared is 49. A square root goes the other way.',
+          ask: 'What is the square root of 49?', ans: 7, hint: 'Which number times itself makes 49?' },
+        { say: 'Learn the square numbers and their roots come free: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.',
+          ask: 'What is the square root of 144?', ans: 12, hint: 'It is in the list above.' },
+        { say: 'Area questions about squares are square-root questions in disguise, because area = side \u00d7 side.',
+          ask: 'A square field has an area of 169 square metres. How long is each side?', ans: 13, hint: 'What times itself gives 169?' }
+      ] },
+    { key: 'angles', name: 'Angles', icon: '\ud83d\udcd0', what: 'Angles are measured in degrees. The angles inside a triangle always add to 180, and inside a quadrilateral to 360.',
+      steps: [
+        { say: 'A right angle is 90 degrees. A straight line is 180. These two are the rulers you measure everything else against.',
+          ask: 'The angles in a triangle add up to how many degrees?', ans: 180, hint: 'It is the same as a straight line.' },
+        { say: 'So if you know two angles of a triangle, the third is what is left of 180.',
+          ask: 'Two angles of a triangle are 65 and 48 degrees. What is the third?', ans: 67, hint: '65 + 48 = 113, then 180 \u2212 113.' },
+        { say: 'A quadrilateral is two triangles stuck together, so its angles add to 2 \u00d7 180 = 360.',
+          ask: 'Three angles of a quadrilateral are 100, 80 and 90 degrees. What is the fourth?', ans: 90, hint: 'They add to 360.' },
+        { say: 'The pattern continues: every extra side adds another 180 degrees to the total.',
+          ask: 'How many degrees do the angles of a PENTAGON add up to?', ans: 540, hint: 'Three triangles: 3 \u00d7 180.' }
+      ] },
+    { key: 'area', name: 'Area', icon: '\ud83d\udfe6', what: 'Area is the space inside a shape, measured in SQUARE units. Rectangle: width \u00d7 height. Triangle: half of that. Circle: \u03c0 \u00d7 radius squared.',
+      steps: [
+        { say: 'Area of a rectangle is width times height \u2014 how many unit squares would cover it.',
+          ask: 'A rectangle is 5 cm by 3 cm. What is its area in square centimetres?', ans: 15, hint: '5 \u00d7 3.' },
+        { say: 'A triangle is exactly half of the rectangle around it, so its area is base \u00d7 height \u00f7 2.',
+          ask: 'A triangle has a base of 10 cm and a height of 6 cm. What is its area?', ans: 30, hint: '10 \u00d7 6 = 60, then halve it.' },
+        { say: 'A circle needs \u03c0, which is about 3.14. The radius is half the width.',
+          ask: 'A circle has a radius of 5 cm. Using 3.14 for \u03c0, what is its area to one decimal place?', ans: 78.5, hint: '5 \u00d7 5 = 25, then 25 \u00d7 3.14.' },
+        { say: 'The trap: area is always in SQUARE units, and perimeter never is. Mixing them up is the commonest error in this topic.',
+          ask: 'A square has sides of 6 cm. What is its area in square centimetres?', ans: 36, hint: '6 \u00d7 6.' }
+      ] },
+    { key: 'perimeter', name: 'Perimeter', icon: '\ud83d\udd32', what: 'Perimeter is the distance all the way round a shape \u2014 a length, not a space, so it is measured in plain units.',
+      steps: [
+        { say: 'Perimeter is a walk around the edge: add every side.',
+          ask: 'A rectangle is 5 cm by 3 cm. What is its perimeter in centimetres?', ans: 16, hint: 'There are two 5s and two 3s.' },
+        { say: 'Because opposite sides of a rectangle are equal, the shortcut is 2 \u00d7 (length + width).',
+          ask: 'A rectangle is 8 cm long and 4 cm wide. What is its perimeter?', ans: 24, hint: '2 \u00d7 (8 + 4).' },
+        { say: 'A square has four equal sides, so its perimeter is 4 \u00d7 side \u2014 and if you are given the area, find the side first.',
+          ask: 'A square has an area of 49 square centimetres. What is its perimeter?', ans: 28, hint: 'The side is the square root of 49.' }
+      ] },
+    { key: 'decimals', name: 'Decimals', icon: '\ud83d\udd22', what: 'Decimals are tenths and hundredths. The digits after the point are just fractions of ten, so line up the points and do ordinary arithmetic.',
+      steps: [
+        { say: 'The first place after the point is tenths, the second is hundredths. 0.4 is four tenths \u2014 the same as 4/10.',
+          ask: '0.4 + 0.3 = ?', ans: 0.7, hint: 'Four tenths plus three tenths.' },
+        { say: 'To multiply a decimal by a whole number, do the multiplication without the point, then put the point back in.',
+          ask: '2.5 \u00d7 4 = ?', ans: 10, hint: '25 \u00d7 4 = 100, then divide by 10.' },
+        { say: 'Multiplying by 10 moves the point one place to the right; dividing by 10 moves it left. That is all the rule is.',
+          ask: '0.25 \u00d7 8 = ?', ans: 2, hint: '25 \u00d7 8 = 200, then divide by 100.' }
+      ] },
     { key: 'money', name: 'Money', icon: '\ud83d\udcb0', what: 'Money questions are multiplication, subtraction and percentages wearing a price tag. Always ask: what is the whole, and what is being taken away?',
       steps: [
         { say: 'Equal items mean multiplication. Four pens at 15 rupees is four lots of 15.',
