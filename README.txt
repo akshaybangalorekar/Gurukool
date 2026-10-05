@@ -342,6 +342,38 @@ Recent changes (round 22 — v22, delete a learner)
   the push never re-uploads them, so the deletion spreads to the other
   devices on their next sync and stays deleted.
 
+Recent changes (round 23 - v23, Phase 5: the learning rhythm)
+------------------------
+- SUCCESS SANDWICH: never two hard questions in a row. Two wrong
+  answers in a row now serves one easy, always-winnable warm-up
+  question, with technique-praise ("you took your time and checked it")
+  rather than talent-praise. It is a gift, not a gate - the child is
+  never blocked, and the warm-up hands them straight back to their
+  real question. Wired into maths word problems, the science quiz and
+  practice questions, the Mind-Champ puzzles and the Sanskrit word quiz.
+- STREAK INSURANCE: one missed day is forgiven per calendar month, in
+  every champ. A longer gap still restarts the streak honestly. The
+  console digest reports whether the shield is ready or used.
+- NATURAL STOPPING POINTS: after about 20 minutes of real work a
+  friendly wrap-up is offered once a day ("stopping here is a smart
+  move"), with a keep-going option that snoozes it for 10 minutes.
+  Learning ends on a high rather than on exhaustion.
+- WEEKLY DIGEST in the Parent Console: minutes of real work (from the
+  new learning clock, kept on this device only), maths questions and
+  XP for the week, accuracy against last week, Sanskrit scenes and
+  treasury words, day streak, a seven-day activity strip, and a short
+  written summary naming what is strong, what needs a hand, and whether
+  the streak shield was used.
+- MIND-CHAMP "THE DETECTIVE FILES": five new cases (25 puzzles) on
+  inference - reading between the lines. The techniques are the small
+  words (only, except, never), comparing two statements, checking the
+  times, noticing what is NOT said, and cross-off-then-conclude. They
+  follow the five Minecraft cases and appear under a "Detective Files"
+  heading on the Mind-Champ home screen.
+- Also: Sanskrit learners now appear in the Parent Console player list
+  (they were missing before), so they can be renamed or deleted like
+  every other player.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

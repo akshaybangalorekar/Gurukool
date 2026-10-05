@@ -1,0 +1,303 @@
+/* ============================================================
+   MIND-CHAMP - The Detective Files (world 2)
+   Five more cases, all about INFERENCE: reading between the lines.
+   Nothing here is a trick - each case teaches ONE thinking move, then
+   lets the child use it. Types used: num | mcq | clue | order | grid.
+   Loaded after content.js, which owns MC_LEVELS and MC_TECHS.
+   ============================================================ */
+(function () {
+  if (typeof MC_LEVELS === 'undefined') return;
+
+  var DET = [
+
+  /* ================= CASE 6: the vanishing cake ================= */
+  { id: 'q6', name: 'The Vanishing Cake', icon: '🍰', xpBonus: 15,
+    tech: { id: 'smallwords', name: 'Listen for the Small Words', icon: '🔤',
+      desc: 'Words like only, except, never and everyone hide the real clue. Find the small word first, then answer.' },
+    puzzles: [
+      { id: 'q6p1', type: 'mcq', xp: 10, title: 'Everyone except one',
+        q: 'The baker says: "Everyone except Mira was outside." Who was inside the kitchen?',
+        story: 'A cake vanished. Four villagers were nearby, and one small word decides everything.',
+        options: ['Mira', 'Sam', 'Noor', 'Ravi'],
+        answer: 0,
+        hints: ['Read the sentence again. Which small word is doing the work?',
+          'The word EXCEPT flips the sentence over: everyone outside, one person not outside.',
+          'Not outside means inside. Who is the exception?'],
+        sol: 'The small word EXCEPT does all the work: everyone was outside, Mira was not. Not outside means inside, so Mira was in the kitchen. Champions read the small words - only, except, never, at least - before they read the big ones.' },
+
+      { id: 'q6p2', type: 'clue', xp: 10, title: 'Prove it properly',
+        q: 'Which sentence actually PROVES Mira was in the kitchen - and which word in it does the proving?',
+        story: 'A guess is not a proof. Pick the sentence that settles it, then pick the word that makes it stick.',
+        options: ['Mira really likes cake', 'Mira was the only one inside the kitchen', 'The cake was chocolate'],
+        answer: 1,
+        clues: ['the word only', 'the word likes', 'the word chocolate'],
+        clueAnswer: 0,
+        hints: ['Which sentence is about WHERE Mira was, not what she likes?',
+          'Liking cake is not being in the kitchen. Only one sentence puts her there.',
+          'That sentence has one word that makes it airtight. Which word?'],
+        sol: 'Being the ONLY one inside is a proof; liking cake is not. The word only rules everyone else out, so nobody else could have done it. Evidence must rule people out - that is what makes it evidence.' },
+
+      { id: 'q6p3', type: 'num', xp: 10, title: 'Nobody but two',
+        q: 'A note says: "Nobody but Sam and Mira touched the oven." Five villagers live here. How many touched the oven?',
+        story: 'The villagers are Sam, Mira, Noor, Ravi and Alex.',
+        answer: 2,
+        hints: ['Nobody but means the same as only.',
+          'Only Sam and Mira touched it - so how many is that?',
+          'Count the names that come AFTER the words nobody but.'],
+        sol: 'Nobody but Sam and Mira means exactly two people: Sam and Mira. The word but cuts the list down. Whenever you see nobody but or all but, count the short list, not the long one.' },
+
+      { id: 'q6p4', type: 'grid', xp: 10, title: 'Who took what?',
+        q: 'Mira took the cake. Nobody took both. Tap the grid to mark every box: yes or no.',
+        story: 'Clue: "Mira took the cake, and nobody took both."',
+        rowHeads: ['Sam', 'Mira'], colHeads: ['🍰 cake', '🥧 pie'],
+        answer: { 'Sam|🍰 cake': 0, 'Sam|🥧 pie': 1, 'Mira|🍰 cake': 1, 'Mira|🥧 pie': 0 },
+        hints: ['Start with what you were TOLD: Mira and the cake. Mark that box yes.',
+          'Now that box is used up - what does nobody took both tell you about Mira and the pie?',
+          'Two boxes are left for Sam, and one of them is already impossible.'],
+        sol: 'Mira and the cake is a yes, so Mira and the pie is a no. That leaves the pie for Sam, and the cake is gone. Filling in one certain box knocks out the rest - that is the whole trick of a logic grid.' },
+
+      { id: 'q6p5', type: 'order', xp: 20, boss: true, title: 'BOSS: the cake timeline',
+        q: 'Tap the four moments in the ONLY order that fits every rule.',
+        story: 'Rules: the oven was turned on first. The cake was baked AFTER the oven went on. Mira came inside AFTER the cake was baked. The cake vanished LAST.',
+        items: [{ t: '🔥 oven turned on', id: 'O' }, { t: '🍰 cake baked', id: 'B' }, { t: '🚶 Mira came inside', id: 'M' }, { t: '❓ cake vanished', id: 'V' }],
+        answer: ['O', 'B', 'M', 'V'],
+        hints: ['Which moment has no rule waiting on it? That one is first.',
+          'The oven must come before the cake, and the cake before Mira.',
+          'Three moments are now in a line. Where does vanishing have to go?'],
+        sol: 'Oven, cake, Mira, vanished - every rule pointed the same way once the first moment was found. When rules chain together, find the end of the chain that has nothing before it, and build forward from there.' }
+    ] },
+
+  /* ================= CASE 7: the footprint trail ================= */
+  { id: 'q7', name: 'The Footprint Trail', icon: '👣', xpBonus: 15,
+    tech: { id: 'compare', name: 'Compare Two Statements', icon: '⚖️',
+      desc: 'Put two people statements side by side. Where they clash, someone is wrong. Where they agree, you can trust it.' },
+    puzzles: [
+      { id: 'q7p1', type: 'mcq', xp: 10, title: 'Two stories that clash',
+        q: 'Ravi says: "I was at the river all morning." Tia says: "I saw Ravi at the market at 10 o clock." What do you know for SURE?',
+        story: 'Both stories cannot be true. Careful - you do not know yet WHO is wrong.',
+        options: ['At least one of them is not telling the truth', 'Both of them are lying', 'Both of them are telling the truth'],
+        answer: 0,
+        hints: ['Can a person be at the river and at the market at the same minute?',
+          'So the two stories cannot both be true. Does that prove BOTH are false?',
+          'One clash proves at least one is wrong - not that both are.'],
+        sol: 'Two clashing stories prove that at least one is wrong. It does NOT prove both are wrong - maybe Ravi really was at the market and Tia was the one mistaken. Say only as much as the evidence allows; that is careful thinking.' },
+
+      { id: 'q7p2', type: 'clue', xp: 10, title: 'Where do they clash?',
+        q: 'Which pair of statements cannot both be true - and what makes them clash?',
+        story: 'Four statements were collected. Only one pair truly contradicts.',
+        options: ['Ravi at the river / Ravi at the market at 10', 'Ravi likes fish / Tia likes fish', 'It rained at noon / the ground is wet'],
+        answer: 0,
+        clues: ['the same person in two places at once', 'two people with the same hobby', 'rain making the ground wet'],
+        clueAnswer: 0,
+        hints: ['Which pair is about ONE person being in TWO places?',
+          'Two people liking the same thing is not a clash. Rain and wet ground agree with each other.',
+          'The clash is always one person, two places, one time.'],
+        sol: 'One person cannot be in two places at the same time - that is the clash, and the reason is the same person in two places. Comparing statements means hunting for exactly that: one person, one time, two stories.' },
+
+      { id: 'q7p3', type: 'num', xp: 10, title: 'How many can be true?',
+        q: 'Four statements were collected. Three of them fit together perfectly. How many statements can ALL be true at the same time?',
+        story: 'Statements: (1) the gate was open, (2) the dog was asleep, (3) the dog was barking at the gate, (4) it was dark.',
+        answer: 3,
+        hints: ['Read each statement and ask: does this fight with any other?',
+          'A sleeping dog and a barking dog cannot both be true. That is one statement out.',
+          'Four statements, one impossible - how many are left?'],
+        sol: 'The dog cannot be asleep and barking at once, so only three statements can stand together. Count what SURVIVES the clashes - that is how detectives keep track of a big pile of statements.' },
+
+      { id: 'q7p4', type: 'grid', xp: 10, title: 'Who was where?',
+        q: 'One person was at the river, one at the market. Each person was in exactly one place. Fill every box.',
+        story: 'Clues: "Ravi was not at the market." "Tia was seen at the market."',
+        rowHeads: ['Ravi', 'Tia'], colHeads: ['🌊 river', '🛒 market'],
+        answer: { 'Ravi|🌊 river': 1, 'Ravi|🛒 market': 0, 'Tia|🌊 river': 0, 'Tia|🛒 market': 1 },
+        hints: ['Which clue tells you something directly, with no thinking needed?',
+          'Tia at the market is certain. Mark it yes.',
+          'Ravi not at the market plus one place each - so where must Ravi be?'],
+        sol: 'Tia at the market is a direct yes, and that leaves the river for Ravi - which also matches the clue that Ravi was not at the market. Two clues, one grid, no guessing: that is how you turn statements into certainties.' },
+
+      { id: 'q7p5', type: 'order', xp: 20, boss: true, title: 'BOSS: the trail in time',
+        q: 'Tap the four moments in the only order that fits every statement.',
+        story: 'Statements: the footprints were made AFTER the rain stopped. The gate was opened BEFORE the footprints. The dog barked AFTER the gate opened. The footprints were found LAST.',
+        items: [{ t: '🌧️ rain stopped', id: 'R' }, { t: '🚪 gate opened', id: 'G' }, { t: '🐕 dog barked', id: 'D' }, { t: '👣 footprints found', id: 'F' }],
+        answer: ['R', 'G', 'D', 'F'],
+        hints: ['Find the moment that must come first - which one waits on nothing?',
+          'Footprints come after the rain. The gate comes before the footprints.',
+          'Gate before footprints, dog after gate. Where does found go?'],
+        sol: 'Rain, gate, dog, footprints found - each statement pinned one moment to another until the whole line was fixed. Comparing statements is not only about catching lies; it is also how you build a timeline nobody can argue with.' }
+    ] },
+
+  /* ================= CASE 8: the alibi ================= */
+  { id: 'q8', name: 'The Alibi', icon: '🕰️', xpBonus: 15,
+    tech: { id: 'clock', name: 'Check the Times', icon: '⏱️',
+      desc: 'Put the times in order before you decide anything. Someone who was somewhere else at that minute cannot be the culprit.' },
+    puzzles: [
+      { id: 'q8p1', type: 'mcq', xp: 10, title: 'Could she have been there?',
+        q: 'The garden gate opened at 4:15. Ana left the library at 4:10 and her walk home takes 10 minutes. Could Ana have opened the gate?',
+        story: 'Work out where Ana was at 4:15, then decide.',
+        options: ['No - she was still walking home', 'Yes - she had plenty of time', 'We cannot tell'],
+        answer: 0,
+        hints: ['She left at 4:10 and walks for 10 minutes. When does she arrive?',
+          'She arrives at 4:20. The gate opened at 4:15.',
+          'At 4:15 she was still on the way. So could she be at the gate?'],
+        sol: 'Leaving at 4:10 plus a 10 minute walk means arriving at 4:20 - five minutes AFTER the gate opened, so Ana could not have done it. An alibi is just arithmetic with times. Do the sum before you accuse.' },
+
+      { id: 'q8p2', type: 'order', xp: 10, title: 'Put the evening in order',
+        q: 'Tap the four moments in the right order.',
+        story: 'Times: the gate opened at 4:15. Ana got home at 4:20. Dinner was at 5:00. The gate was found open at 5:10.',
+        items: [{ t: '🚪 gate opened (4:15)', id: 'A' }, { t: '🏠 Ana home (4:20)', id: 'B' }, { t: '🍽️ dinner (5:00)', id: 'C' }, { t: '🔍 gate found open (5:10)', id: 'D' }],
+        answer: ['A', 'B', 'C', 'D'],
+        hints: ['You were given the times - so you do not have to guess anything.',
+          'Line them up from the earliest time to the latest.',
+          '4:15 comes before 4:20, which comes before 5:00.'],
+        sol: 'When the times are given, the order is free - just sort them. Detectives sort times first, because a timeline makes alibis obvious and impossible stories fall apart.' },
+
+      { id: 'q8p3', type: 'clue', xp: 10, title: 'Which clue clears her?',
+        q: 'Which clue really clears Ana - and what makes it work?',
+        story: 'Three clues were collected about the 4:15 gate.',
+        options: ['Ana was walking home from 4:10 to 4:20', 'Ana does not like gardens', 'Ana was tired that evening'],
+        answer: 0,
+        clues: ['it places her somewhere else at 4:15', 'it is about her feelings', 'it is about how she felt'],
+        clueAnswer: 0,
+        hints: ['A clue that clears someone must say WHERE they were at that exact minute.',
+          'Liking or not liking gardens says nothing about 4:15.',
+          'One clue puts her on the road at 4:15. Which?'],
+        sol: 'Only the walk home puts Ana somewhere else at 4:15 - that is what an alibi is: a place, at the exact time. Feelings and hobbies never clear anyone; a time and a place do.' },
+
+      { id: 'q8p4', type: 'grid', xp: 10, title: 'Who was where at 4:15?',
+        q: 'Three people, three places, at 4:15 exactly. Fill every box.',
+        story: 'Clues: "Ana was walking home." "Ben was at the gate." "Cara was not at the gate."',
+        rowHeads: ['Ana', 'Ben', 'Cara'], colHeads: ['🚪 gate', '🛣️ road', '🏫 library'],
+        answer: { 'Ana|🚪 gate': 0, 'Ana|🛣️ road': 1, 'Ana|🏫 library': 0, 'Ben|🚪 gate': 1, 'Ben|🛣️ road': 0, 'Ben|🏫 library': 0, 'Cara|🚪 gate': 0, 'Cara|🛣️ road': 0, 'Cara|🏫 library': 1 },
+        hints: ['Two clues give you a place directly. Mark those yes first.',
+          'Ben at the gate and Ana on the road are certain.',
+          'Cara is not at the gate, and the other two places are taken. So where is she?'],
+        sol: 'Ben at the gate, Ana on the road, and that leaves the library for Cara - which fits the clue that she was not at the gate. Fill the certain boxes first; the last person is usually left with only one place.' },
+
+      { id: 'q8p5', type: 'num', xp: 20, boss: true, title: 'BOSS: how many are cleared?',
+        q: 'The gate opened at 4:15. Five villagers gave their whereabouts. How many are CLEARED by their times?',
+        story: 'Ana was walking home from 4:10 to 4:20. Ben was at the gate at 4:15. Cara was in the library until 5:00. Dev was at the market until 4:30. Ela left the village at 4:00 and travelled for an hour.',
+        answer: 4,
+        hints: ['One person was AT the gate at 4:15 - they are not cleared. Check each person separately.',
+          'Ana was on the road at 4:15, Cara was in the library, Ela was travelling, Dev was at the market until 4:30.',
+          'Four people were somewhere else. One was at the gate. How many are cleared?'],
+        sol: 'Ana, Cara, Dev and Ela were all somewhere else at 4:15 - that is four cleared, and Ben is the one who cannot be cleared. Go person by person, minute by minute: alibis are checked one at a time, never in a crowd.' }
+    ] },
+
+  /* ================= CASE 9: the locked chest ================= */
+  { id: 'q9', name: 'The Locked Chest', icon: '🔐', xpBonus: 15,
+    tech: { id: 'notsaid', name: 'Notice What Is NOT Said', icon: '🕳️',
+      desc: 'Sometimes the clue is what nobody mentioned. Ask: who was never named? what was never found? what was never checked?' },
+    puzzles: [
+      { id: 'q9p1', type: 'mcq', xp: 10, title: 'What did nobody mention?',
+        q: 'Everyone talked about the key. Nobody said a word about the window. What should you check first?',
+        story: 'Four villagers were questioned. The report is all about the key.',
+        options: ['The window - nobody checked it', 'The key again', 'The lock, one more time'],
+        answer: 0,
+        hints: ['Everyone looked at the key. What did nobody look at?',
+          'The report mentions the key over and over. What is MISSING from the report?',
+          'A clue can be an absence. Which thing was never even discussed?'],
+        sol: 'The window was never mentioned, and that silence is the clue. When everyone stares at one thing, ask what nobody is looking at. An absence is evidence too - it tells you where nobody has looked yet.' },
+
+      { id: 'q9p2', type: 'clue', xp: 10, title: 'The quiet clue',
+        q: 'Which clue is the strongest - and why does a SILENCE make it strong?',
+        story: 'Three notes about the chest.',
+        options: ['The window was never mentioned in any report', 'The chest is made of oak', 'The key is small'],
+        answer: 0,
+        clues: ['nobody ever mentioned it', 'it is about wood', 'it is about size'],
+        clueAnswer: 0,
+        hints: ['Which note is about something that DID NOT happen?',
+          'Oak and size are ordinary details. One note is about a gap in the story.',
+          'The gap is the point: nobody ever said anything about it.'],
+        sol: 'The window was never mentioned - a gap in the story, and gaps hide things. Noticing what is missing is a real detective skill: read the report for what it leaves out, not only for what it says.' },
+
+      { id: 'q9p3', type: 'num', xp: 10, title: 'Count the unchecked places',
+        q: 'The report lists where the chest was checked: the door, the floor and the shelf. Four places could hide a key. How many places were NEVER checked?',
+        story: 'The four places are: the door, the floor, the shelf, the window.',
+        answer: 1,
+        hints: ['Which places does the report actually mention?',
+          'Door, floor and shelf are all in the report. Which place is not?',
+          'Four places, three checked - how many are left?'],
+        sol: 'Only the window was never checked, so the answer is one - and that one unchecked place is exactly where to look next. Counting the gaps tells you how much of the story you are still missing.' },
+
+      { id: 'q9p4', type: 'grid', xp: 10, title: 'Checked or not?',
+        q: 'Two places, two villagers, one searcher each. Fill every box: checked or not checked.',
+        story: 'Clues: "Ravi searched the door." "Nobody searched the window."',
+        rowHeads: ['Ravi', 'Mira'], colHeads: ['🚪 door', '🪟 window'],
+        answer: { 'Ravi|🚪 door': 1, 'Ravi|🪟 window': 0, 'Mira|🚪 door': 0, 'Mira|🪟 window': 0 },
+        hints: ['One clue is direct: Ravi searched the door. Mark it.',
+          'Now the window: what does nobody searched the window mean for BOTH people?',
+          'Mira searched one place, and it cannot be the window. Look at what the nobody clue switches off.'],
+        sol: 'Ravi searched the door, and NOBODY searched the window - so both window boxes are no, including Mira. That leaves Mira with no box, which is exactly the gap the clue was pointing at. A never statement switches off a whole column at once.' },
+
+      { id: 'q9p5', type: 'order', xp: 20, boss: true, title: 'BOSS: the missing minutes',
+        q: 'The report has a gap. Tap the four moments in the only order that fits, and find what nobody explained.',
+        story: 'Times: the chest was locked at 6:00. The guard walked past at 6:30. The chest was found open at 7:00. Nobody has explained the minutes between 6:30 and 7:00.',
+        items: [{ t: '🔒 chest locked (6:00)', id: 'A' }, { t: '🚶 guard passed (6:30)', id: 'B' }, { t: '❓ unexplained gap', id: 'G' }, { t: '📭 chest found open (7:00)', id: 'C' }],
+        answer: ['A', 'B', 'G', 'C'],
+        hints: ['Sort the times you were given first.',
+          'The gap belongs between the guard passing and the chest being found.',
+          '6:00, 6:30, then the gap, then 7:00.'],
+        sol: 'Locked, guard, the gap, found open - and the gap is the most important moment in the whole report, because nobody explained it. Mark the holes in a timeline. What is missing is usually what matters most.' }
+    ] },
+
+  /* ================= CASE 10: the final deduction ================= */
+  { id: 'q10', name: 'The Final Deduction', icon: '🕵️', xpBonus: 20,
+    tech: { id: 'eliminate', name: 'Cross Off, Then Conclude', icon: '❌',
+      desc: 'When the clever answer is hidden, cross off what is impossible first. Whatever is left must be the answer.' },
+    puzzles: [
+      { id: 'q10p1', type: 'mcq', xp: 10, title: 'Cross off and see',
+        q: 'Three villagers could have taken the lantern. One was away all night, one was asleep at home, one carried a full basket of eggs. Who took it?',
+        story: 'Cross off everyone the clues rule out. What is left?',
+        options: ['The one asleep at home', 'The one who was away', 'The one carrying eggs'],
+        answer: 0,
+        hints: ['Rule out the ones the clues make impossible first.',
+          'Away all night and carrying a full basket are both hard to hide a lantern with.',
+          'Whatever survives the crossings-off must be the answer, however surprising.'],
+        sol: 'Away and carrying eggs both rule themselves out, so the sleeper is left - and being asleep is not proof of innocence, only a claim. Cross off the impossible, and whatever remains is your answer, even when it surprises you.' },
+
+      { id: 'q10p2', type: 'num', xp: 10, title: 'How many survive?',
+        q: 'Five suspects. Four are crossed off by solid clues. How many are left?',
+        story: 'Five villagers were questioned, and four have alibis that check out.',
+        answer: 1,
+        hints: ['Solid clues remove people from your list.',
+          'Four are cleared, and five were questioned.',
+          'Five take away four leaves how many?'],
+        sol: 'One suspect survives - the arithmetic of elimination. Detectives do not need to be clever about the culprit; they only need to be thorough about crossing off everyone else.' },
+
+      { id: 'q10p3', type: 'clue', xp: 10, title: 'Which crossing-off is solid?',
+        q: 'Which clue lets you cross someone off for GOOD - and what makes it solid?',
+        story: 'Three clues about the lantern thief.',
+        options: ['The thief was seen in the north field at 8:00, and Noor was in the village hall until 9:00', 'Noor is usually kind', 'Noor owns a lantern'],
+        answer: 0,
+        clues: ['it puts her somewhere else at the exact time', 'it is about her character', 'it is about what she owns'],
+        clueAnswer: 0,
+        hints: ['A solid alibi needs a place AND a time.',
+          'Being kind or owning a lantern proves nothing at all.',
+          'Only one clue fixes where Noor was at 8:00.'],
+        sol: 'Only the hall until 9:00 fixes Noor somewhere else at 8:00, so she can be crossed off for good. Crossings-off must be built on time and place. Character and belongings are decoration, not evidence.' },
+
+      { id: 'q10p4', type: 'grid', xp: 10, title: 'The last three boxes',
+        q: 'Two suspects, two hiding places, one each. Fill every box to find who hid where.',
+        story: 'Clues: "The lantern was not in the barn." "Noor was never near the barn."',
+        rowHeads: ['Noor', 'Sam'], colHeads: ['🏚️ barn', '🌳 tree'],
+        answer: { 'Noor|🏚️ barn': 0, 'Noor|🌳 tree': 1, 'Sam|🏚️ barn': 0, 'Sam|🌳 tree': 0 },
+        hints: ['Start with the clue that names a PLACE and a person.',
+          'Noor was never near the barn - so her barn box is no.',
+          'The lantern was not in the barn, so nobody hid it there. What does that leave for Noor?'],
+        sol: 'The barn is crossed off for everyone - the lantern was never there and Noor was never near it - so Noor must have used the tree, and Sam is left with nothing, which is the clue that Sam was not involved. Two crossed-off boxes solved the whole case.' },
+
+      { id: 'q10p5', type: 'order', xp: 25, boss: true, title: 'FINAL BOSS: the whole case',
+        q: 'Solve it: tap the four moments in the only order that fits, then decide what the times really prove.',
+        story: 'The lantern vanished at 8:00. Rules: the market closed at 7:30, and Noor was in the market until it closed. The walk from the market to the north field takes 20 minutes. The thief was seen in the north field at 8:00.',
+        items: [{ t: '🛒 market open', id: 'M' }, { t: '🔔 market closed (7:30)', id: 'C' }, { t: '🚶 walk to the field (20 min)', id: 'W' }, { t: '👤 thief seen in the field (8:00)', id: 'F' }],
+        answer: ['M', 'C', 'W', 'F'],
+        hints: ['Sort the story into a timeline first - that is always step one.',
+          'Market, close, walk, field. Now do the arithmetic on the times.',
+          '7:30 plus a 20 minute walk means 7:50, and the thief was seen at 8:00. So could Noor be the thief?'],
+        sol: 'Market, close, walk, field: 7:30 plus 20 minutes is 7:50, and the thief was seen at 8:00 - so Noor had time, and cannot be crossed off. The case stays open, and the honest answer is: we do not know yet. A good detective says that instead of guessing. You have finished every case in the Detective Files.' }
+    ] }
+  ];
+
+  for (var i = 0; i < DET.length; i++) {
+    MC_LEVELS.push(DET[i]);
+    MC_TECHS.push(DET[i].tech);
+  }
+})();

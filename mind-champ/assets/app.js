@@ -77,7 +77,18 @@
     var t = todayStr();
     if (S.streak.last === t) return;
     var y = new Date(Date.now() - 86400000), ys = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
-    S.streak.count = (S.streak.last === ys) ? (S.streak.count || 0) + 1 : 1;
+    var y2 = new Date(Date.now() - 172800000), y2s = y2.getFullYear() + '-' + String(y2.getMonth() + 1).padStart(2, '0') + '-' + String(y2.getDate()).padStart(2, '0');
+    var mk = t.slice(0, 7);
+    if (S.streak.last === ys) {
+      S.streak.count = (S.streak.count || 0) + 1;
+    } else if (S.streak.last === y2s && S.streak.freezeMonth !== mk) {
+      /* streak insurance: ONE missed day is forgiven, once a calendar month */
+      S.streak.freezeMonth = mk;
+      S.streak.frozen = (S.streak.frozen || 0) + 1;
+      S.streak.count = (S.streak.count || 0) + 1;
+    } else {
+      S.streak.count = 1;
+    }
     S.streak.last = t;
   }
 
@@ -120,7 +131,8 @@
       var st = S.cases[Q.id] || { done: false, stars: 0, used: [] };
       var unlocked = levelUnlocked(i);
       var stars = st.used.length ? '⭐ ' + st.used.length + '/5 solved' : (st.done ? '✅ case closed' : '');
-      return '<div class="qcard' + (unlocked ? '' : ' locked') + (st.done ? ' done' : '') + '" onclick="' + (unlocked ? "openCase('" + Q.id + "')" : 'lockedMsg()') + '">' +
+      var divider = (i === 5) ? '<div style="flex-basis:100%;margin:26px 0 6px;padding-top:18px;border-top:3px dashed #cbd5e1"><h3 style="margin:0 0 4px">🕵️ The Detective Files</h3><p style="margin:0;color:#64748b;font-weight:600">Read between the lines: five more cases where the clue is in the small words, the times and the silences.</p></div>' : '';
+      return divider + '<div class="qcard' + (unlocked ? '' : ' locked') + (st.done ? ' done' : '') + '" onclick="' + (unlocked ? "openCase('" + Q.id + "')" : 'lockedMsg()') + '">' +
         '<div class="qicon">' + (unlocked ? Q.icon : '🔒') + '</div>' +
         '<div class="qbody"><b>Quest ' + (i + 1) + ': ' + Q.name + '</b>' +
         '<span class="qtech">' + Q.tech.icon + ' technique: ' + Q.tech.name + '</span>' +
@@ -333,6 +345,7 @@
 
     var good = mainOk(pz, a.main);
     if (pz.type === 'clue' && good) good = (a.clue === pz.clueAnswer);
+    if (window.Rhythm) window.Rhythm.note(good);
 
     if (!good) {
       P.wrong++;

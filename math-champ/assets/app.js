@@ -132,7 +132,19 @@
     if (STATE.streak.last === today) return;
     var yesterday = new Date(Date.now() - 86400000);
     var yStr = yesterday.getFullYear() + '-' + String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
-    STATE.streak.count = (STATE.streak.last === yStr) ? STATE.streak.count + 1 : 1;
+    var twoAgo = new Date(Date.now() - 172800000);
+    var y2Str = twoAgo.getFullYear() + '-' + String(twoAgo.getMonth() + 1).padStart(2, '0') + '-' + String(twoAgo.getDate()).padStart(2, '0');
+    var mk = today.slice(0, 7);
+    if (STATE.streak.last === yStr) {
+      STATE.streak.count = STATE.streak.count + 1;
+    } else if (STATE.streak.last === y2Str && STATE.streak.freezeMonth !== mk) {
+      /* streak insurance: ONE missed day is forgiven, once a calendar month */
+      STATE.streak.freezeMonth = mk;
+      STATE.streak.frozen = (STATE.streak.frozen || 0) + 1;
+      STATE.streak.count = STATE.streak.count + 1;
+    } else {
+      STATE.streak.count = 1;
+    }
     STATE.streak.last = today;
     save();
   }

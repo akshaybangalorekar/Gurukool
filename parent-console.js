@@ -109,6 +109,8 @@
     var mc = read('mc_state'); if (mc) add(mc.name);
     var mcs = read('mc_profiles') || {}; for (i in mcs) add(mcs[i] && mcs[i].name);
     var sq = read('sq_v3'); if (sq && sq.profiles) for (i in sq.profiles) add(sq.profiles[i].name);
+    var sk = read('sk_state'); if (sk) add(sk.name);
+    var sks = read('sk_profiles') || {}; for (i in sks) add(sks[i] && sks[i].name);
     return Object.keys(names).map(function (k) { return names[k]; });
   }
 
@@ -283,8 +285,46 @@
     return recs.slice(0, 3);
   }
 
+  /* ---------- the weekly digest ---------- */
+  function skFor(name) {
+    var lname = (name || '').trim().toLowerCase();
+    var sks = read('sk_profiles') || {};
+    if (sks[lname]) return sks[lname];
+    var sk = read('sk_state');
+    if (sk && (sk.name || '').trim().toLowerCase() === lname) return sk;
+    return null;
+  }
+  function rhythmDays() {
+    var r = read('gk_rhythm') || {};
+    return (r && r.days && typeof r.days === 'object') ? r.days : {};
+  }
+  function last7() {
+    var out = [];
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date(Date.now() - i * 86400000);
+      out.push({
+        key: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'),
+        day: ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()]
+      });
+    }
+    return out;
+  }
+  function shieldUsed(oc, sk, mc, sq) {
+    var n = new Date();
+    var mk = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0');
+    var flags = [];
+    if (oc && oc.streak && oc.streak.freezeMonth === mk) flags.push('maths');
+    if (mc && mc.streak && mc.streak.freezeMonth === mk) flags.push('mind');
+    if (sk && sk.streak && sk.streak.freezeMonth === mk) flags.push('Sanskrit');
+    if (sq && sq.freezeMonth === mk) flags.push('science');
+    return flags;
+  }
+
   function digest(name, math, sci, mind) {
     var oc = stateFor('math', name) || {};
+    var sk = skFor(name) || {};
+    var mc = stateFor('mind', name) || {};
+    var sq = stateFor('science', name) || {};
     var att = oc.attempts || [];
     var week = att.filter(function (a) { return daysAgo(a.ts) <= 7; });
     var prev = att.filter(function (a) { return daysAgo(a.ts) > 7 && daysAgo(a.ts) <= 14; });
@@ -293,17 +333,57 @@
     var accPrev = prev.length ? Math.round(100 * rate(prev)) : null;
     var notes = collectNotes(name);
     var streak = (oc.streak && oc.streak.count) || 0;
-    var h = '<div class="pc-cards">';
+    var days7 = last7();
+    var mins = rhythmDays();
+    var weekMins = 0;
+    days7.forEach(function (d) { weekMins += (mins[d.key] || 0); });
+    weekMins = Math.round(weekMins);
+    var scenesWeek = 0;
+    for (var sid in (sk.scenes || {})) { var sc = sk.scenes[sid]; if (sc && sc.at && daysAgo(sc.at) <= 7) scenesWeek++; }
+    var wordsKnown = Object.keys(sk.words || {}).length;
+    var shield = shieldUsed(oc, sk, mc, sq);
+
+    var h = '<p class="pc-lead">The last seven days on this device. Minutes come from the learning clock; questions and XP come from what was actually recorded.</p>';
+    h += '<div class="pc-cards">';
+    h += '<div class="pc-stat"><b>' + weekMins + '</b><span>minutes of real work this week</span></div>';
     h += '<div class="pc-stat"><b>' + week.length + '</b><span>maths questions this week</span></div>';
-    h += '<div class="pc-stat"><b>+' + xpWeek + '</b><span>XP earned this week</span></div>';
+    h += '<div class="pc-stat"><b>+' + xpWeek + '</b><span>maths XP earned this week</span></div>';
     h += '<div class="pc-stat"><b>' + (accWeek === null ? '–' : accWeek + '%') + '</b><span>accuracy this week' + (accPrev !== null && accWeek !== null ? ' (last week ' + accPrev + '%)' : '') + '</span></div>';
-    h += '<div class="pc-stat"><b>' + notes.length + '</b><span>notes in his own words</span></div>';
+    h += '<div class="pc-stat"><b>' + scenesWeek + '</b><span>Sanskrit scenes this week</span></div>';
+    h += '<div class="pc-stat"><b>' + wordsKnown + '</b><span>words in the Shabda-Kosha</span></div>';
     h += '<div class="pc-stat"><b>' + streak + '</b><span>day streak</span></div>';
+    h += '<div class="pc-stat"><b>' + notes.length + '</b><span>notes in his own words</span></div>';
     h += '</div>';
+
+    /* the 7-day activity strip */
+    var maxM = 1;
+    days7.forEach(function (d) { maxM = Math.max(maxM, mins[d.key] || 0); });
+    h += '<h4 style="margin:18px 0 6px">Work by day</h4><div style="display:flex;gap:8px;align-items:flex-end">';
+    days7.forEach(function (d) {
+      var m = Math.round(mins[d.key] || 0);
+      var pct = Math.max(7, Math.round(100 * m / maxM));
+      h += '<div style="flex:1;text-align:center"><div title="' + m + ' minutes" style="height:' + Math.round(pct * 0.7) + 'px;background:' + (m > 0 ? 'linear-gradient(180deg,#34d399,#2a9d8f)' : '#e2e8f0') + ';border-radius:8px 8px 4px 4px"></div><div style="font-size:13px;font-weight:800;color:#64748b;margin-top:4px">' + d.day + '</div><div style="font-size:12px;color:#94a3b8">' + (m > 0 ? m + 'm' : '–') + '</div></div>';
+    });
+    h += '</div>';
+
+    /* the written digest */
     var best = null, worst = null;
     math.forEach(function (r) { if (!r.a || r.a.n < 3) return; if (!best || r.a.acc > best.a.acc) best = r; if (!worst || r.a.acc < worst.a.acc) worst = r; });
-    if (best) h += '<p class="pc-lead">💪 <b>Strongest this week:</b> ' + esc(best.label) + ' at ' + best.a.acc + '%.</p>';
-    if (worst && (!best || worst.label !== best.label)) h += '<p class="pc-lead">🎯 <b>Needs a hand:</b> ' + esc(worst.label) + ' at ' + worst.a.acc + '%.</p>';
+    var lines = [];
+    if (weekMins >= 60) lines.push('About ' + weekMins + ' minutes of real work - a solid week.');
+    else if (weekMins >= 20) lines.push('About ' + weekMins + ' minutes of real work this week: short sessions, but real ones.');
+    else if (weekMins > 0) lines.push('Only about ' + weekMins + ' minutes this week, so a couple of short sessions would help.');
+    else lines.push('No learning time was recorded on this device this week - worth a gentle nudge.');
+    if (accWeek !== null && accPrev !== null) {
+      if (accWeek >= accPrev + 5) lines.push('Accuracy rose from ' + accPrev + '% to ' + accWeek + '%, so the practice is working.');
+      else if (accWeek <= accPrev - 5) lines.push('Accuracy slipped from ' + accPrev + '% to ' + accWeek + '%, so sit with him on the trickiest topic for ten minutes.');
+      else lines.push('Accuracy is holding steady at ' + accWeek + '%.');
+    } else if (accWeek !== null) lines.push('Accuracy this week: ' + accWeek + '%.');
+    if (best) lines.push('Strongest: ' + best.label + ' at ' + best.a.acc + '%.');
+    if (worst && (!best || worst.label !== best.label)) lines.push('Needs a hand: ' + worst.label + ' at ' + worst.a.acc + '%.');
+    if (shield.length) lines.push('The streak shield was used this month in ' + shield.join(', ') + ', so one missed day did not break the streak. It resets next month.');
+    else if (streak > 0) lines.push('The streak shield is still ready this month - one missed day would be forgiven.');
+    h += '<h4 style="margin:18px 0 6px">In a nutshell</h4><p class="pc-lead">' + lines.join(' ') + '</p>';
     return h;
   }
 
@@ -346,7 +426,7 @@
       var recs = pick3(current, math, sci, mind);
       var h2 = '<h3>🎯 Three things to do this week</h3><div class="pc-recs">';
       recs.forEach(function (r) { h2 += '<div class="pc-rec"><span class="pc-rec-icon">' + r.icon + '</span><div><b>' + esc(r.title) + '</b><p>' + r.body + '</p></div></div>'; });
-      h2 += '</div><h3>📅 This week at a glance</h3>' + digest(current, math, sci, mind);
+      h2 += '</div><h3>📨 Weekly digest</h3>' + digest(current, math, sci, mind);
       plan.innerHTML = h2;
     }
   }
@@ -363,6 +443,9 @@
     for (var k2 in mcs) out.push({ champ: 'Mind', name: (mcs[k2] || {}).name || k2, xp: (mcs[k2] || {}).xp || 0, store: 'mc', key: k2 });
     var sq = read('sq_v3') || {}, sp = sq.profiles || {};
     for (var k3 in sp) out.push({ champ: 'Science', name: (sp[k3] || {}).name || k3, xp: (sp[k3] || {}).xp || 0, store: 'sq', key: k3, current: (k3 === sq.current) });
+    var sks = read('sk_profiles') || {}, skst = read('sk_state');
+    if (skst && skst.name) sks[(skst.name || '').trim().toLowerCase()] = skst;
+    for (var k4 in sks) out.push({ champ: 'Sanskrit', name: (sks[k4] || {}).name || k4, xp: (sks[k4] || {}).xp || 0, store: 'sk', key: k4 });
     var cur = '';
     try { cur = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {}
     out.forEach(function (r) { r.isCurrent = (r.name || '').trim().toLowerCase() === cur.toLowerCase(); });

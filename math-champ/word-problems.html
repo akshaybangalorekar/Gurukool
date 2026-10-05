@@ -223,6 +223,7 @@ Rohan is 4 more than twice Meera"></textarea>
     Math-Champ · Word Problem Lab · aligned with chapters: Whole Numbers · Write Equations · Solve by Comparison · Speed · Ratio · Profit & Loss
   </footer>
 
+  <script src="../rhythm.js"></script>
   <script src="assets/app.js"></script>
   <script>
   (function () {
@@ -629,6 +630,7 @@ Rohan is 4 more than twice Meera"></textarea>
       var val = parseFloat(el('in-answer').value);
       if (isNaN(val)) { el('in-answer').focus(); return; }
       var correct = Math.abs(val - current.answer) < 0.001;
+      if (window.Rhythm) Rhythm.note(correct);
       var secs = timer.stop();
 
       /* record the first attempt always; later attempts only when he fixes it */

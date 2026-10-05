@@ -67,7 +67,18 @@
     var t = todayStr();
     if (S.streak.last === t) return;
     var y = new Date(Date.now() - 86400000), ys = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
-    S.streak.count = (S.streak.last === ys) ? (S.streak.count || 0) + 1 : 1;
+    var y2 = new Date(Date.now() - 172800000), y2s = y2.getFullYear() + '-' + String(y2.getMonth() + 1).padStart(2, '0') + '-' + String(y2.getDate()).padStart(2, '0');
+    var mk = t.slice(0, 7);
+    if (S.streak.last === ys) {
+      S.streak.count = (S.streak.count || 0) + 1;
+    } else if (S.streak.last === y2s && S.streak.freezeMonth !== mk) {
+      /* streak insurance: ONE missed day is forgiven, once a calendar month */
+      S.streak.freezeMonth = mk;
+      S.streak.frozen = (S.streak.frozen || 0) + 1;
+      S.streak.count = (S.streak.count || 0) + 1;
+    } else {
+      S.streak.count = 1;
+    }
     S.streak.last = t;
   }
 
@@ -464,6 +475,7 @@
   window.skQuizPick = function (i) {
     if (!T || !T.quiz) return;
     var q = T.quiz, w = S.words[q.key] = S.words[q.key] || { seen: 0, ok: 0, last: 0 };
+    if (window.Rhythm) window.Rhythm.note(i === q.answer);
     if (i === q.answer) { w.ok = (w.ok || 0) + 1; S.xp += 5; touchStreak(); save(); toast('✅ Correct! +5 XP'); }
     else toast('Not that one — ' + q.w.dev + ' means “' + q.w.mean + '”. Read it once more!');
     T = null; render();
