@@ -139,6 +139,7 @@
     var last = Session.lastResult(S);
     if (last) document.getElementById('gk-plan-why').textContent += ' Last time: ' + last.right + ' of ' + last.total + ' right.';
 
+    MathNav.mount('today');
     renderHead();
   })();
   </script>
