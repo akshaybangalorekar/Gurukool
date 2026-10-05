@@ -142,16 +142,18 @@
   function pizza() {
     return {
       html:
-        '<div id="pa-pizza"><svg viewBox="0 0 420 220" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
-        '<rect width="420" height="220" fill="#fff7ed" rx="14"/>' +
-        '<circle cx="105" cy="110" r="60" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>' +
-        '<circle cx="215" cy="110" r="60" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>' +
-        '<circle cx="340" cy="110" r="90" fill="#f97316" stroke="#9a3412" stroke-width="3"/>' +
-        '<text x="105" y="116" text-anchor="middle" font-size="17" font-weight="800" fill="#7c2d12" font-family="Nunito,sans-serif">8\u2033</text>' +
-        '<text x="215" y="116" text-anchor="middle" font-size="17" font-weight="800" fill="#7c2d12" font-family="Nunito,sans-serif">8\u2033</text>' +
-        '<text x="340" y="116" text-anchor="middle" font-size="17" font-weight="800" fill="#fff" font-family="Nunito,sans-serif">12\u2033</text>' +
-        '<text x="160" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#7c2d12" font-family="Nunito,sans-serif">two 8\u2033 = <tspan id="pa-a">201</tspan> sq in</text>' +
-        '<text x="340" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412" font-family="Nunito,sans-serif">one 12\u2033 = <tspan id="pa-b">452</tspan> sq in</text>' +
+        '<div id="pa-pizza"><svg viewBox="0 0 420 250" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="250" fill="#fff7ed" rx="14"/>' +
+        '<circle cx="100" cy="104" r="56" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>' +
+        '<circle cx="210" cy="104" r="56" fill="#fbbf24" stroke="#b45309" stroke-width="3"/>' +
+        '<circle cx="335" cy="104" r="84" fill="#f97316" stroke="#9a3412" stroke-width="3"/>' +
+        '<text x="100" y="110" text-anchor="middle" font-size="17" font-weight="800" fill="#7c2d12" font-family="Nunito,sans-serif">8\u2033</text>' +
+        '<text x="210" y="110" text-anchor="middle" font-size="17" font-weight="800" fill="#7c2d12" font-family="Nunito,sans-serif">8\u2033</text>' +
+        '<text x="335" y="110" text-anchor="middle" font-size="19" font-weight="800" fill="#fff" font-family="Nunito,sans-serif">12\u2033</text>' +
+        '<text x="155" y="216" text-anchor="middle" font-size="15" font-weight="800" fill="#7c2d12" font-family="Nunito,sans-serif">two 8\u2033 = <tspan id="pa-a">101</tspan> sq in</text>' +
+        '<text x="155" y="236" text-anchor="middle" font-size="14" font-weight="700" fill="#a16207" font-family="Nunito,sans-serif">(two of these)</text>' +
+        '<text x="335" y="216" text-anchor="middle" font-size="15" font-weight="800" fill="#9a3412" font-family="Nunito,sans-serif">one 12\u2033 = <tspan id="pa-b">113</tspan> sq in</text>' +
+        '<text x="335" y="236" text-anchor="middle" font-size="14" font-weight="700" fill="#c2410c" font-family="Nunito,sans-serif">(one of these)</text>' +
         '</svg></div>',
       start: function () {
         /* the honest areas: two 8 inch pizzas vs one 12 inch */
