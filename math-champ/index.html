@@ -30,6 +30,7 @@
     box-shadow: 0 2px 10px rgba(15,23,42,.04); }
   .gk-mode:hover { box-shadow: 0 10px 26px rgba(15,23,42,.09); }
   .gk-mode__ico { font-size: 24px; display: block; margin-bottom: 8px; }
+  .gk-inside { display: block; margin-top: 10px; font-size: 13.5px; font-weight: 800; color: #64748b; background: #f1f5f9; border-radius: 999px; padding: 4px 11px; }
   .gk-mode b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; }
   .gk-mode span span { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
   .gk-hint { color: #94a3b8; font-size: 15.5px; margin-top: 22px; }
@@ -61,25 +62,29 @@
     </a>
 
     <div class="gk-grid">
-      <a class="gk-mode" href="teach.html">
+      <a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">
         <span class="gk-mode__ico">📘</span>
-        <b>Teach me a topic</b>
-        <span><span>Learn one idea properly, step by step, then practise it.</span></span>
+        <b>Learn a new trick</b>
+        <span><span>I will teach you one idea, then let you try it. The questions get harder as you get better.</span></span>
+        <span class="gk-inside">fractions · ratios · percentages · more inside</span>
       </a>
-      <a class="gk-mode" href="test.html">
-        <span class="gk-mode__ico">🎯</span>
-        <b>Test me today</b>
-        <span><span>Ten mixed questions. Just for you — nobody else sees the score.</span></span>
-      </a>
-      <a class="gk-mode" href="play.html">
+      <a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">
         <span class="gk-mode__ico">🎮</span>
-        <b>Play a game</b>
-        <span><span>Technique quests, riddles and timed drills — maths you can mess about with.</span></span>
+        <b>Games &amp; puzzles</b>
+        <span><span>Riddles, quests and timed duels. No pressure, no marks.</span></span>
+        <span class="gk-inside">riddle bazaar · equation forge · speed lab</span>
       </a>
-      <a class="gk-mode" href="challenge.html">
+      <a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">
         <span class="gk-mode__ico">🏅</span>
-        <b>Something harder</b>
-        <span><span>Real Olympiad problems, for when you want to be pushed.</span></span>
+        <b>Beat the hard ones</b>
+        <span><span>Real Olympiad problems. Bring a pencil and take your time.</span></span>
+        <span class="gk-inside">Olympiad ladder · level 3 · the boss problems</span>
+      </a>
+      <a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">
+        <span class="gk-mode__ico">🚀</span>
+        <b>Build something real</b>
+        <span><span>Earn your way in, then we build it together — a rocket, an F1 corner, a pizza proof.</span></span>
+        <span class="gk-inside">🚀 Moon &amp; Mars · 🏎️ F1 · 🍕 pizza · more</span>
       </a>
     </div>
 
@@ -93,6 +98,7 @@
   <script src="assets/nav.js"></script>
   <script src="assets/gen.js"></script>
   <script src="assets/session.js"></script>
+  <script src="assets/levels.js"></script>
   <script>
   (function () {
     var S = OC.STATE;

@@ -53,6 +53,7 @@
   <script src="assets/app.js"></script>
   <script src="assets/gen.js"></script>
   <script src="assets/teach.js"></script>
+  <script src="assets/levels.js"></script>
   <script src="../champ-rail.js"></script>
   <script src="assets/nav.js"></script>
   <script>
@@ -154,7 +155,10 @@
       },
       startPractise: function () {
         pQueue = [];
-        ['easy', 'easy', 'easy', 'medium', 'medium', 'hard'].forEach(function (tier) {
+        /* the questions rise with his level on this topic - practice and
+           learning are the same choice, never two separate ones */
+        var lv = Levels.of(S, L.key);
+        Levels.tiers(lv).forEach(function (tier) {
           var q = Gen.make(L.key, tier); q.got = false; pQueue.push(q);
         });
         pIndex = 0;

@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Gurukool">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Math-Champ — Play</title>
+  <title>Math-Champ — Games and puzzles</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -18,26 +18,28 @@
 <body>
   <header class="topnav" id="topnav"></header>
   <main class="gk-hub">
-    <h1>Play</h1>
-    <p class="lead">Hands-on maths you can mess about with. No pressure, no timer unless you want one.</p>
+    <h1>Games &amp; puzzles</h1>
+    <p class="lead">Maths you can mess about with. Nothing here is marked — the only goal is to work it out.</p>
     <div class="gk-hubgrid">
       <a class="gk-hubcard" href="quests.html">
-        <span class="ico">⛏️</span>
-        <b>Technique Quests</b>
-        <span>The Equation Forge: equations as a real balance beam. Move the blocks, keep it level, and the rule is yours.</span>
-        
+        <span class="ico">⛏️</span><b>The Equation Forge</b>
+        <span>Equations as a real balance beam. Move the blocks, keep it level, and the rule is yours for good.</span>
+        <span class="tag">hands-on</span>
       </a>
-      <a class="gk-hubcard" href="quests.html">
-        <span class="ico">🧩</span>
-        <b>The Riddle Bazaar</b>
-        <span>Word puzzles that train you to read every word and spot what is really being asked.</span>
-        
+      <a class="gk-hubcard" href="quests.html#riddles">
+        <span class="ico">🧩</span><b>The Riddle Bazaar</b>
+        <span>Word puzzles that train you to read every single word and spot what is really being asked.</span>
+        <span class="tag">25 riddles</span>
       </a>
       <a class="gk-hubcard" href="speed-lab.html">
-        <span class="ico">⚡</span>
-        <b>Speed Lab</b>
-        <span>Timed drills. How many can you do before the clock runs out?</span>
-        
+        <span class="ico">⚡</span><b>Speed Lab</b>
+        <span>Timed drills. How many can you get before the clock runs out? Beat your own record.</span>
+        <span class="tag">beat the clock</span>
+      </a>
+      <a class="gk-hubcard" href="mission.html">
+        <span class="ico">🎯</span><b>Training mission</b>
+        <span>A timed mission that quietly picks the right next question. Choose 10, 30 or 60 minutes.</span>
+        <span class="tag">timed</span>
       </a>
     </div>
   </main>
@@ -46,6 +48,6 @@
   <script src="assets/app.js"></script>
   <script src="../champ-rail.js"></script>
   <script src="assets/nav.js"></script>
-  <script>MathNav.mount('play'); MathNav.top();</script>
+  <script>MathNav.mount('games'); MathNav.top();</script>
 </body>
 </html>

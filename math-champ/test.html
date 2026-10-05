@@ -112,7 +112,7 @@
       ChampRail.top({ title: 'Math-Champ', icon: '⚡', el: 'gk-head', hub: '../index.html', sync: OC.forceSync,
         info: function () { return { name: (S.name || '').trim(), level: OC.levelOf(S.xp).name, xp: S.xp, streak: (S.streak && S.streak.count) || 0 }; } });
     }
-    MathNav.mount('practise');
+    MathNav.mount('learn');
     renderHead();
 
     var idx = 0, tries = 0;

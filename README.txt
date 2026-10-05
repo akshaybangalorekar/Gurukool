@@ -468,6 +468,42 @@ Recent changes (round 26 - v26, one navigation and a session that plans itself)
 - Session answers are recorded as kind 'session' so the work still counts
   towards XP, skills and the dashboard.
 
+Recent changes (round 27 - v27, four boxes and the first real projects)
+------------------------
+- FOUR BOXES ONLY, grouped by what the child wants to do. Practice is no
+  longer a separate choice: it lives inside Learn, and the questions rise
+  with his level on that topic.
+      Learn a new trick   - a lesson, then practice at his level
+      Games & puzzles     - riddles, quests and timed games, no marks
+      Beat the hard ones  - the Olympiad ladder and the level 3 problems
+      Build something real- the projects below
+  Plus "Today" (the prepared hour) as the first button, and Progress now
+  opens from the XP chip in the top bar. The old practice.html was removed;
+  nothing appears in two places any more.
+- Each box now carries a hook, a plain-English promise and a "what is
+  inside" line, so a child who will not read a description can still see
+  what he is choosing.
+- TOPIC LEVELS (assets/levels.js): every topic has a level - not started,
+  getting it, solid, mastered - worked out from his own accuracy and how
+  many questions he has answered. Learn shows the level on each card, and
+  the practice questions are chosen to match it.
+- THE HOME BUTTON now behaves as asked: on the maths home it goes to the
+  Gurukool hub; on every page inside the champ it goes back to the maths
+  home. The Gurukool hub is also in the More sheet.
+- NEW: BUILD SOMETHING REAL (projects.html + assets/projects.js). Real
+  projects, visible from the start but locked until the skills they need
+  reach Level 2, with the prerequisite checklist shown on every card:
+      ROCKET to the Moon and Mars - throw a ball hard enough that it never
+        lands (an animation with a speed slider), why a rocket is nearly
+        all fuel, the launch window with Earth and Mars actually orbiting,
+        and why Mars is 150 times the journey
+      THE PIZZA TRICK - prove whether two 8-inch pizzas beat one 12-inch,
+        with the real areas drawn to scale
+      plus F1 corner speed, roller coaster, bridge and tennis, marked as
+        being built, each showing the skills it will need.
+  Every step teaches one idea, shows an animation, then asks one question.
+- Animations are hand-drawn SVG (no libraries, works offline).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

@@ -69,7 +69,8 @@
         '<span class="gk-chip">⭐ ' + (info.xp || 0) + ' XP</span>' +
         '<span class="gk-chip">🔥 ' + (info.streak || 0) + ' days</span>' +
         (o.sync ? '<button class="gk-chip" id="gk-head-sync" title="Save to the cloud">☁️ Save</button>' : '') +
-        (o.hub ? '<button class="gk-chip" id="gk-head-hub" title="Back to Gurukool">🏠 Home</button>' : '');
+        (o.progress ? '<button class="gk-chip" id="gk-head-prog" title="How am I doing?">📈 Progress</button>' : '') +
+        (o.hub ? '<button class="gk-chip" id="gk-head-hub" title="' + esc(o.hubLabel || 'Home') + '">🏠 ' + esc(o.hubLabel || 'Home') + '</button>' : '');
       if (o.sync) {
         var b = document.getElementById('gk-head-sync');
         if (b) b.onclick = function () { b.textContent = '☁️ Saving…'; try { o.sync(); } catch (e) {} setTimeout(function () { window.ChampRail.top(o); }, 1400); };
@@ -77,6 +78,10 @@
       if (o.hub) {
         var h = document.getElementById('gk-head-hub');
         if (h) h.onclick = function () { location.href = o.hub; };
+      }
+      if (o.progress) {
+        var pr = document.getElementById('gk-head-prog');
+        if (pr) pr.onclick = function () { location.href = o.progress; };
       }
     },
 

@@ -1,55 +1,66 @@
 /* ============================================================
    MATH-CHAMP - one navigation, used everywhere
-   Grouped by what the child wants to DO, not by app feature:
+   Four boxes, grouped by what the child wants to DO:
 
-     Today      - one prepared session, about an hour. No thinking needed.
-     Learn      - understand a topic, taught step by step.
-     Practise   - drill it: word problems, mission, then check yourself.
-     Play       - the hands-on games: technique quests, riddle bazaar, speed lab.
-     Challenge  - Olympiad problems and the hardest word problems.
-     Progress   - how it is going.
+     Learn    - learn a new trick: a lesson, then practice that rises
+                in level as he gets better. Practice lives INSIDE Learn,
+                so he never has to choose between the two.
+     Games    - puzzles and timed games. No pressure.
+     Challenge- the hard ones: Olympiad problems.
+     Build    - real projects, earned by mastering the skills they need.
 
-   Everything else lives behind More. Nothing is deleted, just grouped.
+   Plus Today: one prepared session, for the days he arrives with no
+   agenda. Progress lives in the top bar (tap the XP chip).
    ============================================================ */
 (function () {
   var GROUPS = [
-    { key: 'today', icon: '🏠', label: 'Today', href: 'index.html' },
-    { key: 'learn', icon: '📘', label: 'Learn', href: 'teach.html' },
-    { key: 'practise', icon: '🔁', label: 'Practise', href: 'practice.html' },
-    { key: 'play', icon: '🎮', label: 'Play', href: 'play.html' },
-    { key: 'challenge', icon: '🏅', label: 'Challenge', href: 'challenge.html' },
-    { key: 'progress', icon: '📈', label: 'Progress', href: 'dashboard.html' }
+    { key: 'today', icon: '\u2600\ufe0f', label: 'Today', href: 'session.html' },
+    { key: 'learn', icon: '\ud83d\udcd8', label: 'Learn', href: 'learn.html' },
+    { key: 'games', icon: '\ud83c\udfae', label: 'Games', href: 'play.html' },
+    { key: 'challenge', icon: '\ud83c\udfc5', label: 'Challenge', href: 'challenge.html' },
+    { key: 'build', icon: '\ud83d\ude80', label: 'Build', href: 'projects.html' }
   ];
   var MORE = [
-    { icon: '🎯', label: 'Test me today', href: 'test.html' },
-    { icon: '🎯', label: 'Training Mission', href: 'mission.html' },
-    { icon: '⛏️', label: 'Technique Quests', href: 'quests.html' },
-    { icon: '📝', label: 'Word problems', href: 'word-problems.html' },
-    { icon: '⚡', label: 'Speed Lab', href: 'speed-lab.html' },
-    { icon: '🏅', label: 'Olympiad ladder', href: 'olympiad.html' },
-    { icon: '🧰', label: 'Toolbox', href: 'toolbox.html' },
-    { icon: '📈', label: 'Progress dashboard', href: 'dashboard.html' }
+    { icon: '\ud83d\udcc8', label: 'Progress dashboard', href: 'dashboard.html' },
+    { icon: '\ud83c\udfaf', label: 'Test me today', href: 'test.html' },
+    { icon: '\ud83d\udcdd', label: 'Word problems', href: 'word-problems.html' },
+    { icon: '\ud83c\udfaf', label: 'Training mission', href: 'mission.html' },
+    { icon: '\u26a1', label: 'Speed Lab', href: 'speed-lab.html' },
+    { icon: '\u26cf\ufe0f', label: 'Technique quests', href: 'quests.html' },
+    { icon: '\ud83c\udfc5', label: 'Olympiad ladder', href: 'olympiad.html' },
+    { icon: '\ud83e\uddf0', label: 'Toolbox', href: 'toolbox.html' },
+    { icon: '\ud83c\udfeb', label: 'Gurukool hub', href: '../index.html' }
   ];
-  /* the old page keys, mapped onto the new groups */
-  var MAP = { home: 'today', quests: 'play', mission: 'practise', word: 'practise', oly: 'challenge', speed: 'play', toolbox: '', dash: 'progress', hub: '' };
+  /* the old page keys, mapped onto the four boxes */
+  var MAP = { home: 'today', teach: 'learn', test: 'learn', word: 'learn', mission: 'learn',
+              quests: 'games', speed: 'games', play: 'games',
+              oly: 'challenge', challenge: 'challenge',
+              build: 'build', projects: 'build',
+              dash: '', toolbox: '', hub: '', session: 'today' };
 
   window.MathNav = {
     groups: GROUPS, more: MORE, map: MAP,
     mount: function (active) {
       if (!window.ChampRail) return false;
       ChampRail.mount({
-        title: 'Math-Champ', brandIcon: '⚡', brandHref: 'index.html', active: active,
+        title: 'Math-Champ', brandIcon: '\u26a1', brandHref: 'index.html', active: active,
         items: GROUPS, moreTitle: 'More', moreNote: 'Everything else, kept out of the way.', more: MORE
       });
       return true;
     },
+    /* the top bar: on the maths home it points at the Gurukool hub;
+       on every page inside the champ it points back at the maths home */
     top: function () {
       if (!window.ChampRail) return;
       var S = (window.OC && OC.STATE) || {};
+      var here = (location.pathname.split('/').pop() || 'index.html');
+      var home = (here === 'index.html') ? '../index.html' : 'index.html';
       ChampRail.top({
-        title: 'Math-Champ', icon: '⚡', el: 'topnav',
-        hub: '../index.html',
+        title: 'Math-Champ', icon: '\u26a1', el: 'topnav',
+        hub: home,
+        hubLabel: (here === 'index.html') ? 'Gurukool' : 'Maths home',
         sync: (window.OC && OC.forceSync),
+        progress: 'dashboard.html',
         info: function () {
           return {
             name: (S.name || '').trim(),

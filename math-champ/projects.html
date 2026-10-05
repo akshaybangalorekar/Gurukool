@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — Build something real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  .p-wrap{max-width:840px;margin:0 auto;padding:26px 22px 70px}
+  .p-h1{font-family:Baloo 2,Nunito,sans-serif;font-weight:800;font-size:32px;color:#0f172a;margin:4px 0 6px}
+  .p-lead{color:#64748b;font-size:17px;line-height:1.6;margin:0 0 20px}
+  .p-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:700px){.p-grid{grid-template-columns:repeat(2,1fr)}}
+  .p-card{background:#fff;border:1px solid #e6ebf1;border-left:6px solid #db2777;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+  .p-card.locked{border-left-color:#cbd5e1;background:#f8fafc}
+  .p-card .ico{font-size:26px}
+  .p-card b{display:block;font:800 20px/1.25 Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px}
+  .p-card .hook{display:block;color:#64748b;font-size:15.5px;line-height:1.5;margin-top:5px}
+  .p-needs{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+  .p-chip{font:800 13px Nunito,system-ui,sans-serif;border-radius:999px;padding:4px 10px;background:#dcfce7;color:#166534}
+  .p-chip.no{background:#fee2e2;color:#991b1b}
+  .p-btn{font:800 16px Nunito,system-ui,sans-serif;padding:11px 16px;border-radius:13px;border:2px solid #2a9d8f;background:#2a9d8f;color:#fff;cursor:pointer;margin-top:14px}
+  .p-btn.ghost{background:#fff;color:#64748b;border-color:#cbd5e1}
+  .p-lock{margin-top:12px;font:800 15px Nunito,system-ui,sans-serif;color:#64748b}
+  .p-panel{background:#fff;border:1px solid #e6ebf1;border-radius:20px;padding:20px;margin-top:16px}
+  .p-say{background:#f8fafc;border-left:4px solid #db2777;border-radius:10px;padding:14px 16px;font-size:18px;line-height:1.7;color:#1f2937}
+  .p-q{font:800 21px/1.5 Nunito,system-ui,sans-serif;color:#0f172a;margin:16px 0 12px}
+  .p-in{font:800 21px Space Mono,ui-monospace,monospace;padding:11px 13px;border:2px solid #cbd5e1;border-radius:12px;width:160px}
+  .p-fb{font:700 17px Nunito,system-ui,sans-serif;margin:12px 0 0;min-height:24px}
+  .p-fb.ok{color:#047857}.p-fb.no{color:#b45309}
+  .p-sol{background:#f5f3ff;border:1px solid #c4b5fd;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:17px;line-height:1.7}
+  .p-dots{display:flex;gap:6px;margin-bottom:14px}
+  .p-dot{width:30px;height:6px;border-radius:999px;background:#e2e8f0}
+  .p-dot.on{background:#db2777}
+  .pa-btn{font:800 15px Nunito,system-ui,sans-serif;padding:10px 15px;border-radius:12px;border:2px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer;margin:4px 6px 0 0}
+</style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+  <main class="p-wrap"><div id="p-view"></div></main>
+  <script src="../version.js"></script>
+  <script src="../rhythm.js"></script>
+  <script src="assets/app.js"></script>
+  <script src="assets/gen.js"></script>
+  <script src="assets/levels.js"></script>
+  <script src="assets/projects.js"></script>
+  <script src="../champ-rail.js"></script>
+  <script src="assets/nav.js"></script>
+  <script>
+  (function () {
+    var S = OC.STATE;
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function norm(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/\s+/g, ' '); }
+    function matches(g, w) {
+      var a = norm(g), b = norm(w); if (!a) return false; if (a === b) return true;
+      var an = parseFloat(a.replace(/[^0-9.\-]/g, '')), bn = parseFloat(b.replace(/[^0-9.\-]/g, ''));
+      return (!isNaN(an) && !isNaN(bn) && Math.abs(an - bn) < 0.06);
+    }
+    MathNav.mount('build'); MathNav.top();
+
+    var cur = null, stepI = 0, tries = 0, anim = null;
+
+    function hub() {
+      var cards = Projects.list.map(function (p) {
+        var chk = Projects.check(S, p);
+        var chips = p.needs.map(function (k) {
+          var g = Gen.byKey(k), lv = Levels.of(S, k);
+          return '<span class="p-chip' + (lv >= 2 ? '' : ' no') + '">' + (lv >= 2 ? '\u2713 ' : '\u2717 ') + esc(g ? g.name : k) + '</span>';
+        }).join('');
+        var ready = (p.status === 'ready');
+        var canOpen = ready && chk.ok;
+        return '<div class="p-card' + (canOpen ? '' : ' locked') + '">' +
+          '<span class="ico">' + p.icon + '</span><b>' + esc(p.title) + '</b>' +
+          '<span class="hook">' + esc(p.hook) + '</span>' +
+          '<div class="p-needs">' + chips + '</div>' +
+          (canOpen
+            ? '<button class="p-btn" onclick="PJ.open(\'' + p.key + '\')">Open the project</button>'
+            : (ready
+                ? '<div class="p-lock">\ud83d\udd12 Locked. Get each skill to Level 2 in Learn and this opens.</div>'
+                : '<div class="p-lock">\ud83d\udee0\ufe0f I am still building this one. The skills above are what it will need.</div>')) +
+          '</div>';
+      }).join('');
+      el('p-view').innerHTML = '<h1 class="p-h1">Build something real</h1>' +
+        '<p class="p-lead">These are real things \u2014 a rocket to Mars, an F1 corner, a pizza you can prove. Each one opens when you have mastered the maths it needs, so nothing in here is above you. Every step teaches the idea first, shows you an animation, then asks you one question.</p>' +
+        '<div class="p-grid">' + cards + '</div>';
+    }
+
+    function renderStep() {
+      var st = cur.steps[stepI];
+      var dots = cur.steps.map(function (s, i) { return '<span class="p-dot' + (i <= stepI ? ' on' : '') + '"></span>'; }).join('');
+      el('p-view').innerHTML = '<button class="p-btn ghost" onclick="PJ.back()">\u2039 All projects</button>' +
+        '<h1 class="p-h1">' + cur.icon + ' ' + esc(cur.title) + '</h1>' +
+        '<div class="p-panel"><div class="p-dots">' + dots + '</div>' +
+        '<div class="p-say"><b>' + esc(st.title) + '</b><br>' + esc(st.say) + '</div>' +
+        (st.anim ? '<div id="p-anim" style="margin-top:16px"></div>' : '') +
+        '<p class="p-q">' + esc(st.ask) + '</p>' +
+        '<input class="p-in" id="p-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
+        '<button class="p-btn" onclick="PJ.check()">Check</button>' +
+        '<p class="p-fb" id="p-fb"></p><div id="p-sol"></div></div>';
+      if (st.anim) { var a = st.anim(); el('p-anim').innerHTML = a.html; if (a.start) a.start(); }
+      var i = el('p-in');
+      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); PJ.check(); } });
+      i.focus();
+    }
+
+    function done() {
+      el('p-view').innerHTML = '<h1 class="p-h1">You built it \ud83c\udf89</h1>' +
+        '<div class="p-panel"><p class="p-q">' + esc(cur.title) + '</p>' +
+        '<p class="p-lead">You did the whole thing with maths you already had \u2014 and you worked out a real number at the end. That is what mathematicians do.</p>' +
+        '<button class="p-btn" onclick="PJ.back()">Back to the projects</button></div>';
+      MathNav.top();
+    }
+
+    window.PJ = {
+      back: function () { cur = null; hub(); },
+      open: function (key) {
+        cur = Projects.byKey(key);
+        if (!cur || cur.status !== 'ready' || !Projects.check(S, cur).ok) { hub(); return; }
+        stepI = 0; tries = 0; renderStep();
+      },
+      check: function () {
+        var st = cur.steps[stepI], v = el('p-in').value, fb = el('p-fb');
+        if (!norm(v)) { fb.className = 'p-fb no'; fb.textContent = 'Have a go \u2014 a guess is fine.'; return; }
+        if (matches(v, st.ans)) {
+          var xp = tries === 0 ? 25 : 12;
+          OC.record({ kind: 'project', id: 'proj:' + cur.key, correct: true, xp: xp, timeSec: 0, targetSec: 0 });
+          fb.className = 'p-fb ok'; fb.innerHTML = 'Yes. +' + xp + ' XP';
+          if (window.Rhythm) Rhythm.note(true);
+          el('p-sol').innerHTML = '<div class="p-sol">' + esc(st.sol) + '</div>' +
+            '<button class="p-btn" style="margin-top:12px" onclick="PJ.next()">' + (stepI + 1 >= cur.steps.length ? 'Finish the project' : 'Next step \u2192') + '</button>';
+          return;
+        }
+        tries++;
+        if (window.Rhythm) Rhythm.note(false);
+        fb.className = 'p-fb no';
+        if (tries === 1) fb.textContent = 'Not yet. ' + st.hint;
+        else { fb.textContent = 'Here is the way through it.'; el('p-sol').innerHTML = '<div class="p-sol">' + esc(st.sol) + '</div><button class="p-btn" style="margin-top:12px" onclick="PJ.next()">Carry on</button>'; }
+        OC.record({ kind: 'project', id: 'proj:' + cur.key, correct: false, xp: 0, timeSec: 0, targetSec: 0 });
+      },
+      next: function () { tries = 0; stepI++; if (stepI >= cur.steps.length) done(); else renderStep(); }
+    };
+    hub();
+  })();
+  </script>
+</body>
+</html>
