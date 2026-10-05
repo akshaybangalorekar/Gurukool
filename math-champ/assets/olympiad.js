@@ -115,7 +115,7 @@
 
   { id: 'oly5-08', grade: 5, topic: 'Time', title: 'The film',
     story: 'A film starts at 7:40 pm and runs for 1 hour and 55 minutes.',
-    q: 'What time does it end? Type the time as a 4-digit number in 24-hour form (so 9:35 pm is 2135).',
+    q: 'What time does it end? Type the time as a 4-digit number in 24-hour form (so 8:20 pm is 2020).',
     answer: 2135, unit: '',
     know: ['Start: 7:40 pm', 'Length: 1 hour 55 minutes', 'Two moves: add the hour, then add the minutes'],
     steps: [
@@ -153,7 +153,7 @@
 
   { id: 'oly5-11', grade: 5, topic: 'Fractions', title: 'Two slices',
     story: 'A cake is cut so that you take one half and your friend takes one third.',
-    q: 'What fraction of the cake have you taken altogether? Give the fraction like 5/6.',
+    q: 'What fraction of the cake have you taken altogether? Give the fraction like 2/7.',
     answer: '5/6', unit: '',
     know: ['You: 1/2', 'Friend: 1/3', 'To add fractions they need the same denominator'],
     steps: [
@@ -173,7 +173,7 @@
     know: ['Buying price: 40', 'Selling price: 50', 'Profit: 50 - 40 = 10', 'Profit percentage is measured against the BUYING price'],
     steps: [
       { ask: 'What is the profit in rupees?', ans: 10, note: 'Selling price minus buying price.' },
-      { ask: 'What is 10 as a fraction of 40? Give it as a fraction like 1/4.', ans: '1/4', note: 'Ten out of forty.' },
+      { ask: 'What is 10 as a fraction of 40? Give it as a fraction like 3/8.', ans: '1/4', note: 'Ten out of forty.' },
       { ask: 'What is that fraction as a percentage?', ans: 25, note: 'One quarter is 25 per cent.' }
     ],
     hints: ['Profit percentage is always measured against what the shop paid, not what it charged.',
@@ -183,7 +183,7 @@
   /* ===================== GRADE 6 - the Olympiad level ===================== */
   { id: 'oly6-01', grade: 6, topic: 'Fractions and percentage', title: 'The car park',
     story: 'A car park has 250 spaces. Three tenths of the spaces are suitable for small cars; the rest are for large cars. Last week small cars occupied fourteen fifteenths of their allocated spaces, and overall the car park was seven tenths full.',
-    q: 'What fraction of the LARGE car spaces were filled? Give the fraction like 3/5.',
+    q: 'What fraction of the LARGE car spaces were filled? Give the fraction like 2/7.',
     answer: '3/5', unit: '',
     art: 'carpark',
     know: ['Total spaces: 250', 'Small-car spaces: 3/10 of 250 = 75', 'Large-car spaces: the rest = 175', 'Small cars filled: 14/15 of 75 = 70', 'The whole car park was 7/10 full = 175 cars'],
@@ -193,7 +193,7 @@
       { ask: 'How many cars were in the car park altogether? (7/10 of 250)', ans: 175, note: 'Divide by 10, then multiply by 7.' },
       { ask: 'How many small cars were actually parked? (14/15 of 75)', ans: 70, note: 'Divide by 15, then multiply by 14.' },
       { ask: 'So how many LARGE cars were parked?', ans: 105, note: 'Total cars minus the small ones.' },
-      { ask: 'What fraction of the 175 large spaces is 105? Give the fraction like 3/5.', ans: '3/5', note: 'Simplify 105/175 by dividing both by 35.' }
+      { ask: 'What fraction of the 175 large spaces is 105? Give the fraction like 2/7.', ans: '3/5', note: 'Simplify 105/175 by dividing both by 35.' }
     ],
     hints: ['Work in real numbers of cars, not fractions - turn every fraction into a count first.',
       'You need two numbers at the end: large cars parked, and large spaces available. Divide one by the other.'],
@@ -264,7 +264,7 @@
 
   { id: 'oly6-06', grade: 6, topic: 'Profit and loss', title: 'Two televisions',
     story: 'Two different television sets were each sold for 2040 rupees. On the first set the shop made a profit of 20 per cent. On the second set the shop made a loss of 20 per cent.',
-    q: 'Altogether, did the shop make a profit or a loss, and by how many rupees? Type the amount, and put a minus sign in front if it was a loss (so a loss of 170 is -170).',
+    q: 'Altogether, did the shop make a profit or a loss, and by how many rupees? Type the amount, and put a minus sign in front if it was a loss (so a loss of 300 is -300).',
     answer: -170, unit: 'rupees',
     know: ['Both sets sold for 2040', 'First set: 20 per cent PROFIT, so its cost is less than 2040', 'Second set: 20 per cent LOSS, so its cost is more than 2040', 'Find each cost price first'],
     steps: [
@@ -346,7 +346,7 @@
 
   { id: 'oly6-11', grade: 6, topic: 'Time', title: 'The marathon',
     story: 'A runner began a marathon at 2:35 pm and it took him 3 hours and 45 minutes to run the race.',
-    q: 'At what time did he cross the finish line? Type it as a 4-digit 24-hour time (so 6:20 pm is 1820).',
+    q: 'At what time did he cross the finish line? Type it as a 4-digit 24-hour time (so 8:20 pm is 2020).',
     answer: 1820, unit: '',
     know: ['Start: 2:35 pm', 'Duration: 3 hours 45 minutes', 'Add the hours first, then the minutes'],
     steps: [
@@ -359,7 +359,7 @@
 
   { id: 'oly6-12', grade: 6, topic: 'Geometry and fractions', title: 'Four triangles',
     story: 'A square design is made of four congruent right triangles, as shown. Each triangle has shorter sides of 3 and 4 units, so the long side is 5 units. The shaded square in the middle is left over.',
-    q: 'What fraction of the whole figure is shaded? Give the fraction like 1/25.',
+    q: 'What fraction of the whole figure is shaded? Give the fraction like 3/16.',
     answer: '1/25', unit: '',
     art: 'triangles',
     know: ['The outer square has sides of 5 units, so its area is 5 x 5 = 25', 'Each triangle has legs 3 and 4, so its area is (3 x 4) / 2 = 6', 'There are four triangles, so they take 4 x 6 = 24 square units', 'The shaded part is whatever is left of the 25'],
@@ -410,11 +410,11 @@
     answer: 640, unit: 'students',
     know: ['Boys: 3/8 of the school', 'Girls: 5/8 of the school', 'Cricket-playing boys: 2/5 of the boys', 'Cricket-playing girls: 3/4 of the girls', '396 students play cricket altogether'],
     steps: [
-      { ask: 'What fraction of the whole school is made of boys who play cricket? (2/5 of 3/8) Give it like 3/20.', ans: '3/20', note: 'Multiply the fractions.' },
-      { ask: 'What fraction of the whole school is girls who play cricket? (3/4 of 5/8) Give it like 15/32.', ans: '15/32', note: 'Multiply the fractions.' },
+      { ask: 'What fraction of the whole school is made of boys who play cricket? (2/5 of 3/8) Give it like 5/24.', ans: '3/20', note: 'Multiply the fractions.' },
+      { ask: 'What fraction of the whole school is girls who play cricket? (3/4 of 5/8) Give it like 7/40.', ans: '15/32', note: 'Multiply the fractions.' },
       { ask: '3/20 is the same as how many hundred-and-sixtieths? Type the top number.', ans: 24, note: 'Multiply top and bottom by 8.' },
       { ask: '15/32 is the same as how many hundred-and-sixtieths? Type the top number.', ans: 75, note: 'Multiply top and bottom by 5.' },
-      { ask: 'So what fraction of the school plays cricket? Give it like 99/160.', ans: '99/160', note: '24 + 75 over 160.' },
+      { ask: 'So what fraction of the school plays cricket? Give it like 13/200.', ans: '99/160', note: '24 + 75 over 160.' },
       { ask: 'If 99/160 of the school is 396 students, what is the whole school? (396 divided by 99, times 160)', ans: 640, note: 'Find one hundred-and-sixtieth first.' }
     ],
     hints: ['Every group is a fraction OF THE WHOLE SCHOOL - turn them all into fractions of the school before adding.',
