@@ -593,6 +593,22 @@ Recent changes (round 32 - v32, batch 2: eight more topics)
   money change question could cost more than the money he had. Both fixed
   and guarded.
 
+Recent changes (round 33 - v33, the deployment is fixed)
+------------------------
+- WHY THE APP LOOKED OLD: GitHub Pages had stopped deploying. Its legacy
+  builder was failing ("Page build failed") and then got stuck, so the
+  live site stayed on an older version no matter how often the page was
+  reloaded. It was never the browser cache.
+- FIX: the Pages source was switched to GitHub Actions (the "Static HTML"
+  starter), which creates its own deploy workflow and skips the broken
+  builder. The deploy now runs on every push.
+- Also added .nojekyll, and a version stamp (?v=33) on every local script
+  and stylesheet, so neither the Pages CDN nor an iPad Home Screen app can
+  serve a stale file after a push.
+- HOW TO TELL IT WORKED: the badge in the bottom right of every page shows
+  "Gurukool v33". If it shows an older number, the device is still on a
+  cached copy.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
