@@ -10,6 +10,15 @@
    page gets it without a line of wiring.
    ============================================================ */
 (function () {
+  /* a streak can be a number or an object, depending on the champ */
+  function streakOf(s) {
+    var x = s && s.streak;
+    if (x == null) return 0;
+    if (typeof x === 'number') return x;
+    if (typeof x === 'object') return x.count || x.n || x.days || x.len || 0;
+    return 0;
+  }
+
   var GROUPS = [
     { key: 'today', icon: '\u2600\ufe0f', label: 'Today', href: 'session.html' },
     { key: 'learn', icon: '\ud83d\udcd8', label: 'Learn', href: 'learn.html' },
