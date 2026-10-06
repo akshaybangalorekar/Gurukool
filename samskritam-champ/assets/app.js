@@ -291,7 +291,7 @@
 
   function render() {
     var app = $('sk-app'); if (!app) return;
-    app.innerHTML = headerHTML() + (view.page === 'home' ? homeHTML() : (view.page === 'scene' ? sceneHTML() : (view.page === 'missions' ? missionsHTML() : treasuryHTML())));
+    app.innerHTML = headerHTML() + (view.page === 'home' ? homeHTML() : (view.page === 'scene' ? sceneHTML() : (view.page === 'missions' ? missionsHTML() : (view.page === 'scenes' ? scenesHTML() : treasuryHTML()))));
     window.scrollTo(0, 0);
   }
 
@@ -324,7 +324,7 @@
   }
 
   /* the five conversations, on their own page */
-  window.skScenes = function () { view = { page: 'home' }; render(); };
+  window.skScenes = function () { view = { page: 'scenes' }; render(); };
 
   /* the family missions, gathered in one place */
   function missionsHTML() {
@@ -371,6 +371,7 @@
       '<div class="sk-grid">' + cards + '</div>' +
       '<a class="sk-treasury" href="#" onclick="skTreasury();return false"><span>📚</span><div><b>My Shabda-Kosha — word treasury</b><span>' + Object.keys(S.words || {}).length + ' words collected · tap to review and quiz yourself</span></div><span class="sk-go">▶</span></a>' +
       (pats ? '<p class="sk-label">🧠 Patterns you discovered</p><div class="sk-patterns">' + pats + '</div>' : '') +
+      '<p style="text-align:center;margin:18px 0"><button class="sk-btn sec" onclick="skHome()">\u2190 Back to the four boxes</button></p>' +
       '<p class="sk-note">' + (hasIndianVoice() ? '' : '\ud83d\udd07 <b>No spoken voice on this device</b> — the speaker will read the transliteration in English instead, and the pronunciation key is always your guide. To add a Hindi voice: iPad Settings \u2192 Accessibility \u2192 Spoken Content \u2192 Voices \u2192 Hindi.<br>') + '🔊 Tap the speaker to hear a line (your device\'s Devanagari voice — close, not perfect). 🎤 Tap the mic and say it out loud. Every scene ends with a <b>family mission</b> — two lines for you and your child to say to each other.</p>';
   }
 
@@ -469,7 +470,7 @@
     if (!h) return;
     if (h === 'treasury') { view = { page: 'treasury' }; render(); }
     else if (h === 'mission' || h === 'missions') { view = { page: 'missions' }; render(); }
-    else if (h === 'scenes') { view = { page: 'home' }; render(); }
+    else if (h === 'scenes') { view = { page: 'scenes' }; render(); }
     else if (sceneById(h)) { view = { page: 'scene', sid: h, phase: 'intro' }; render(); }
   }
   window.addEventListener('hashchange', routeHash);

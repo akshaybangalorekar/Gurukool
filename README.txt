@@ -826,6 +826,22 @@ Recent changes (round 45 - v45, Samskritam-Champ joins the other three)
 - Tested: 21 checks on the new Sanskrit engine (all passing) and 2,600
   questions swept across 200 abhyasas - no malformed questions.
 
+Recent changes (round 46 - v46, the Sanskrit "Learn a new trick" box)
+------------------------
+- THE BUG: on the Sanskrit door, tapping "Learn a new trick" did nothing.
+  When I renamed the old home into the scene list, I pointed that box back
+  at the door itself, so it simply redrew the same screen. The list of
+  conversations had no view of its own and could never be reached.
+- Fixed: "Learn a new trick" now opens the five conversations
+  (First Words, Who Is in Your Family?, At the Table, How Many?,
+  The Thirsty Crow), with a "Back to the four boxes" button at the end.
+- The other three boxes were checked at the same time and all work:
+  Games opens the word treasury, Beat the hard ones opens The Thirsty
+  Crow, Build opens the family missions.
+- Verified by rendering each destination and looking at it: the scene list
+  shows the five conversations, and the missions page shows the missions
+  with their Child and Parent lines.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
