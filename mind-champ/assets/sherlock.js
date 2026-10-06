@@ -218,13 +218,13 @@
         sol: 'Only the window was never checked, so the answer is one - and that one unchecked place is exactly where to look next. Counting the gaps tells you how much of the story you are still missing.' },
 
       { id: 'q9p4', type: 'grid', xp: 10, title: 'Checked or not?',
-        q: 'Two places, two villagers, one searcher each. Fill every box: checked or not checked.',
+        q: 'Two places, two villagers. Only ONE of them actually searched. Fill every box: checked or not checked.',
         story: 'Clues: "Ravi searched the door." "Nobody searched the window."',
         rowHeads: ['Ravi', 'Mira'], colHeads: ['🚪 door', '🪟 window'],
         answer: { 'Ravi|🚪 door': 1, 'Ravi|🪟 window': 0, 'Mira|🚪 door': 0, 'Mira|🪟 window': 0 },
         hints: ['One clue is direct: Ravi searched the door. Mark it.',
           'Now the window: what does nobody searched the window mean for BOTH people?',
-          'Mira searched one place, and it cannot be the window. Look at what the nobody clue switches off.'],
+          'Mira did not search the window. So did Mira search anywhere at all?'],
         sol: 'Ravi searched the door, and NOBODY searched the window - so both window boxes are no, including Mira. That leaves Mira with no box, which is exactly the gap the clue was pointing at. A never statement switches off a whole column at once.' },
 
       { id: 'q9p5', type: 'order', xp: 20, boss: true, title: 'BOSS: the missing minutes',
@@ -275,7 +275,7 @@
         sol: 'Only the hall until 9:00 fixes Noor somewhere else at 8:00, so she can be crossed off for good. Crossings-off must be built on time and place. Character and belongings are decoration, not evidence.' },
 
       { id: 'q10p4', type: 'grid', xp: 10, title: 'The last three boxes',
-        q: 'Two suspects, two hiding places, one each. Fill every box to find who hid where.',
+        q: 'Two suspects, two hiding places. Only ONE of them hid the lantern. Fill every box to find who hid where.',
         story: 'Clues: "The lantern was not in the barn." "Noor was never near the barn."',
         rowHeads: ['Noor', 'Sam'], colHeads: ['🏚️ barn', '🌳 tree'],
         answer: { 'Noor|🏚️ barn': 0, 'Noor|🌳 tree': 1, 'Sam|🏚️ barn': 0, 'Sam|🌳 tree': 0 },

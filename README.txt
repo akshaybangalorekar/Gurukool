@@ -974,6 +974,31 @@ Recent changes (round 53 - v53: two Mind quest puzzles had wrong answers)
 - MATHS: 18,118 distinct questions, 5,963 answers re-derived independently.
   SCIENCE: all 362 bank questions. Both: 0 mismatches, 0 faults.
 
+Recent changes (round 54 - v54: the final full check of every question, all five champs)
+------------------------
+- Found by checking the TEN detective cases, which my earlier pass had missed
+  (I had loaded the quest bank without the detective file, so 25 puzzles were
+  never checked at all):
+    * "The Locked Chest" grid said "two villagers, one searcher each" but its
+      answer deliberately leaves Mira with no search - the wording contradicted
+      the puzzle. The question now says only ONE of them searched, which is what
+      the clue is really proving.
+    * "The Final Deduction" grid had the same contradiction, now worded right.
+    * Two Sanskrit options accepted answers that are actually wrong: "three
+      fruits" where the scene shows five, and "strength" for the crow that used
+      cleverness. Both removed.
+- EVERY QUESTION IN EVERY CHAMP, worked out and compared:
+    MATHS    18,046 distinct generated questions (5,964 answers re-derived),
+             plus 32 Olympiad problems and their 125 step answers, 25 riddles,
+             25 Equation Forge puzzles, 95 lesson questions, 6 projects.
+    MIND     788 distinct generated questions, all re-derived by rule, plus all
+             50 quest puzzles (paths by search, walls by addition, grids and
+             orders for consistency).
+    SCIENCE  all 362 bank questions, 15 investigation questions, 6 projects.
+    SANSKRIT 20 conversation turns, 33 treasury words, 5 scenes.
+    WORD     108 distinct questions across its five topics.
+  Answer mismatches: 0.  Structural faults: 0.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
