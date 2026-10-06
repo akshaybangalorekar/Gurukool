@@ -56,7 +56,7 @@
         sync: (window.syncNow ? function () { try { syncNow(); } catch (e) {} } : null),
         progress: 'dashboard.html',
         info: function () {
-          return { name: (s.name || '').trim(), xp: s.xp || 0, streak: s.streak || 0 };
+          return { name: (s.name || '').trim(), xp: s.xp || 0, streak: streakOf(s) };
         }
       });
     },
