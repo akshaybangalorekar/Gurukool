@@ -287,26 +287,74 @@
   /* ---------- view ---------- */
   var view = { page: 'home' }, T = null;   /* T = live turn state */
 
-  function headerHTML() {
-    var L = levelOf(S.xp);
-    var nm = (S.name || '').trim() || 'Learner';
-    return '<div class="gk-bar"><div class="gk-row1"><div class="gk-lvl">Lv ' + (L.i + 1) + ' · ' + L.level.name + '</div>' +
-      '<div class="gk-xpbar"><div class="gk-xpfill" style="width:' + L.pct + '%"></div></div></div>' +
-      '<div class="gk-row2"><button class="gk-mini" onclick="skHome()">🪔 ' + esc(nm) + '</button>' +
-      '<span class="gk-stat">⭐ ' + S.xp + ' XP</span><span class="gk-stat">🔥 ' + (S.streak.count || 0) + '-day streak</span>' +
-      '<span class="gk-stat">📚 ' + Object.keys(S.words || {}).length + ' words</span>' +
-      '<button class="gk-mini" onclick="skSync(this)" title="Sync now">☁️</button>' +
-      '<a class="gk-mini" href="../index.html">🏠 Gurukool</a></div>' +
-      (L.next ? '<div class="gk-stat gk-next">' + (L.next.min - S.xp) + ' XP to reach ' + L.next.name + ' →</div>' : '') + '</div>';
-  }
+  function headerHTML() { return ''; }   /* one shared bar, exactly as in Maths */
 
   function render() {
     var app = $('sk-app'); if (!app) return;
-    app.innerHTML = headerHTML() + (view.page === 'home' ? homeHTML() : (view.page === 'scene' ? sceneHTML() : treasuryHTML()));
+    app.innerHTML = headerHTML() + (view.page === 'home' ? homeHTML() : (view.page === 'scene' ? sceneHTML() : (view.page === 'missions' ? missionsHTML() : treasuryHTML())));
     window.scrollTo(0, 0);
   }
 
   function homeHTML() {
+    var nm = (S.name || '').trim() || 'Learner';
+    var hh = new Date().getHours();
+    var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
+    var next = nextScene();
+    var why = next ? ('Next: ' + esc(next.name) + ' \u2014 about an hour, planned for you.') : 'About an hour, planned for you.';
+    function box(icon, title, body, inside, call, colour) {
+      return '<a class="gk-mode" href="#" onclick="' + call + ';return false" style="border-left:6px solid ' + colour + '">' +
+        '<span class="gk-mode__ico">' + icon + '</span>' +
+        '<b>' + title + '</b>' +
+        '<span><span>' + body + '</span></span>' +
+        '<span class="gk-inside">' + inside + '</span></a>';
+    }
+    return '<main class="gk-door">' +
+      '<p class="gk-hello">' + part + ', ' + esc(nm) + '.</p>' +
+      '<h1 class="gk-ask">What shall we do today?</h1>' +
+      '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#b45309,#92400e);box-shadow:0 14px 34px rgba(180,83,9,.28)">' +
+        '<span class="gk-primary__ico">\ud83e\ude94</span>' +
+        '<span><b>Start today\u2019s abhy\u0101sa</b><span>' + why + '</span></span></a>' +
+      '<div class="gk-grid">' +
+        box('\ud83d\udcd8', 'Learn a new trick', 'Five conversations with the guru. He speaks, you answer \u2014 out loud or by tapping.', 'five conversations \u00b7 Praveshik\u0101 \u2192 V\u0101kya', 'skScenes()', '#2a9d8f') +
+        box('\ud83c\udfae', 'Games &amp; puzzles', 'Your word treasury, and the speaking practice where you say it out loud.', 'word treasury \u00b7 speaking practice', 'skTreasury()', '#f59e0b') +
+        box('\ud83c\udfc5', 'Beat the hard ones', 'The Thirsty Crow \u2014 the whole story told in full Sanskrit sentences.', 'The Thirsty Crow \u00b7 V\u0101kya level', "skOpen('s5')", '#7c3aed') +
+        box('\ud83d\ude80', 'Build something real', 'The family missions: two lines for you and a grown-up to say to each other.', 'five family missions \u00b7 say it together', 'skMissions()', '#db2777') +
+      '</div>' +
+      '<p class="gk-hint">No idea what to do? Start today\u2019s abhy\u0101sa \u2014 it is already planned for you.</p></main>';
+  }
+
+  /* the five conversations, on their own page */
+  window.skScenes = function () { view = { page: 'home' }; render(); };
+
+  /* the family missions, gathered in one place */
+  function missionsHTML() {
+    var out = SK_SCENES.map(function (sc) {
+      var m = sc.mission; if (!m) return '';
+      return '<div class="sk-mission"><b>' + esc(m.title || sc.name) + '</b>' +
+        (m.lines || []).map(function (l) {
+          return '<div class="sk-mline"><span class="sk-who">' + esc(l.who || '') + '</span>' +
+            '<span class="sk-dev">' + esc(l.dev || '') + '</span>' +
+            '<span class="sk-tr">' + esc(l.tr || '') + '</span>' +
+            '<span class="sk-mean">' + esc(l.mean || '') + '</span>' + speakBtn(l.dev, l.tr) + '</div>';
+        }).join('') + '</div>';
+    }).join('');
+    return '<h1 style="text-align:center">\ud83d\ude80 Family missions</h1>' +
+      '<p class="sk-lead">Two lines, one for you and one for a grown-up. Say them to each other tonight \u2014 that is how a language really sticks.</p>' +
+      '<div class="sk-grid">' + out + '</div>' +
+      '<p style="text-align:center;margin:18px 0"><button class="sk-btn sec" onclick="skHome()">\u2190 Back to the four boxes</button></p>';
+  }
+  window.skMissions = function () { view = { page: 'missions' }; render(); };
+
+  /* which conversation is next for this child? */
+  function nextScene() {
+    for (var i = 0; i < SK_SCENES.length; i++) {
+      var st = (S.scenes || {})[SK_SCENES[i].id] || {};
+      if (!st.done) return SK_SCENES[i];
+    }
+    return SK_SCENES[0];
+  }
+
+  function scenesHTML() {
     var cards = SK_SCENES.map(function (sc, i) {
       var st = (S.scenes || {})[sc.id] || { done: false, at: 0, words: [] };
       var ok = unlocked(i);
@@ -414,6 +462,18 @@
   };
   window.skStart = function () { view.phase = 'talk'; render(); };
   window.skHome = function () { view = { page: 'home' }; render(); };
+
+  /* the rail links to this one page with a #hash; open the right thing */
+  function routeHash() {
+    var h = String(location.hash || '').replace('#', '');
+    if (!h) return;
+    if (h === 'treasury') { view = { page: 'treasury' }; render(); }
+    else if (h === 'mission' || h === 'missions') { view = { page: 'missions' }; render(); }
+    else if (h === 'scenes') { view = { page: 'home' }; render(); }
+    else if (sceneById(h)) { view = { page: 'scene', sid: h, phase: 'intro' }; render(); }
+  }
+  window.addEventListener('hashchange', routeHash);
+
   window.skLocked = function () { toast('🔒 Finish the scene before it to unlock this one — one conversation at a time!'); };
   window.skTreasury = function () { view = { page: 'treasury' }; render(); };
 
@@ -887,4 +947,5 @@
     similarity: similarity, words: SK_WORDS, scenes: SK_SCENES, state: function () { return T; } };
 
   render();
+  routeHash();
 })();

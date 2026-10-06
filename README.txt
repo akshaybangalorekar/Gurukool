@@ -796,6 +796,36 @@ Recent changes (round 44 - v44, the Sanskrit speaker fixed)
   नमस्ते! then namaste!), working Hindi voice (reads once), English-only
   (reads namaste!), and punctuation-only input (never spoken).
 
+Recent changes (round 45 - v45, Samskritam-Champ joins the other three)
+------------------------
+- Samskritam-Champ now looks and works exactly like Maths, Science and Mind.
+  It had NO rail at all (the file was never created), still drew its own
+  crowded eight-item bar, had no door, and had no session. All four fixed.
+- One shared bar and a five-item rail: Today | Learn | Games | Challenge |
+  Build, plus More.
+- A calm door: greeting, one button - "Start today's abhyasa" - and exactly
+  four boxes:
+      Learn a new trick   -> the five conversations with the guru
+      Games & puzzles     -> the word treasury and speaking practice
+      Beat the hard ones  -> The Thirsty Crow, told in full sentences
+      Build something real-> the family missions, two lines to say together
+- Today's abhyasa asks IN PLACE, like the other champs - never a picker:
+      Warm up    five words he has met, asked back to him
+      Learn      the next conversation, opened by name
+      Practise   the guru's OWN lines from that conversation
+      Check      a mixed set of words and lines
+      Family     the scene's mission, with the speaker on each line
+- The family missions now have their own page (Build something real).
+- Two real bugs found while testing:
+    * Some conversation turns accept MORE THAN ONE right answer. Grading
+      only the first would have marked a legitimate answer wrong. The runner
+      now accepts every answer the content marks as correct.
+    * The Science and Mind top bars showed "0 XP" because they read a
+      variable that was never global. They now read the child's saved
+      progress from the device, so name, XP and streak are right.
+- Tested: 21 checks on the new Sanskrit engine (all passing) and 2,600
+  questions swept across 200 abhyasas - no malformed questions.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

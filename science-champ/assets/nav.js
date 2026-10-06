@@ -10,6 +10,18 @@
    page gets it without a line of wiring.
    ============================================================ */
 (function () {
+  /* the champ's own saved profile, read straight from the device */
+  function savedState() {
+    try {
+      var S = JSON.parse(localStorage.getItem('sq_v3') || 'null');
+      if (!S) return {};
+      var cc = (localStorage.getItem('cc_name') || '').trim();
+      if (cc && S.profiles) { for (var id in S.profiles) { if ((S.profiles[id].name || '').toLowerCase() === cc.toLowerCase()) return S.profiles[id]; } }
+      return (S.profiles && S.profiles[S.current || 'p1']) || {};
+      return S;
+    } catch (e) { return {}; }
+  }
+
   /* a streak can be a number or an object, depending on the champ */
   function streakOf(s) {
     var x = s && s.streak;
@@ -47,7 +59,7 @@
     },
     top: function () {
       if (!window.ChampRail) return;
-      var s = (window.state) || {};
+      var s = window.state || savedState();
       var here = (location.pathname.split('/').pop() || 'index.html');
       var home = (here === 'index.html') ? '../index.html' : 'index.html';
       ChampRail.top({

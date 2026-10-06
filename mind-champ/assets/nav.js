@@ -11,6 +11,16 @@
 
    ============================================================ */
 (function () {
+  /* the champ's own saved profile, read straight from the device */
+  function savedState() {
+    try {
+      var S = JSON.parse(localStorage.getItem('mc_state') || 'null');
+      if (!S) return {};
+      
+      return S;
+    } catch (e) { return {}; }
+  }
+
   /* a streak can be a number or an object, depending on the champ */
   function streakOf(s) {
     var x = s && s.streak;
