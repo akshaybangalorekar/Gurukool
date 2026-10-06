@@ -2,91 +2,212 @@
 <html lang="en">
 <head>
 <link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Mind-Champ - today's match</title>
+  <title>Mind-Champ — Today's match</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=43">
 <style>
   body { padding-bottom: env(safe-area-inset-bottom); }
-  .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; font-family: Nunito, system-ui, sans-serif; }
-  .s-h1 { font-family: "Baloo 2", Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
+  .s-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
   .s-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
   .s-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
-  .s-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+  .s-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f1f5f9; }
   .s-row:last-child { border-bottom: none; }
-  .s-row .dot { width: 28px; height: 28px; border-radius: 50%; background: #f1f5f9; color: #94a3b8; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
-  .s-row.done .dot { background: #15803d; color: #fff; }
-  .s-row b { display: block; font-weight: 800; font-size: 17px; color: #0f172a; }
+  .s-row .dot { width: 26px; height: 26px; border-radius: 50%; background: #f1f5f9; color: #94a3b8; font: 800 14px Nunito, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; flex: 0 0 26px; }
+  .s-row.now .dot { background: #15803d; color: #fff; }
+  .s-row.done .dot { background: #34d399; color: #fff; }
+  .s-row b { font: 800 17px Nunito, system-ui, sans-serif; color: #0f172a; display: block; }
   .s-row span { color: #64748b; font-size: 15px; }
-  .s-row a { margin-left: auto; text-decoration: none; font-weight: 800; font-size: 15px; color: #15803d; white-space: nowrap; }
+  .s-row .mins { margin-left: auto; color: #94a3b8; font-weight: 700; font-size: 14.5px; white-space: nowrap; }
   .s-btn { font: 800 17px Nunito, system-ui, sans-serif; padding: 14px 20px; border-radius: 14px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 6px 8px 0 0; }
   .s-btn.p { background: #15803d; border-color: #15803d; color: #fff; }
   .s-bar { height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 4px 0 16px; }
   .s-bar div { height: 100%; background: #15803d; width: 0; transition: width .3s; }
-  .s-clock { color: #64748b; font-weight: 800; font-size: 15px; margin-bottom: 6px; }
+  .s-clock { color: #64748b; font-weight: 800; font-size: 15px; }
+  .s-q { font: 800 22px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 8px 0 14px; }
+  .s-art { margin: 6px 0 14px; }
+  .s-in { font: 800 21px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 190px; }
+  .s-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .s-fb.ok { color: #047857; } .s-fb.no { color: #b45309; }
+  .s-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .s-know li { font-size: 17px; line-height: 1.6; }
+  .s-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
   .s-note { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; color: #166534; font-weight: 700; font-size: 15.5px; margin-top: 16px; }
+  .s-match { background: linear-gradient(135deg,#15803d,#166534); border-radius: 18px; padding: 16px 18px; color: #fff; margin: 0 0 18px; font-weight: 800; font-size: 17px; line-height: 1.5; }
+  .s-match b { display: block; font-size: 20px; margin-bottom: 3px; }
 </style>
 </head>
 <body>
-  <header class="topnav" id="gk-head"></header>
+  <header class="topnav" id="topnav"></header>
   <main class="s-wrap"><div id="s-view"></div></main>
-  <script src="../version.js?v=42"></script>
-  <script src="../gk-fresh.js?v=42"></script>
-  <script src="assets/content.js?v=42"></script>
-  <script src="assets/app.js?v=42"></script>
-  <script src="../champ-rail.js?v=42"></script>
-  <script src="assets/nav.js?v=42"></script>
+  <script src="../version.js?v=43"></script>
+  <script src="../gk-fresh.js?v=43"></script>
+  <script src="../rhythm.js?v=43"></script>
+  <script src="assets/reason.js?v=43"></script>
+  <script src="assets/session.js?v=43"></script>
+  <script src="../champ-rail.js?v=43"></script>
+  <script src="assets/nav.js?v=43"></script>
   <script>
   (function () {
-    (window.MindNav || {auto:function(){}}).auto();
-    var STAGES = [
-      { t: 'Warm up', b: 'A reasoning skill at easy pace, to get your eye in.', href: 'reason.html#series', mins: 5 },
-      { t: 'Learn', b: 'One technique, taught then practised: pick up a case.', href: 'learn.html', mins: 15 },
-      { t: 'Practise', b: 'Analogies, odd one out and codes, fresh questions each time.', href: 'reason.html#analogies', mins: 20 },
-      { t: 'Check yourself', b: 'Shape patterns and rotations, with the diagrams.', href: 'reason.html#patterns', mins: 10 },
-      { t: 'Match point', b: 'A boss case: the hardest inference in the champ.', href: 'challenge.html', mins: 10 }
-    ];
-    var KEY = 'gk_session_mind';
     function el(id) { return document.getElementById(id); }
-    function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
-    function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
-    function today() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-    var rec = load();
-    if (rec.date !== today()) { rec = { date: today(), done: {} }; save(rec); }
-    function pct() { var n = 0; STAGES.forEach(function (s, i) { if (rec.done[i]) n++; }); return Math.round(100 * n / STAGES.length); }
-    function rows() {
-      return STAGES.map(function (s, i) {
-        return '<div class="s-row' + (rec.done[i] ? ' done' : '') + '"><span class="dot">' + (rec.done[i] ? '&#10003;' : (i + 1)) + '</span>' +
-          '<span><b>' + s.t + '</b><span>' + s.b + '</span></span>' +
-          '<a href="' + s.href + '" onclick="mark(' + i + ')">open &#8250;</a></div>';
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function norm(v) { return String(v == null ? '' : v).trim().toLowerCase().replace(/\s+/g, ' '); }
+    function numOf(v) { var m = norm(v).match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; }
+    function matches(g, q) {
+      var a = norm(g), b = norm(q.ans); if (!a) return false; if (a === b) return true;
+      var x = numOf(a), y = numOf(b);
+      return (x !== null && y !== null && Math.abs(x - y) < 1e-9);
+    }
+
+    MindSession.ready();
+    var rec = MindSession.today();
+    var plan = rec.plan;
+    var si = Math.min(rec.progress || 0, Math.max(0, plan.stages.length - 1));
+    var qi = 0, tries = 0, stageRight = 0, answered = false;
+
+    function stageRows() {
+      return plan.stages.map(function (st, i) {
+        var cls = i < si ? 'done' : (i === si ? 'now' : '');
+        return '<div class="s-row ' + cls + '"><span class="dot">' + (i < si ? '✓' : (i + 1)) + '</span>' +
+          '<span><b>' + esc(st.title) + '</b><span>' + esc(st.blurb || '') + '</span></span>' +
+          '<span class="mins">' + st.mins + ' min</span></div>';
       }).join('');
     }
-    function render() {
-      var done = 0; STAGES.forEach(function (s, i) { if (rec.done[i]) done++; });
-      el('s-view').innerHTML = '<h1 class="s-h1">Today&#8217;s match</h1>' +
-        '<p class="s-lead">A match on the reasoning court, planned from what you have already done. About an hour, in ' + STAGES.length + ' short parts. You do not have to decide anything.</p>' +
-        '<div class="s-bar"><div style="width:' + pct() + '%"></div></div>' +
-        '<div class="s-panel">' + rows() + '</div>' +
-        '<p class="s-clock" style="margin-top:14px">' + done + ' of ' + STAGES.length + ' parts done</p>' +
-        (done >= STAGES.length
-          ? '<div class="s-note">Session complete. Stopping here is a smart move, and tomorrow is already planned.</div>' +
-            '<button class="s-btn p" onclick="reset()">Start fresh</button>'
-          : '<button class="s-btn p" onclick="next()">Carry on with part ' + (done + 1) + '</button>');
+    function pct() { return Math.round(100 * si / plan.stages.length); }
+    function head() {
+      var st = plan.stages[si];
+      return '<div class="s-bar"><div style="width:' + pct() + '%"></div></div>' +
+        '<div class="s-clock">Part ' + (si + 1) + ' of ' + plan.stages.length + ' · ' + esc(st.title) + ' · ' + st.mins + ' min</div>';
     }
-    window.mark = function (i) { rec.done[i] = true; save(rec); };
-    window.next = function () {
-      for (var i = 0; i < STAGES.length; i++) { if (!rec.done[i]) { rec.done[i] = true; save(rec); location.href = STAGES[i].href; return; } }
-      render();
+
+    function ready() {
+      var last = MindSession.lastResult();
+      el('s-view').innerHTML = '<h1 class="s-h1">🎾 Today\'s match</h1>' +
+        '<p class="s-lead">' + esc(plan.reason) + ' About ' + plan.mins + ' minutes, in five short parts. You do not have to decide anything — just press start.</p>' +
+        '<div class="s-panel">' + stageRows() + '</div>' +
+        '<button class="s-btn p" onclick="Sess.start()">▶ Start today\'s match</button>' +
+        (last ? '<p class="s-lead" style="margin-top:14px">Last match: ' + last.right + ' of ' + last.total + ' questions right.</p>' : '') +
+        '<div class="s-note">🔒 Tomorrow\'s match is prepared for you as soon as you finish this one.</div>';
+    }
+
+    function renderStage() {
+      var st = plan.stages[si];
+      if (!st) return finish();
+
+      /* the teaching part: a worked example, shown before anything is asked */
+      if (st.type === 'learn') {
+        var d = st.demo;
+        var h = head() + '<div class="s-panel" style="margin-top:14px">';
+        h += '<p class="s-q">Watch me do one first</p>';
+        if (d) {
+          h += '<p class="s-lead">' + esc(d.q) + '</p>' + (d.art ? '<div class="s-art">' + d.art + '</div>' : '');
+          h += '<div class="s-know"><b>What we know:</b><ul>' + (d.know || []).map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></div>';
+          h += '<div class="s-sol"><b>The answer is ' + esc(d.ans) + '</b><p style="margin:8px 0 0">' + esc(d.sol || '') + '</p></div>';
+        }
+        h += '<p class="s-lead" style="margin-top:14px">That is the whole trick. Now you try some like it.</p>' +
+          '<button class="s-btn p" onclick="Sess.nextStage()">I have got it — carry on →</button></div>';
+        el('s-view').innerHTML = h;
+        return;
+      }
+
+      var q = st.qs[qi];
+      if (!q) return finish();
+      answered = false;
+      var hh = head() + '<div class="s-panel" style="margin-top:14px">' +
+        '<div class="s-clock">Question ' + (qi + 1) + ' of ' + st.qs.length + ' · ' + esc(q.topicName || '') + '</div>' +
+        '<p class="s-q">' + esc(q.q) + '</p>' + (q.art ? '<div class="s-art">' + q.art + '</div>' : '') +
+        '<input class="s-in" id="s-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
+        '<button class="s-btn p" onclick="Sess.check()">Check</button>' +
+        '<button class="s-btn" id="s-know-btn" onclick="Sess.know()">What do we know?</button>' +
+        '<p class="s-fb" id="s-fb"></p><div id="s-know"></div><div id="s-sol"></div></div>';
+      el('s-view').innerHTML = hh;
+      var inp = el('s-in');
+      if (inp) { inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); Sess.check(); } }); inp.focus(); }
+    }
+
+    function credit(q, firstTry) {
+      var xp = firstTry ? 12 : 6;
+      MindSession.award(xp);
+      MindSession.record(q.topic, true);
+      if (window.Rhythm) Rhythm.note(true);
+      return xp;
+    }
+    function advance() {
+      var st = plan.stages[si];
+      qi++; tries = 0;
+      if (qi >= st.qs.length) Sess.nextStage(); else renderStage();
+    }
+
+    function finish() {
+      var stats = MindSession.finish();
+      el('s-view').innerHTML = '<h1 class="s-h1">Match complete ✅</h1>' +
+        '<div class="s-panel"><p class="s-q">' + stats.right + ' of ' + stats.total + ' questions right</p>' +
+        '<p class="s-lead">That is a real session — the kind that builds a champion. Stopping here is a smart move, not a small one.</p>' +
+        '<div class="s-note">🔒 Tomorrow\'s match is already prepared, built from what you did today.</div>' +
+        '<div style="margin-top:16px"><a class="s-btn p" style="text-decoration:none" href="index.html">Back home</a>' +
+        '<a class="s-btn" style="text-decoration:none" href="learn.html">Teach me a technique</a></div></div>';
+      if (window.MindNav && MindNav.top) MindNav.top();
+    }
+
+    window.Sess = {
+      start: function () { si = 0; qi = 0; stageRight = 0; renderStage(); },
+      nextStage: function () {
+        var st = plan.stages[si];
+        MindSession.markDone(si, stageRight, (st.qs || []).length);
+        si++; qi = 0; stageRight = 0; tries = 0;
+        MindSession.progress(si);
+        if (si >= plan.stages.length) finish(); else renderStage();
+      },
+      know: function () {
+        var q = plan.stages[si].qs[qi];
+        el('s-know').innerHTML = '<div class="s-know"><b>What we know:</b><ul>' + (q.know || []).map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></div>';
+        el('s-know-btn').disabled = true;
+      },
+      check: function () {
+        if (answered) return;
+        var st = plan.stages[si], q = st.qs[qi], fb = el('s-fb'), v = el('s-in').value;
+        if (!norm(v)) { fb.className = 's-fb no'; fb.textContent = 'Type your answer first — a guess is fine.'; return; }
+        if (matches(v, q)) {
+          answered = true;
+          var xp = credit(q, tries === 0); stageRight++;
+          fb.className = 's-fb ok'; fb.innerHTML = 'Correct — that is the technique. +' + xp + ' XP';
+          qi++; tries = 0;
+          if (qi >= st.qs.length) {
+            fb.innerHTML += ' <b>That part is done.</b>';
+            el('s-sol').innerHTML = '<button class="s-btn p" onclick="Sess.nextStage()">Carry on →</button>';
+          } else el('s-sol').innerHTML = '<button class="s-btn p" onclick="Sess.nextQuestion()">Next question →</button>';
+          return;
+        }
+        tries++;
+        MindSession.record(q.topic, false);
+        if (window.Rhythm) Rhythm.note(false);
+        fb.className = 's-fb no';
+        if (tries === 1) fb.textContent = 'Not yet. ' + ((q.hints || [])[0] || 'Read it again slowly.');
+        else {
+          fb.textContent = 'Let us look at it — then carry on.';
+          el('s-sol').innerHTML = '<div class="s-sol"><b>How it works</b><p style="margin:8px 0 0">' + esc(q.sol || '') + '</p>' +
+            '<button class="s-btn p" style="margin-top:12px" onclick="Sess.nextQuestion()">Carry on</button></div>';
+          answered = true; qi++;
+        }
+      },
+      nextQuestion: function () {
+        var st = plan.stages[si];
+        if (qi >= st.qs.length) Sess.nextStage(); else renderStage();
+      }
     };
-    window.reset = function () { rec = { date: today(), done: {} }; save(rec); render(); };
-    render();
+    ready();
   })();
   </script>
 </body>

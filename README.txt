@@ -751,6 +751,32 @@ Recent changes (round 40 - v40, all champs made to match Maths exactly)
   heading and an orange court-coloured banner. Science keeps its
   investigation theme and Mind keeps its tennis theme.
 
+Recent changes (round 43 - v43, sessions now ASK questions instead of sending him to a picker)
+------------------------
+- THE BUG: in Science and Mind, tapping "Warm up" (or any part) opened
+  another page that asked the child to CHOOSE A TOPIC. That is a picker,
+  and it defeats the whole point of a prepared session. Maths never did
+  this - it asks the questions right there, on the page.
+- Science and Mind now work EXACTLY like maths, question for question:
+    * a plan of five parts, with a progress bar and "Part n of 5"
+    * every part that asks questions asks them HERE, one at a time
+    * a "What do we know?" button when he wants help
+    * after two misses the working is shown, so there is never a dead end
+    * XP is awarded (12 for a first-try, 6 for a second-try)
+    * the finish screen reports how many were right and says tomorrow's
+      session is already prepared
+- Science parts: Warm up (5 quick ones from every world) / Learn (the
+  world that most needs it, read right there) / Practise / Check yourself /
+  One hard one (a real Level 2 problem, asked on the page).
+- Mind parts: Warm up / Learn (the technique shown as a worked example
+  BEFORE anything is asked) / Practise / Check yourself / Match point.
+- Questions come from each champ's own bank - Science from its 29 worlds
+  and its Level 2 set, Mind from its reasoning ladder - so nothing is
+  invented and nothing repeats inside one session.
+- Tested: 65 checks across the two new session engines (all passing), and
+  14,000 generated questions swept across 800 sessions for empty text,
+  missing answers, wrong option counts and bad answer keys. Zero problems.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
