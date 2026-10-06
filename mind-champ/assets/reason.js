@@ -12,6 +12,20 @@
    ============================================================ */
 (function () {
   function ri(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
+  /* odd one out: the odd item is stated, and the four are shuffled, so the
+     answer is never in a tell-tale position and never the wrong item */
+  function oddOne(sets) {
+    var s = pick(sets);
+    var four = shuffle(s.same.concat([s.odd]));
+    var fair = [s.odd].concat(s.also || []);
+    return { q: 'Which is the odd one out: ' + four.join(', ') + '?', ans: fair, unit: '', items: four,
+      know: ['Four items: ' + four.join(', '), 'Three of them belong to one group'],
+      hints: ['Name the group that three of them share.', s.why + '.'],
+      sol: s.odd + ' is the odd one out: ' + s.why + '.' +
+        (s.also ? ' (If you said ' + s.also[0] + ' because ' + s.alsoWhy + ', that is a fair answer too \u2014 a good question should not have two.)' : '') };
+  }
+
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
   /* ---------- little drawings for the non-verbal topics ---------- */
@@ -59,14 +73,14 @@
             know: ['The first pair: ' + a[0] + ' and ' + a[1], 'The link is what the thing DOES', 'Apply the same link to ' + b[0]],
             hints: ['Ask what ' + b[0] + ' does.', 'The answer is one word: ' + b[1]],
             sol: b[0] + ' is for ' + b[1] + '. Find the relationship in the first pair, then apply it to the second.' }; },
-        medium: function () { var a = pick([['a puppy', 'a dog'], ['a kitten', 'a cat'], ['a calf', 'a cow'], ['a joey', 'a kangaroo']]);
-          var b = pick([['a chick', 'a chicken'], ['a lamb', 'a sheep'], ['a tadpole', 'a frog'], ['a cub', 'a lion']]);
+        medium: function () { var a = pick([['a puppy', 'dog'], ['a kitten', 'cat'], ['a calf', 'cow'], ['a joey', 'kangaroo']]);
+          var b = pick([['a chick', 'chicken'], ['a lamb', 'sheep'], ['a tadpole', 'frog'], ['a cub', 'lion']]);
           return { q: a[0] + ' is to ' + a[1] + ' as ' + b[0] + ' is to ___? (one word)', ans: b[1], unit: '',
             know: ['First pair: ' + a[0] + ' and ' + a[1], 'The link is young to adult', 'Apply it to ' + b[0]],
             hints: ['What does ' + b[0] + ' grow into?', 'One word.'],
             sol: 'The link is young to grown-up, so ' + b[0] + ' goes with ' + b[1] + '.' }; },
-        hard: function () { var a = pick([['an author', 'a book'], ['a composer', 'music'], ['a baker', 'bread'], ['a painter', 'a picture']]);
-          var b = pick([['a sculptor', 'a statue'], ['a poet', 'a poem'], ['a chef', 'a meal'], ['a farmer', 'crops']]);
+        hard: function () { var a = pick([['an author', 'book'], ['a composer', 'music'], ['a baker', 'bread'], ['a painter', 'picture']]);
+          var b = pick([['a sculptor', 'statue'], ['a poet', 'poem'], ['a chef', 'meal'], ['a farmer', 'crops']]);
           return { q: a[0] + ' is to ' + a[1] + ' as ' + b[0] + ' is to ___? (one word)', ans: b[1], unit: '',
             know: ['First pair: ' + a[0] + ' and ' + a[1], 'The link is maker to what they make'],
             hints: ['What does ' + b[0] + ' make?', 'One word.'],
@@ -83,32 +97,32 @@
           ask: 'Which is the odd one out: 1, 4, 9, 16, 20?', ans: '20', hint: 'The others are square numbers.' }
       ],
       gen: {
-        easy: function () { var sets = [['apple', 'banana', 'pear', 'carrot', 'the others are fruit'],
-            ['cat', 'dog', 'horse', 'table', 'the others are animals'], ['red', 'blue', 'green', 'seven', 'the others are colours'],
-            ['square', 'circle', 'triangle', 'six', 'the others are shapes'], ['bus', 'car', 'train', 'banana', 'the others are vehicles'],
-            ['hand', 'foot', 'knee', 'hat', 'the others are body parts']];
-          var s = pick(sets);
-          return { q: 'Which is the odd one out: ' + s.slice(0, 4).join(', ') + '?', ans: s[3], unit: '',
-            know: ['Four items: ' + s.slice(0, 4).join(', '), 'Three of them belong to one group'],
-            hints: ['Name the group that three of them share.', s[4] + '.'],
-            sol: s[3] + ' is the odd one out: ' + s[4] + '.' }; },
-        medium: function () { var sets = [['2', '4', '6', '9', 'the others are even'], ['3', '6', '9', '10', 'the others are multiples of 3'],
-            ['Monday', 'Tuesday', 'March', 'Friday', 'the others are days of the week'],
-            ['10', '20', '30', '45', 'the others are multiples of 10'],
-            ['1', '4', '9', '12', 'the others are square numbers']];
-          var s = pick(sets);
-          return { q: 'Which is the odd one out: ' + s.slice(0, 4).join(', ') + '?', ans: s[3], unit: '',
-            know: ['Four items: ' + s.slice(0, 4).join(', '), 'Look for the rule that three of them share'],
-            hints: ['Check each one against a rule you can state.', s[4] + '.'],
-            sol: s[3] + ' is the odd one out: ' + s[4] + '.' }; },
-        hard: function () { var sets = [['1', '4', '9', '16', '20', 'the others are square numbers'],
-            ['2', '3', '5', '7', '9', 'the others are prime'], ['8', '16', '24', '30', 'the others are multiples of 8'],
-            ['1', '8', '27', '36', 'the others are cube numbers'], ['0.5', '1.5', '2.5', '3.4', 'the others end in .5']];
-          var s = pick(sets);
-          return { q: 'Which is the odd one out: ' + s.slice(0, 4).join(', ') + '?', ans: s[3], unit: '',
-            know: ['Four items: ' + s.slice(0, 4).join(', '), 'The rule may be about primes, squares, cubes or multiples'],
-            hints: ['Test squares, cubes and primes in turn.', s[4] + '.'],
-            sol: s[3] + ' is the odd one out: ' + s[4] + '.' }; }
+        easy: function () { var sets = [
+            { same: ['apple', 'banana', 'pear'], odd: 'carrot', why: 'the others are fruit' },
+            { same: ['cat', 'dog', 'horse'], odd: 'table', why: 'the others are animals' },
+            { same: ['red', 'blue', 'green'], odd: 'seven', why: 'the others are colours' },
+            { same: ['square', 'circle', 'triangle'], odd: 'six', why: 'the others are shapes' },
+            { same: ['bus', 'car', 'train'], odd: 'banana', why: 'the others are vehicles' },
+            { same: ['hand', 'foot', 'knee'], odd: 'hat', why: 'the others are body parts' },
+            { same: ['cup', 'plate', 'spoon'], odd: 'shoe', why: 'the others are things you eat with' }];
+          return oddOne(sets); },
+        medium: function () { var sets = [
+            { same: ['2', '4', '6'], odd: '9', why: 'the others are even', also: ['2'], alsoWhy: '2 is the only prime number here' },
+            { same: ['3', '6', '9'], odd: '10', why: 'the others are multiples of 3', also: ['3'], alsoWhy: '3 is the only prime number here' },
+            { same: ['Monday', 'Tuesday', 'Friday'], odd: 'March', why: 'the others are days of the week' },
+            { same: ['10', '20', '30'], odd: '45', why: 'the others are multiples of 10', also: ['45'], alsoWhy: '45 is also the only odd number here' },
+            { same: ['1', '4', '9'], odd: '12', why: 'the others are square numbers', also: ['1'], alsoWhy: '1 is the only odd number here' },
+            { same: ['5', '10', '15'], odd: '22', why: 'the others are multiples of 5', also: ['5'], alsoWhy: '5 is the only prime number here' }];
+          return oddOne(sets); },
+        hard: function () { var sets = [
+            { same: ['1', '4', '9'], odd: '20', why: 'the others are square numbers' },
+            { same: ['2', '3', '5'], odd: '9', why: 'the others are prime', also: ['2'], alsoWhy: '2 is the only even number here' },
+            { same: ['8', '16', '24'], odd: '30', why: 'the others are multiples of 8' },
+            { same: ['1', '8', '27'], odd: '36', why: 'the others are cube numbers', also: ['1'], alsoWhy: '1 is the only odd number here' },
+            { same: ['0.5', '1.5', '2.5'], odd: '3.4', why: 'the others end in .5' },
+            { same: ['2', '4', '8'], odd: '12', why: 'the others are powers of 2', also: ['2'], alsoWhy: '2 is the only prime number here' },
+            { same: ['11', '22', '33'], odd: '45', why: 'the others are multiples of 11', also: ['45'], alsoWhy: '45 is also the only odd number here' }];
+          return oddOne(sets); }
       } },
     { key: 'codes', name: 'Letter codes', icon: '\ud83d\udd20', strand: 'Verbal',
       what: 'A code question gives you a rule and asks you to apply it. Work out the rule from the example first, then apply it letter by letter.',

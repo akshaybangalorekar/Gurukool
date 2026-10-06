@@ -894,6 +894,31 @@ Recent changes (round 48 - v48, angles: diagrams first, then none)
   wedges from their own coordinates - the two 45-degree wedges really do
   fill 90 degrees, the three at a point really do fill 360.
 
+Recent changes (round 49 - v49, the Mind-Champ answer bugs)
+------------------------
+- THE ODD ONE OUT BUG: the answer key always pointed at the FOURTH item,
+  whatever the set said. So in "Monday, Tuesday, March, Friday" the app
+  expected FRIDAY and marked the right answer (March) wrong. Worse, the odd
+  item was always in last place, so the position gave the game away.
+  Now each set states its own odd item, and the four are SHUFFLED, so the
+  answer is always the genuinely odd one and its position varies.
+- THE ANALOGY BUG: the question asked for ONE WORD but the key was
+  "a chicken", so a child typing "chicken" was marked wrong - and then the
+  working told him the answer was "a chicken". The keys are now single
+  words, and the checker ignores a leading "a"/"an"/"the", capitals,
+  stray spaces and a plural, so any fair way of writing it is accepted.
+- A fair second answer is no longer punished. Some number sets can be read
+  two ways (in "2, 4, 6, 9", 2 is also the only prime), so those sets now
+  list every defensible answer, accept them all, and say so in the working.
+- The answer checker now lives in ONE file (mind-champ/assets/answers.js)
+  used by both the reasoning ladder and today's match, so they can never
+  disagree again.
+- Tested: 13 checks including both reported cases, 900 odd-one-out
+  questions (key always among the four shown; the odd item lands in all
+  four positions), 900 analogies (every one that asks for a single word has
+  a single-word key), and all 6 topics x 3 tiers - every key accepted
+  however it is typed, and still NO to a genuinely wrong answer.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
