@@ -73,15 +73,16 @@
     .wrap { max-width: 1080px; margin: 0 auto; padding: 10px 20px 60px; width: 100%; }
     .champ-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
     .champ-grid > * { min-width: 0; }
-    /* tablets: Math + Science side by side, LR as a full-width banner below */
+    /* tablets: two by two */
     @media (min-width: 620px) {
       .champ-grid { grid-template-columns: repeat(2, 1fr); }
-      .champ-card--lr { grid-column: 1 / -1; }
     }
-    /* desktop: all three across */
+    /* desktop: ALL FOUR across, on one line */
     @media (min-width: 1000px) {
-      .champ-grid { grid-template-columns: repeat(3, 1fr); }
-      .champ-card--lr { grid-column: auto; }
+      .champ-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .champ-card { padding: 22px 20px 18px; }
+      .champ-card__name { font-size: 19px; }
+      .champ-card__desc { font-size: 14.5px; }
     }
     .champ-card {
       text-decoration: none; color: inherit; display: flex; flex-direction: column;
@@ -94,6 +95,7 @@
     .champ-card--math { border-top: 5px solid var(--accent); }
     .champ-card--science { border-top: 5px solid var(--teal); }
     .champ-card--lr { border-top: 5px solid var(--amber); }
+    .champ-card--sk { border-top: 5px solid #b45309; }
     .champ-card__badge {
       font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; padding: 4px 12px; border-radius: 999px; align-self: flex-start;
@@ -124,6 +126,7 @@
     }
     .champ-card--math .champ-card__go { color: var(--accent); }
     .champ-card--lr .champ-card__go { color: var(--ink-dim); }
+    .champ-card--sk .champ-card__go { color: #b45309; }
     .champ-card__go svg { width: 16px; height: 16px; }
     .stat-strip {
       display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px;
@@ -229,7 +232,7 @@
 
       <a class="champ-card champ-card--lr fade-in" style="--i:3;" href="mind-champ/index.html">
         <span class="champ-card__badge badge--new">New!</span>
-        <span class="champ-card__icon icon--lr">
+        <span class="champ-card__icon icon--sk">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A5.5 5.5 0 0 0 4 7.5c0 1.6.7 3 1.8 4L3 18l3.5-1.5L8 20l2.6-5.3c.9.2 1.9.2 2.8 0L16 20l1.5-3.5L21 18l-2.8-6.5A5.5 5.5 0 0 0 14.5 2a5.5 5.5 0 0 0-5 0z"/><circle cx="9" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>
         </span>
         <h2 class="champ-card__name">Mind-Champ</h2>
@@ -241,7 +244,7 @@
         <span class="champ-card__stats"><span>Minecraft Quests · 5 cases</span></span>
       </a>
 
-      <a class="champ-card champ-card--lr fade-in" style="--i:4;" href="samskritam-champ/index.html">
+      <a class="champ-card champ-card--sk fade-in" style="--i:4;" href="samskritam-champ/index.html">
         <span class="champ-card__badge badge--new">New!</span>
         <span class="champ-card__icon icon--lr">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2 0 3 1.2 3 3 0 1.6-1.2 2.6-2 3.4-.8.8-1 1.4-1 2.6"/><circle cx="12" cy="17.5" r="1.6"/><path d="M5 21c1.5-2.5 4-4 7-4s5.5 1.5 7 4"/></svg>

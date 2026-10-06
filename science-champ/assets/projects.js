@@ -148,6 +148,99 @@
     };
   }
 
+  /* ---------- animation: launch angle and range ---------- */
+  function rocketArc() {
+    return {
+      html:
+        '<div id="sp-arc"><svg viewBox="0 0 420 220" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="220" fill="#eff6ff" rx="14"/>' +
+        '<line x1="20" y1="196" x2="400" y2="196" stroke="#64748b" stroke-width="3"/>' +
+        '<path id="sp-arc-path" d="" fill="none" stroke="#2563eb" stroke-width="3"/>' +
+        '<polygon id="sp-arc-rocket" points="" fill="#ef4444"/>' +
+        '<text id="sp-arc-note" x="16" y="26" fill="#1e3a8a" font-size="15" font-weight="800" font-family="Nunito,sans-serif"></text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:10px"><input id="sp-ang" type="range" min="15" max="75" step="5" value="45" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">Launch angle: <span id="sp-angv">45</span>&deg; &middot; how far it lands: <span id="sp-range">10.0</span> m</div></div>',
+      start: function () {
+        function draw() {
+          var a = parseFloat(document.getElementById('sp-ang').value);
+          document.getElementById('sp-angv').textContent = a;
+          /* range grows as sin(2 x angle), so it peaks at 45 degrees */
+          var r = Math.sin(2 * a * Math.PI / 180);
+          var range = 10 * r;
+          document.getElementById('sp-range').textContent = range.toFixed(1);
+          var x0 = 40, x1 = 40 + 340 * r, peak = 150 * r;
+          var d = '', x, y, i;
+          for (i = 0; i <= 20; i++) {
+            x = x0 + (x1 - x0) * i / 20;
+            y = 196 - peak * Math.sin(Math.PI * i / 20);
+            d += (i ? ' L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+          }
+          document.getElementById('sp-arc-path').setAttribute('d', d);
+          document.getElementById('sp-arc-rocket').setAttribute('points',
+            (x0 - 4) + ',196 ' + (x0 + 10) + ',' + (196 - 10 * Math.sin(a * Math.PI / 180)) + ' ' + (x0 - 4) + ',186');
+          document.getElementById('sp-arc-note').textContent =
+            'the same push every time \u2014 only the angle changes';
+        }
+        document.getElementById('sp-ang').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
+  /* ---------- animation: three seeds, three conditions ---------- */
+  function seedBars() {
+    return {
+      html:
+        '<div id="sp-seeds"><svg viewBox="0 0 420 220" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="220" fill="#f0fdf4" rx="14"/>' +
+        '<line x1="40" y1="180" x2="390" y2="180" stroke="#64748b" stroke-width="3"/>' +
+        '<rect x="80" y="60" width="60" height="120" rx="4" fill="#22c55e"/>' +
+        '<rect x="180" y="60" width="60" height="120" rx="4" fill="#86efac"/>' +
+        '<rect x="280" y="150" width="60" height="30" rx="4" fill="#fca5a5"/>' +
+        '<text x="110" y="52" text-anchor="middle" font-size="15" font-weight="800" fill="#14532d" font-family="Nunito,sans-serif">8 cm</text>' +
+        '<text x="210" y="52" text-anchor="middle" font-size="15" font-weight="800" fill="#14532d" font-family="Nunito,sans-serif">8 cm</text>' +
+        '<text x="310" y="142" text-anchor="middle" font-size="15" font-weight="800" fill="#7f1d1d" font-family="Nunito,sans-serif">2 cm</text>' +
+        '<text x="110" y="200" text-anchor="middle" font-size="14" font-weight="800" fill="#166534" font-family="Nunito,sans-serif">warm + light</text>' +
+        '<text x="210" y="200" text-anchor="middle" font-size="14" font-weight="800" fill="#166534" font-family="Nunito,sans-serif">warm + dark</text>' +
+        '<text x="310" y="200" text-anchor="middle" font-size="14" font-weight="800" fill="#7f1d1d" font-family="Nunito,sans-serif">cold + light</text>' +
+        '</svg></div><div style="text-align:center;margin-top:8px;font:800 16px Nunito,system-ui,sans-serif;color:#0f172a">shoot height after three weeks</div>',
+      start: function () {}
+    };
+  }
+
+  /* ---------- animation: a lever trades force for distance ---------- */
+  function leverAnim() {
+    return {
+      html:
+        '<div id="sp-lever"><svg viewBox="0 0 420 220" style="width:100%;max-width:420px;display:block;margin:0 auto">' +
+        '<rect width="420" height="220" fill="#fefce8" rx="14"/>' +
+        '<polygon id="sp-ful" points="210,150 196,180 224,180" fill="#a16207"/>' +
+        '<line id="sp-beam" x1="70" y1="150" x2="350" y2="150" stroke="#78350f" stroke-width="8" stroke-linecap="round"/>' +
+        '<circle id="sp-load" cx="70" cy="140" r="14" fill="#0ea5e9"/>' +
+        '<circle id="sp-effort" cx="350" cy="140" r="10" fill="#ef4444"/>' +
+        '<text id="sp-lever-note" x="16" y="26" fill="#78350f" font-size="15" font-weight="800" font-family="Nunito,sans-serif"></text>' +
+        '</svg></div>' +
+        '<div style="text-align:center;margin-top:10px"><input id="sp-arm" type="range" min="40" max="260" step="10" value="140" style="width:min(340px,90%)">' +
+        '<div style="font:800 17px Nunito,system-ui,sans-serif;color:#0f172a;margin-top:6px">your end of the beam: <span id="sp-armv">140</span> cm &middot; force you need: <span id="sp-fneed">1.0</span> of the load</div></div>',
+      start: function () {
+        function draw() {
+          var arm = parseFloat(document.getElementById('sp-arm').value);
+          document.getElementById('sp-armv').textContent = arm;
+          /* a longer effort arm needs less force, but you push through more distance */
+          var need = 140 / arm;
+          document.getElementById('sp-fneed').textContent = need.toFixed(1);
+          document.getElementById('sp-beam').setAttribute('x2', 210 + arm);
+          document.getElementById('sp-effort').setAttribute('cx', 210 + arm);
+          document.getElementById('sp-lever-note').textContent =
+            'a longer arm lifts the same load with less force \u2014 but you push further';
+        }
+        document.getElementById('sp-arm').addEventListener('input', draw);
+        draw();
+      }
+    };
+  }
+
   var LIST = [
     { key: 'code-ball', icon: '\ud83d\udcbb', title: 'Code a bouncing ball', status: 'ready',
       hook: 'Write a program where a ball falls, bounces and loses energy each time.',
@@ -236,15 +329,93 @@
           ans: 'temperature', hint: 'Which was the one thing you changed?',
           sol: 'The temperature \\u2014 because it was the only difference. That is the power of a fair test: it lets you say the word caused. And a good scientist always writes down what surprised them.' }
       ] },
-    { key: 'rocket-paper', icon: '\ud83d\ude80', title: 'Design a paper rocket', status: 'soon',
+    { key: 'rocket-paper', icon: '\ud83d\ude80', title: 'Design a paper rocket', status: 'ready',
       hook: 'Fins, nose cone, launch angle. Measure, change one thing, measure again.',
-      needs: ['flight', 'physics'], steps: [] },
-    { key: 'seeds', icon: '\ud83c\udf31', title: 'Grow a seed under three conditions', status: 'soon',
+      needs: ['flight', 'physics'],
+      steps: [
+        { title: 'Every push pushes back',
+          say: 'A rocket does not push against the air behind it \u2014 it pushes air one way, and the air pushes the rocket the other way. That is Newton\u2019s third law, and it works in empty space too.',
+          anim: null,
+          ask: 'A paper rocket squeezes air out of its nozzle, downwards. Which way does the air push the rocket? Type up or down.',
+          ans: 'up', hint: 'The push always comes back the other way.',
+          sol: 'Up. The air goes down, the rocket goes up \u2014 equal and opposite. That is why a rocket needs nothing to push against.' },
+        { title: 'Fins stop it tumbling',
+          say: 'A rocket with no fins will spin and tumble, because any little wobble keeps growing. Fins at the back act like feathers on an arrow: they keep the nose pointing where you aimed.',
+          anim: null,
+          ask: 'What do fins do for a paper rocket: make it faster, or keep it steady? Type faster or steady.',
+          ans: 'steady', hint: 'Think of the feathers on an arrow.',
+          sol: 'They keep it steady. Fins do not add speed \u2014 they add stability, so the rocket keeps pointing the way you launched it.' },
+        { title: 'The launch angle matters',
+          say: 'Slide the angle and watch where it lands. The push is exactly the same every time \u2014 only the angle changes.',
+          anim: rocketArc,
+          ask: 'In still air, which launch angle sends a paper rocket furthest: 30, 45 or 60 degrees?',
+          ans: 45, hint: 'Try the slider: which angle lands furthest away?',
+          sol: '45 degrees. The range follows sin(2 x angle), which is biggest at exactly 45 degrees \u2014 flatter and it hits the ground early, steeper and it goes up instead of along.' },
+        { title: 'Change one thing only',
+          say: 'Now you are testing. Make two rockets that differ in exactly one way, and fly each one several times so a lucky throw does not fool you.',
+          anim: null,
+          ask: 'You are testing whether fins help. What must stay the same between the two rockets: the fins, or everything else? Type fins or everything.',
+          ans: 'everything', hint: 'Which one thing are you testing?',
+          sol: 'Everything else \u2014 same paper, same mass, same angle, same push. Only the fins may differ, otherwise you cannot say the fins caused the difference.' }
+      ] },
+    { key: 'seeds', icon: '\ud83c\udf31', title: 'Grow a seed under three conditions', status: 'ready',
       hook: 'Light, dark and cold. One difference each, drawn as a bar chart.',
-      needs: ['bio'], steps: [] },
-    { key: 'machine', icon: '\ud83e\udde0', title: 'Explain a machine in one page', status: 'soon',
+      needs: ['bio'],
+      steps: [
+        { title: 'A seed carries its own lunch',
+          say: 'A seed is a baby plant packed with stored food. To wake up it needs water, warmth and air \u2014 and here is the surprise: it does NOT need light to sprout. Light matters later, once leaves appear.',
+          anim: null,
+          ask: 'A seed is put in a dark cupboard, with water and warmth. Will it sprout? Type yes or no.',
+          ans: 'yes', hint: 'What does a seed really need to wake up?',
+          sol: 'Yes. Water, warmth and air are enough to germinate \u2014 the seed lives on its own stored food. Light only becomes essential once the first leaves open.' },
+        { title: 'Three jars, one difference each',
+          say: 'Set up three jars: warm and light, warm and dark, cold and light. Each jar differs from the first in exactly one way \u2014 that is what makes it a fair test.',
+          anim: null,
+          ask: 'You are testing whether LIGHT matters. What must be the same in both jars: the warmth, or the darkness? Type warmth or darkness.',
+          ans: 'warmth', hint: 'Darkness is the thing you are changing.',
+          sol: 'The warmth. You change the light, so the temperature must stay the same in both jars \u2014 otherwise you cannot tell which one caused the difference.' },
+        { title: 'Read the bar chart',
+          say: 'Here are the three jars after three weeks. Look carefully \u2014 one result is a surprise.',
+          anim: seedBars,
+          ask: 'Warm and light: 8 cm. Warm and dark: 8 cm. Cold and light: 2 cm. Which condition slowed the growth: light, dark or cold?',
+          ans: 'cold', hint: 'Which bar is short?',
+          sol: 'The cold one. The dark seedling grew just as tall as the lit one, so light was not the problem \u2014 the cold stopped it. That is exactly the kind of surprise a real experiment gives you.' },
+        { title: 'Say only what you can prove',
+          say: 'Now write the conclusion. Say what your three jars actually showed, and nothing more.',
+          anim: null,
+          ask: 'The dark seedling was as tall as the lit one. So what does a seed NOT need in order to sprout: light, or water? Type light or water.',
+          ans: 'light', hint: 'Which one did the dark jar still have plenty of?',
+          sol: 'Light. The dark jar sprouted perfectly well, so light is not needed for germination \u2014 water and warmth are. A conclusion should never claim more than the jars showed.' }
+      ] },
+    { key: 'machine', icon: '\ud83e\udde0', title: 'Explain a machine in one page', status: 'ready',
       hook: 'Research how a fridge, a microwave or a bicycle gear really works, and write it as if teaching a younger child.',
-      needs: ['physics'], steps: [] }
+      needs: ['physics'],
+      steps: [
+        { title: 'A machine moves force around',
+          say: 'No machine creates energy. A lever, a ramp and a gear all trade force for distance: you push with less force, but you push for longer. Nothing is free.',
+          anim: leverAnim,
+          ask: 'A low bicycle gear makes a hill easier. Do you push with LESS force but MORE turns of the pedals, or MORE force but fewer turns? Type less or more.',
+          ans: 'less', hint: 'Try the lever slider: longer arm, less force.',
+          sol: 'Less force, but more pedal turns. A gear does the same job as a lever \u2014 it trades force for distance, which is why you can climb a hill but have to pedal faster.' },
+        { title: 'A fridge does not make cold',
+          say: 'Cold is not a thing you can make \u2014 it is just the absence of heat. A fridge works by carrying heat out of the box and dumping it out the back. Feel behind a fridge: it is warm.',
+          anim: null,
+          ask: 'Your food is cooled in the fridge. Where does that heat go: outside the fridge, or does it disappear? Type outside or disappears.',
+          ans: 'outside', hint: 'Feel the back of a fridge.',
+          sol: 'Outside. The heat is moved out through the coils at the back, which is why they feel warm. Energy is never destroyed \u2014 only moved.' },
+        { title: 'The cost is always distance',
+          say: 'Every simple machine \u2014 ramp, lever, pulley \u2014 makes the force smaller but the journey longer. That is the deal, every time.',
+          anim: null,
+          ask: 'A ramp makes lifting a heavy box easier. What does it cost you: distance or force? Type distance or force.',
+          ans: 'distance', hint: 'You push the box further than you lift it.',
+          sol: 'Distance. You push the box along a longer slope with less force. Force multiplied by distance stays the same \u2014 that is the bargain every machine makes.' },
+        { title: 'Write it for a younger child',
+          say: 'The real test of understanding is explaining it simply. Start with what the machine DOES, then how, then why it is built that way.',
+          anim: null,
+          ask: 'Which opening sentence is better: "A fridge has a compressor and coils", or "A fridge carries heat out of the box"? Type first or second.',
+          ans: 'second', hint: 'Which one starts with what it does?',
+          sol: 'The second. Leading with what a machine does gives the reader something to hold on to; the parts only make sense afterwards. That is how the best explanations are written.' }
+      ] }
   ];
 
   window.ScienceProjects = {

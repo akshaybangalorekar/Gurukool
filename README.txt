@@ -842,6 +842,33 @@ Recent changes (round 46 - v46, the Sanskrit "Learn a new trick" box)
   shows the five conversations, and the missions page shows the missions
   with their Child and Parent lines.
 
+Recent changes (round 47 - v47, closing gaps: hub layout, all the projects)
+------------------------
+- GURUKOOL HUB: all four champs now sit on ONE line. The grid was set to
+  three columns, so the fourth champ wrapped onto a second row. It is now
+  four across on a wide screen, two-by-two on a tablet, one on a phone.
+  Samskritam also gets its own card colour instead of borrowing the
+  reasoning card's.
+- THE SANSKRIT TILE: the deployed code was tested with real clicks and all
+  four tiles work (Learn opens the five conversations, Games the treasury,
+  Challenge the Thirsty Crow, Build the family missions). If a device still
+  shows the old behaviour it is holding a cached copy, so the freshness
+  check now tries harder and, if the browser still refuses to let go, shows
+  a one-tap "A new version is ready - Tap to refresh" bar.
+- SCIENCE PROJECTS: the three that said "soon" are now fully built -
+  Design a paper rocket (with a launch-angle animation that really does peak
+  at 45 degrees), Grow a seed under three conditions (with the bar chart,
+  and the truth that a seed does NOT need light to sprout), and Explain a
+  machine in one page (with a lever animation that trades force for
+  distance). All six science projects are now real.
+- MIND PROJECTS: the four cards that said "being built" are now real
+  step-by-step projects with their own runner - the school timetable clash,
+  the wedding seating plan, the power cut, and the bus route puzzle.
+- Verified by working the answers out independently, not by trusting the
+  text: the timetable was solved, the seating deduced, the power cut
+  brute-forced over every possible world (exactly one fits), and the bus
+  times recomputed. 28 checks, all passing.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
