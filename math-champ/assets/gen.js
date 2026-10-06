@@ -38,6 +38,115 @@
       '<line x1="20" y1="140" x2="390" y2="140" stroke="#94a3b8" stroke-width="2"/>' + out + '</svg>';
   }
 
+
+  /* ---------- angle pictures ----------
+     Plain SVG, so a question can carry a diagram. Angles are drawn from
+     the real maths: two lines crossing at a degrees really do make the
+     four angles a, 180-a, a, 180-a. */
+  function ptAt(cx, cy, r, deg) { var a = deg * Math.PI / 180; return { x: Math.round((cx + Math.cos(a) * r) * 10) / 10, y: Math.round((cy - Math.sin(a) * r) * 10) / 10 }; }
+  function rayLine(cx, cy, deg, len) { var p = ptAt(cx, cy, len, deg), q = ptAt(cx, cy, len, deg + 180); return '<line x1="' + q.x + '" y1="' + q.y + '" x2="' + p.x + '" y2="' + p.y + '" stroke="#334155" stroke-width="3" stroke-linecap="round"/>'; }
+  function wedgeAt(cx, cy, r, a1, a2, fill) { var p = ptAt(cx, cy, r, a1), q = ptAt(cx, cy, r, a2); return '<polygon points="' + cx + ',' + cy + ' ' + p.x + ',' + p.y + ' ' + q.x + ',' + q.y + '" fill="' + fill + '" opacity="0.3"/>'; }
+  function labelAt(cx, cy, r, a, text, fill) { var p = ptAt(cx, cy, r, a); return '<text x="' + p.x + '" y="' + p.y + '" text-anchor="middle" dominant-baseline="middle" font-size="15" font-weight="800" fill="' + (fill || '#0f172a') + '" font-family="Nunito,system-ui,sans-serif">' + text + '</text>'; }
+  function pic(inner) { return '<div style="text-align:center;margin:10px 0"><svg viewBox="0 0 320 200" style="width:min(320px,92%);height:auto"><rect width="320" height="200" rx="14" fill="#f8fafc"/>' + inner + '</svg></div>'; }
+  var AX = 160, AY = 100;
+
+  /* --- with a picture --- */
+  function angVertPic() {
+    var a = pick([35, 40, 45, 50, 55, 60, 65, 70]);
+    var art = pic(rayLine(AX, AY, 0, 130) + rayLine(AX, AY, a, 130) +
+      wedgeAt(AX, AY, 46, 0, a, '#2563eb') + labelAt(AX, AY, 68, a / 2, a + '\u00b0', '#1d4ed8') +
+      wedgeAt(AX, AY, 46, 180, 180 + a, '#db2777') + labelAt(AX, AY, 68, 180 + a / 2, '?', '#be185d'));
+    return { q: 'Two straight lines cross. The angle marked ' + a + '\u00b0 is shown. What is the angle vertically opposite it, marked ??', ans: a, unit: '\u00b0', art: art,
+      know: ['Two straight lines cross at a point', 'The angle marked ' + a + '\u00b0 is given', 'Vertically opposite angles are EQUAL'],
+      hints: ['Look at the angle diagonally across from the ' + a + '\u00b0 one.', 'Vertically opposite angles are always the same size.'],
+      sol: 'The angle vertically opposite is also ' + a + '\u00b0. When two lines cross, the angles facing each other across the point are equal \u2014 they are called vertically opposite angles.' };
+  }
+  function angStraightPic() {
+    var a = pick([40, 45, 50, 55, 60, 65, 70, 75, 80, 100, 110, 120, 130, 140]);
+    var art = pic(rayLine(AX, AY, 0, 130) + rayLine(AX, AY, a, 120) +
+      wedgeAt(AX, AY, 44, 0, a, '#2563eb') + labelAt(AX, AY, 64, a / 2, a + '\u00b0', '#1d4ed8') +
+      wedgeAt(AX, AY, 44, a, 180, '#db2777') + labelAt(AX, AY, 64, (a + 180) / 2, '?', '#be185d'));
+    return { q: 'Two angles sit together on a straight line. One of them is ' + a + '\u00b0. What is the other one, marked ??', ans: 180 - a, unit: '\u00b0', art: art,
+      know: ['The two angles sit on a straight line', 'One of them is ' + a + '\u00b0', 'Angles on a straight line add to 180\u00b0'],
+      hints: ['A straight line is half a full turn: 180\u00b0.', '180 \u2212 ' + a + '.'],
+      sol: '180 \u2212 ' + a + ' = ' + (180 - a) + '\u00b0. Angles that sit side by side on a straight line always add to 180\u00b0.' };
+  }
+  function angCompPic() {
+    var a = pick([25, 30, 35, 40, 45, 50, 55, 60, 65]);
+    var art = pic(rayLine(AX, AY, 0, 120) + rayLine(AX, AY, 90, 120) + rayLine(AX, AY, a, 108) +
+      '<polygon points="' + AX + ',' + (AY - 20) + ' ' + (AX + 20) + ',' + (AY - 20) + ' ' + (AX + 20) + ',' + AY + '" fill="none" stroke="#64748b" stroke-width="2"/>' +
+      wedgeAt(AX, AY, 42, 0, a, '#2563eb') + labelAt(AX, AY, 62, a / 2, a + '\u00b0', '#1d4ed8') +
+      wedgeAt(AX, AY, 42, a, 90, '#db2777') + labelAt(AX, AY, 62, (a + 90) / 2, '?', '#be185d'));
+    return { q: 'These two angles sit inside a right angle (the little square means 90\u00b0). One is ' + a + '\u00b0. What is the other, marked ??', ans: 90 - a, unit: '\u00b0', art: art,
+      know: ['The square corner means a right angle: 90\u00b0', 'One part is ' + a + '\u00b0', 'The two parts add to 90\u00b0'],
+      hints: ['The whole corner is 90\u00b0.', '90 \u2212 ' + a + '.'],
+      sol: '90 \u2212 ' + a + ' = ' + (90 - a) + '\u00b0. Two angles that fit inside a right angle add to 90\u00b0 \u2014 they are called complementary.' };
+  }
+  function angCongruentPic() {
+    var a = pick([30, 35, 40, 45, 50, 55, 60, 65, 70]);
+    var art = pic(rayLine(80, 140, 0, 52) + rayLine(80, 140, a, 52) + wedgeAt(80, 140, 26, 0, a, '#2563eb') + labelAt(80, 140, 40, a / 2, a + '\u00b0', '#1d4ed8') +
+      rayLine(240, 140, 0, 52) + rayLine(240, 140, a, 52) + wedgeAt(240, 140, 26, 0, a, '#db2777') + labelAt(240, 140, 40, a / 2, '?', '#be185d') +
+      '<text x="160" y="26" text-anchor="middle" font-size="13" font-weight="800" fill="#475569" font-family="Nunito,system-ui,sans-serif">these two angles are congruent (equal)</text>');
+    return { q: 'These two angles are congruent, which means they are equal. One is ' + a + '\u00b0. What is the other, marked ??', ans: a, unit: '\u00b0', art: art,
+      know: ['The two angles are congruent \u2014 equal in size', 'One of them is ' + a + '\u00b0'],
+      hints: ['Congruent means exactly the same size.', 'So the unknown one is the same as the one you can see.'],
+      sol: 'The other angle is ' + a + '\u00b0 as well. Congruent angles are equal \u2014 the word is used for angles that match exactly.' };
+  }
+  function angPointPic() {
+    var a = ri(100, 150), b = ri(90, 140), c = 360 - a - b;
+    var art = pic(rayLine(AX, AY, 0, 120) + rayLine(AX, AY, a, 120) + rayLine(AX, AY, a + b, 120) +
+      wedgeAt(AX, AY, 42, 0, a, '#2563eb') + labelAt(AX, AY, 62, a / 2, a + '\u00b0', '#1d4ed8') +
+      wedgeAt(AX, AY, 42, a, a + b, '#0d9488') + labelAt(AX, AY, 62, a + b / 2, b + '\u00b0', '#0f766e') +
+      wedgeAt(AX, AY, 42, a + b, 360, '#db2777') + labelAt(AX, AY, 62, (a + b + 360) / 2, '?', '#be185d'));
+    return { q: 'Three angles meet at one point. Two of them are ' + a + '\u00b0 and ' + b + '\u00b0. What is the third, marked ??', ans: c, unit: '\u00b0', art: art,
+      know: ['All three angles meet at one point', 'Two of them: ' + a + '\u00b0 and ' + b + '\u00b0', 'Angles at a point add to 360\u00b0'],
+      hints: ['A full turn is 360\u00b0.', '360 \u2212 ' + a + ' \u2212 ' + b + '.'],
+      sol: '360 \u2212 ' + a + ' \u2212 ' + b + ' = ' + c + '\u00b0. Angles that meet at a point and fill it completely add to 360\u00b0, a full turn.' };
+  }
+
+  /* --- the same ideas, later, with NO picture --- */
+  function angVertWords() {
+    var a = pick([35, 40, 45, 50, 55, 60, 65, 70, 75, 80]);
+    return { q: 'Two straight lines cross. One of the four angles is ' + a + '\u00b0. What is the angle vertically opposite it, in degrees?', ans: a, unit: '\u00b0',
+      know: ['Two straight lines cross', 'One angle is ' + a + '\u00b0', 'Vertically opposite angles are equal'],
+      hints: ['Picture the X shape the lines make.', 'The angle across the point is the same size.'],
+      sol: 'It is ' + a + '\u00b0. Across the crossing point the angles are equal \u2014 no picture needed once you can see the X in your head.' };
+  }
+  function angStraightWords() {
+    var a = pick([35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 100, 110, 120, 130, 140, 145]);
+    return { q: 'Two adjacent angles sit on a straight line. One of them is ' + a + '\u00b0. What is the other, in degrees?', ans: 180 - a, unit: '\u00b0',
+      know: ['The angles are adjacent \u2014 side by side, sharing a side', 'They sit on a straight line', 'One is ' + a + '\u00b0'],
+      hints: ['A straight line is 180\u00b0.', '180 \u2212 ' + a + '.'],
+      sol: '180 \u2212 ' + a + ' = ' + (180 - a) + '\u00b0. Adjacent angles on a straight line are supplementary \u2014 they add to 180\u00b0.' };
+  }
+  function angCongruentWords() {
+    var a = pick([40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140]);
+    return { q: 'Two congruent angles add up to ' + a + '\u00b0. How big is each one, in degrees?', ans: a / 2, unit: '\u00b0',
+      know: ['The two angles are congruent \u2014 exactly equal', 'Together they add to ' + a + '\u00b0'],
+      hints: ['Congruent means they are the same size.', 'Split ' + a + ' into two equal parts: ' + a + ' \u00f7 2.'],
+      sol: a + ' \u00f7 2 = ' + (a / 2) + '\u00b0 each. If two equal angles make ' + a + '\u00b0 between them, halving gives each one.' };
+  }
+  function angTriangleEqual() {
+    var a = pick([40, 50, 60, 70, 80, 100]), each = (180 - a) / 2;
+    return { q: 'In a triangle, two angles are equal to each other. The third angle is ' + a + '\u00b0. How big is each of the equal angles, in degrees?', ans: each, unit: '\u00b0',
+      know: ['Two angles of the triangle are equal', 'The third angle is ' + a + '\u00b0', 'Angles in a triangle add to 180\u00b0'],
+      hints: ['Take the known angle off 180 first: 180 \u2212 ' + a + '.', 'Then share what is left equally between the two equal angles.'],
+      sol: '180 \u2212 ' + a + ' = ' + (180 - a) + ', and half of that is ' + each + '\u00b0. Two equal angles share what is left over.' };
+  }
+  function angCrossEqual() {
+    return { q: 'Two straight lines cross. Two of the four angles are equal AND next to each other (adjacent). How big is each of those two angles, in degrees?', ans: 90, unit: '\u00b0',
+      know: ['Four angles are made by two crossing lines', 'Two ADJACENT ones are equal', 'Adjacent angles on a straight line add to 180\u00b0'],
+      hints: ['Two equal angles sitting on a straight line must add to 180\u00b0.', 'If they are equal, each is half of 180\u00b0.'],
+      sol: '90\u00b0 each. Adjacent angles on a straight line add to 180\u00b0, so two equal ones must be 90\u00b0 \u2014 which means the lines are at right angles.' };
+  }
+  function angPointWords() {
+    var a = ri(100, 150), b = ri(90, 140), c = 360 - a - b;
+    return { q: 'Three angles meet at a point. Two of them are ' + a + '\u00b0 and ' + b + '\u00b0. What is the third, in degrees?', ans: c, unit: '\u00b0',
+      know: ['The three angles meet at one point', 'Two of them: ' + a + '\u00b0 and ' + b + '\u00b0', 'Angles at a point add to 360\u00b0'],
+      hints: ['A full turn is 360\u00b0.', '360 \u2212 ' + a + ' \u2212 ' + b + '.'],
+      sol: '360 \u2212 ' + a + ' \u2212 ' + b + ' = ' + c + '\u00b0. All the angles around a point add to a full turn.' };
+  }
+
   var TOPICS = [
     { key: 'frac', name: 'Fractions', icon: '🍕', blurb: 'Find a fraction of an amount.',
       gen: {
@@ -242,26 +351,12 @@
             hints: ['Side \u00d7 side = ' + (n * n) + '. What is the side?', 'Take the square root of ' + (n * n) + '.'],
             sol: 'The side is \u221a' + (n * n) + ' = ' + n + ' m. Area questions about squares are square-root questions in disguise.' }; }
       } },
-    { key: 'angles', name: 'Angles', icon: '\ud83d\udcd0', blurb: 'Degrees and the angles inside shapes.',
+    { key: 'angles', name: 'Angles', icon: '📐', blurb: 'Degrees, and the angles where lines meet.',
       gen: {
-        easy: function () { var a = ri(20, 80);
-          return { q: 'Two angles of a triangle are ' + a + '\u00b0 and 90\u00b0. What is the third angle, in degrees?', ans: 180 - a - 90, unit: '\u00b0',
-            know: ['The angles in a triangle add to 180\u00b0', 'Two of them are ' + a + '\u00b0 and 90\u00b0'],
-            hints: ['Add the two you know: ' + (a + 90) + '.', 'Take that from 180.'],
-            sol: '180 \u2212 ' + (a + 90) + ' = ' + (180 - a - 90) + '\u00b0. The angles in any triangle add to 180.' }; },
-        medium: function () { var a = ri(30, 90), b = ri(20, 60);
-          return { q: 'Two angles of a triangle are ' + a + '\u00b0 and ' + b + '\u00b0. What is the third angle, in degrees?', ans: 180 - a - b, unit: '\u00b0',
-            know: ['Angles in a triangle add to 180\u00b0', 'The two known angles: ' + a + '\u00b0 and ' + b + '\u00b0'],
-            hints: ['Add them: ' + (a + b) + '.', 'Subtract from 180.'],
-            sol: '180 \u2212 ' + (a + b) + ' = ' + (180 - a - b) + '\u00b0.' }; },
-        hard: function () {
-          /* keep the three known angles well under 360, so the fourth is a sensible size */
-          var a, b, c, guard = 0;
-          do { a = ri(60, 120); b = ri(50, 110); c = ri(60, 110); guard++; } while (a + b + c > 300 && guard < 50);
-          return { q: 'Three angles of a quadrilateral are ' + a + '\u00b0, ' + b + '\u00b0 and ' + c + '\u00b0. What is the fourth, in degrees?', ans: 360 - a - b - c, unit: '\u00b0',
-            know: ['The angles in a QUADRILATERAL add to 360\u00b0', 'Three of them: ' + a + '\u00b0, ' + b + '\u00b0, ' + c + '\u00b0'],
-            hints: ['A quadrilateral is two triangles, so 2 \u00d7 180 = 360\u00b0.', 'Add the three and subtract from 360.'],
-            sol: '360 \u2212 ' + (a + b + c) + ' = ' + (360 - a - b - c) + '\u00b0. Every extra side adds another 180\u00b0 to the total.' }; }
+        /* the first questions come WITH a picture; the later ones do not */
+        easy: function () { return pick([angVertPic, angStraightPic, angCompPic, angCongruentPic])(); },
+        medium: function () { return pick([angPointPic, angVertWords, angStraightWords, angCongruentWords])(); },
+        hard: function () { return pick([angTriangleEqual, angCrossEqual, angPointWords])(); }
       } },
     { key: 'area', name: 'Area', icon: '\ud83d\udfe6', blurb: 'The space inside a shape.',
       gen: {

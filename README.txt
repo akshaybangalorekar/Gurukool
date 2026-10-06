@@ -869,6 +869,31 @@ Recent changes (round 47 - v47, closing gaps: hub layout, all the projects)
   brute-forced over every possible world (exactly one fits), and the bus
   times recomputed. 28 checks, all passing.
 
+Recent changes (round 48 - v48, angles: diagrams first, then none)
+------------------------
+- NEW ANGLE QUESTIONS in Maths, on the angles topic:
+    vertically opposite angles (equal across a crossing)
+    adjacent angles on a straight line (add to 180)
+    complementary angles inside a right angle (add to 90)
+    congruent angles (equal in size)
+    angles meeting at a point (add to 360)
+    two equal angles of a triangle
+- DIAGRAMS, AS ASKED: the early questions (easy level) ALWAYS carry a
+  picture; the middle ones (medium) are a mix, so the picture fades away;
+  the later ones (hard) NEVER carry a picture. So a child sees the picture
+  while the idea is new, and has to hold it in his head once he is sure.
+- The pictures are real geometry, not decoration: they are drawn from the
+  same numbers as the question, so the angle in the picture really is the
+  angle in the question.
+- The Angles lesson now TEACHES all of these first - vertically opposite,
+  adjacent, complementary, congruent, at a point - so nothing is tested
+  before it is taught.
+- Tested: 2,400 questions swept for well-formed text, answers, hints and
+  pictures (no missing diagrams at easy, none at hard), every answer checked
+  against its angle rule, and the diagrams checked by measuring the drawn
+  wedges from their own coordinates - the two 45-degree wedges really do
+  fill 90 degrees, the three at a point really do fill 360.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
