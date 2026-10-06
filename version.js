@@ -1,5 +1,5 @@
 /* Gurukool version — bump on every push so parents can verify the site is current. */
-window.GK_VERSION = { v: 49, date: '7 Oct 2026', time: '7:05 am AEDT' };
+window.GK_VERSION = { v: 51, date: '7 Oct 2026', time: '7:25 am AEDT' };;
 (function () {
   function add() {
     if (document.getElementById('gk-version')) return;
