@@ -730,6 +730,27 @@ Recent changes (round 39 - v39, Science and Mind get the same door as Maths)
 - All four champs now share the same shape: one door, four boxes, one
   prepared session at the top. Sanskrit is the last one to convert.
 
+Recent changes (round 40 - v40, all champs made to match Maths exactly)
+------------------------
+- FOUND AND FIXED THE REAL REASON SCIENCE AND MIND LOOKED WRONG: their pages
+  never loaded the shared rail at all (an earlier wiring step silently
+  missed because the script tags carry a version stamp). So Science showed
+  its OLD crowded 11-item bar, and Mind showed NO navigation whatsoever.
+  Every champ page now loads the rail.
+- Science and Mind now have EXACTLY the same five rail items as Maths:
+      Today | Learn | Games | Challenge | Build
+  (Science and Mind were missing Today, and their Learn pointed at the
+  world grid instead of the Learn hub.)
+- The old science top bar (level badge, XP bar, and eleven buttons) and the
+  old mind header are gone. There is ONE bar, the same compact one Maths
+  uses: name, XP, streak, sync, progress, home.
+- The doors in Science and Mind are now byte-for-byte the same markup as
+  the Maths door, with the door styles copied from Maths, and real emoji
+  rather than HTML codes.
+- MATHS TODAY'S SESSION now has a basketball scheme: a basketball on the
+  heading and an orange court-coloured banner. Science keeps its
+  investigation theme and Mind keeps its tennis theme.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

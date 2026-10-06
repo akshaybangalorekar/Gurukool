@@ -59,32 +59,35 @@ function homeHTML(){
   var hh = new Date().getHours();
   var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
   var gre = nm ? (part + ', ' + nm + '.') : (part + '.');
-  return '<style>.gk-door{max-width:820px;margin:0 auto;padding:26px 20px 70px;font-family:Nunito,system-ui,sans-serif}.gk-hello{color:#64748b;font-weight:700;font-size:17px;margin:0 0 4px}.gk-ask{font-family:Baloo 2,Nunito,sans-serif;font-weight:800;font-size:34px;line-height:1.15;color:#0f172a;margin:0 0 22px}.gk-primary{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:20px;padding:20px 22px;margin-bottom:16px;color:#fff}.gk-primary b{display:block;font:800 23px/1.2 Nunito,system-ui,sans-serif}.gk-primary span span{display:block;font-size:16px;opacity:.94;margin-top:3px}.gk-primary__ico{font-size:22px}.gk-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}@media (min-width:700px){.gk-grid{grid-template-columns:repeat(2,1fr)}}.gk-mode{display:block;text-decoration:none;background:#fff;border:1px solid #e6ebf1;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.04)}.gk-mode__ico{font-size:24px;display:block;margin-bottom:8px}.gk-mode b{display:block;font:800 20px/1.2 Nunito,system-ui,sans-serif;color:#0f172a}.gk-mode span span{display:block;color:#64748b;font-size:15.5px;line-height:1.5;margin-top:4px}.gk-inside{display:block;margin-top:10px;font-size:13.5px;font-weight:800;color:#64748b;background:#f1f5f9;border-radius:999px;padding:4px 11px}.gk-hint{color:#94a3b8;font-size:15.5px;margin-top:22px}</style>' +
-    '<div class="gk-door">' +
+  return '<main class="gk-door">' +
     '<p class="gk-hello">' + gre + '</p>' +
     '<h1 class="gk-ask">What shall we do today?</h1>' +
     '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#2a9d8f,#1d7d72);box-shadow:0 14px 34px rgba(42,157,143,.28)">' +
-      '<span class="gk-primary__ico">&#128269;</span>' +
+      '<span class="gk-primary__ico">🔍</span>' +
       '<span><b>Start today\u2019s investigation</b><span>About an hour, prepared from what you have already done.</span></span></a>' +
     '<div class="gk-grid">' +
-    '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
-      '<span class="gk-mode__ico">&#128218;</span>' +
-      '<b>Learn a new trick</b><span><span>Read the lesson, then take the quiz. Reading comes before testing, always.</span></span>' +
-      '<span class="gk-inside">29 worlds &middot; physics, chemistry, biology, space</span></a>' +
-    '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
-      '<span class="gk-mode__ico">&#128269;</span>' +
-      '<b>Games &amp; puzzles</b><span><span>Investigations you do with your own hands, and questions against the clock.</span></span>' +
-      '<span class="gk-inside">investigations &middot; rapid-fire arena &middot; trivia</span></a>' +
-    '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
-      '<span class="gk-mode__ico">&#127941;</span>' +
-      '<b>Beat the hard ones</b><span><span>The Olympiad-style Level 2 questions. Bring your thinking.</span></span>' +
-      '<span class="gk-inside">harder levels &middot; the boss arena</span></a>' +
-    '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
-      '<span class="gk-mode__ico">&#128640;</span>' +
-      '<b>Build something real</b><span><span>Code it, wire it, research it. Three real projects, one at a time.</span></span>' +
-      '<span class="gk-inside">bouncing ball &middot; torch circuit &middot; fair test</span></a>' +
+      '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
+        '<span class="gk-mode__ico">📘</span>' +
+        '<b>Learn a new trick</b>' +
+        '<span><span>I will teach you one idea, then let you try it. The questions get harder as you get better.</span></span>' +
+        '<span class="gk-inside">29 worlds · physics · chemistry · biology · space</span></a>' +
+      '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
+        '<span class="gk-mode__ico">🎮</span>' +
+        '<b>Games &amp; puzzles</b>' +
+        '<span><span>Investigations you do with your own hands, and questions against the clock.</span></span>' +
+        '<span class="gk-inside">investigations · rapid-fire arena · trivia</span></a>' +
+      '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
+        '<span class="gk-mode__ico">🏅</span>' +
+        '<b>Beat the hard ones</b>' +
+        '<span><span>The Olympiad-style Level 2 questions. Bring your thinking.</span></span>' +
+        '<span class="gk-inside">harder levels · the boss arena</span></a>' +
+      '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
+        '<span class="gk-mode__ico">🚀</span>' +
+        '<b>Build something real</b>' +
+        '<span><span>Code it, wire it, research it — three real projects, one at a time.</span></span>' +
+        '<span class="gk-inside">bouncing ball · torch circuit · fair test</span></a>' +
     '</div>' +
-    '<p class="gk-hint">No idea what to do? Start today\u2019s investigation — it is already planned for you.</p></div>';
+    '<p class="gk-hint">No idea what to do? Start today\u2019s investigation — it is already planned for you.</p></main>';
 }
 
 function worldHTML(){const w=W(view.wid);if(!w)return homeHTML();let h='<button class="btn sec" onclick="go(\'home\')">← All worlds</button><div class="whead" style="--c:'+w.color+'"><div class="ic">'+w.icon+'</div><h2>'+w.name+'</h2><p>'+w.tag+'</p></div><div class="art'+(w.id==='sky'?' night':'')+'">'+(WORLD_ART[w.id]||'')+'</div>';
@@ -112,20 +115,7 @@ if(z.picked!==-1){h+='<div class="why">'+(z.picked===q.a?'✅ Correct!':(z.picke
 return h+'</div>';}
 
 /* uniform Gurukool header — identical across all three champs */
-function topBar(){
-  const L=levelInfo();
-  return '<div class="gk-bar"><div class="gk-row1"><div class="gk-lvl">Lv '+(L.i+1)+' · '+L.cur[1]+'</div><div class="gk-xpbar"><div class="gk-xpfill" style="width:'+L.pct+'%"></div></div></div>'+
-    '<div class="gk-row2"><button class="gk-mini" onclick="showProfiles()">'+S.profiles[S.current].av+' '+esc(S.profiles[S.current].name)+'</button>'+
-    '<span class="gk-stat">⭐ '+state.xp+' XP</span><span class="gk-stat">🔥 '+state.streak+'-day streak</span>'+
-    '<button class="gk-mini" onclick="showDoubts()">🫙 '+state.doubts.length+'</button>'+
-    '<button class="gk-mini" onclick="showBadges()">🏅 '+state.badges.length+'/'+BADGES.length+'</button>'+
-    '<button class="gk-mini" onclick="syncNow(this)" title="Sync now">☁️</button>'+
-    '<button class="gk-mini" onclick="toggleMute()">'+(S.mute?'🔇':'🔊')+'</button>'+
-    '<a class="gk-mini" href="dashboard.html">📊 Dashboard</a>'+
-    '<a class="gk-mini" href="../parent-guide.html">📖 Parents</a>'+
-    '<a class="gk-mini" href="../index.html">🏠 Gurukool</a></div>'+
-    (L.nx?'<div class="gk-stat gk-next">'+(L.nx[0]-state.xp)+' XP to reach '+L.nx[1]+' →</div>':'')+'</div>';
-}
+function topBar(){ return ''; }   /* one shared bar, exactly as in Maths */
 function render(){const app=document.getElementById('app');if(!app)return;const body=view.page==='home'?homeHTML():(view.page==='world'?worldHTML():(view.page==='mission'?missionHTML():(view.page==='journey'?journeyHTML():quizHTML())));const head=document.getElementById('gk-head');if(head){head.innerHTML=topBar();app.innerHTML=body;}else{app.innerHTML=topBar()+body;}if(window.ScienceNav&&ScienceNav.auto){try{ScienceNav.auto();}catch(e){}}}
 
 function hasSel(){try{const s=window.getSelection();return s&&!s.isCollapsed&&String(s).trim().length>0;}catch(e){return false;}}

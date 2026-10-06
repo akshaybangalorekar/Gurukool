@@ -12,7 +12,8 @@
    ============================================================ */
 (function () {
   var GROUPS = [
-    { key: 'learn', icon: '\ud83e\udde0', label: 'Learn', href: 'learn.html' },
+    { key: 'today', icon: '\u2600\ufe0f', label: 'Today', href: 'session.html' },
+    { key: 'learn', icon: '\ud83d\udcd8', label: 'Learn', href: 'learn.html' },
     { key: 'games', icon: '\ud83c\udfae', label: 'Games', href: 'play.html' },
     { key: 'challenge', icon: '\ud83c\udfc5', label: 'Challenge', href: 'challenge.html' },
     { key: 'build', icon: '\ud83d\ude80', label: 'Build', href: 'projects.html' }
@@ -22,7 +23,7 @@
     { icon: '\ud83d\udcd6', label: 'Parent guide', href: '../parent-guide.html' },
     { icon: '\ud83c\udfeb', label: 'Gurukool hub', href: '../index.html' }
   ];
-  var BY_FILE = { 'index.html': 'games', 'learn.html': 'learn', 'reason.html': 'learn',
+  var BY_FILE = { 'index.html': 'games', 'session.html': 'today', 'learn.html': 'learn', 'reason.html': 'learn',
     'play.html': 'games', 'challenge.html': 'challenge', 'projects.html': 'build' };
 
   window.MindNav = {
@@ -47,10 +48,26 @@
         info: function () { return { name: (s.name || '').trim(), xp: s.xp || 0, streak: (s.streak && s.streak.count) || s.streak || 0 }; }
       });
     },
+
+    /* make sure the rail has somewhere to live, on any page */
+    ensureMount: function () {
+      if (!document.getElementById('gk-rail')) {
+        var r = document.createElement('div'); r.id = 'gk-rail';
+        document.body.insertBefore(r, document.body.firstChild);
+      }
+      if (!document.getElementById('gk-head')) {
+        var h = document.createElement('header'); h.id = 'gk-head'; h.className = 'topnav';
+        document.body.insertBefore(h, document.getElementById('gk-rail').nextSibling);
+      }
+    },
     auto: function () {
+      window.MindNav.ensureMount();
       var here = (location.pathname.split('/').pop() || 'index.html');
       window.MindNav.mount(BY_FILE[here] !== undefined ? BY_FILE[here] : '');
       window.MindNav.top();
     }
   };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { window.MindNav.auto(); });
+  else window.MindNav.auto();
 })();

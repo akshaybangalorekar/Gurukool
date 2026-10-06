@@ -11,8 +11,9 @@
    ============================================================ */
 (function () {
   var GROUPS = [
-    { key: 'learn', icon: '\ud83d\udd2c', label: 'Learn', href: 'index.html' },
-    { key: 'games', icon: '\ud83d\udd0d', label: 'Games', href: 'play.html' },
+    { key: 'today', icon: '\u2600\ufe0f', label: 'Today', href: 'session.html' },
+    { key: 'learn', icon: '\ud83d\udcd8', label: 'Learn', href: 'learn.html' },
+    { key: 'games', icon: '\ud83c\udfae', label: 'Games', href: 'play.html' },
     { key: 'challenge', icon: '\ud83c\udfc5', label: 'Challenge', href: 'challenge.html' },
     { key: 'build', icon: '\ud83d\ude80', label: 'Build', href: 'projects.html' }
   ];
@@ -22,7 +23,7 @@
     { icon: '\ud83d\udcd6', label: 'Parent guide', href: '../parent-guide.html' },
     { icon: '\ud83c\udfeb', label: 'Gurukool hub', href: '../index.html' }
   ];
-  var BY_FILE = { 'index.html': 'learn', 'play.html': 'games', 'challenge.html': 'challenge',
+  var BY_FILE = { 'index.html': 'today', 'session.html': 'today', 'play.html': 'games', 'challenge.html': 'challenge',
     'projects.html': 'build', 'investigations.html': 'games', 'dashboard.html': '' };
 
   window.ScienceNav = {
@@ -51,10 +52,26 @@
       });
     },
     /* mount from the filename, so a page needs one call */
+
+    /* make sure the rail has somewhere to live, on any page */
+    ensureMount: function () {
+      if (!document.getElementById('gk-rail')) {
+        var r = document.createElement('div'); r.id = 'gk-rail';
+        document.body.insertBefore(r, document.body.firstChild);
+      }
+      if (!document.getElementById('gk-head')) {
+        var h = document.createElement('header'); h.id = 'gk-head'; h.className = 'topnav';
+        document.body.insertBefore(h, document.getElementById('gk-rail').nextSibling);
+      }
+    },
     auto: function () {
+      window.ScienceNav.ensureMount();
       var here = (location.pathname.split('/').pop() || 'index.html');
       window.ScienceNav.mount(BY_FILE[here] !== undefined ? BY_FILE[here] : '');
       window.ScienceNav.top();
     }
   };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { window.ScienceNav.auto(); });
+  else window.ScienceNav.auto();
 })();

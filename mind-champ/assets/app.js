@@ -111,16 +111,7 @@
     window.scrollTo(0, 0);
   }
 
-  function headerHTML() {
-    var L = levelOf(S.xp);
-    return '<div class="top"><div class="row"><div class="lvlbadge">Lv ' + (L.i + 1) + ' · ' + L.level.name + '</div>' +
-      '<div class="xpbar"><div class="xpfill" style="width:' + L.pct + '%"></div></div></div>' +
-      '<div class="row2"><button class="mini" onclick="goHome()">🧠 ' + esc((S.name || 'Detective')) + '</button>' +
-      '<span class="stat">⭐ ' + S.xp + ' XP</span><span class="stat">🔥 ' + (S.streak.count || 0) + '-day streak</span>' +
-      '<button class="mini" onclick="syncNow(this)" title="Sync now">☁️</button>' +
-      '<button class="mini" onclick="location.href=\'../index.html\'">🏠 Gurukool</button></div>' +
-      (L.next ? '<div class="stat">' + (L.next.min - S.xp) + ' XP to reach ' + L.next.name + ' →</div>' : '') + '</div>';
-  }
+  function headerHTML(){ return ''; }   /* one shared bar, exactly as in Maths */
 
   function techChip(t, on) {
     return '<div class="tech' + (on ? '' : ' off') + '"><span class="ticon">' + t.icon + '</span><div><b>' + t.name + '</b><span>' + (on ? esc(t.desc) : 'crack the quest to unlock this technique') + '</span></div></div>';
@@ -132,32 +123,35 @@
   var hh = new Date().getHours();
   var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
   var gre = nm ? (part + ', ' + nm + '.') : (part + '.');
-  return '<style>.gk-door{max-width:820px;margin:0 auto;padding:26px 20px 70px;font-family:Nunito,system-ui,sans-serif}.gk-hello{color:#64748b;font-weight:700;font-size:17px;margin:0 0 4px}.gk-ask{font-family:Baloo 2,Nunito,sans-serif;font-weight:800;font-size:34px;line-height:1.15;color:#0f172a;margin:0 0 22px}.gk-primary{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:20px;padding:20px 22px;margin-bottom:16px;color:#fff}.gk-primary b{display:block;font:800 23px/1.2 Nunito,system-ui,sans-serif}.gk-primary span span{display:block;font-size:16px;opacity:.94;margin-top:3px}.gk-primary__ico{font-size:22px}.gk-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}@media (min-width:700px){.gk-grid{grid-template-columns:repeat(2,1fr)}}.gk-mode{display:block;text-decoration:none;background:#fff;border:1px solid #e6ebf1;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.04)}.gk-mode__ico{font-size:24px;display:block;margin-bottom:8px}.gk-mode b{display:block;font:800 20px/1.2 Nunito,system-ui,sans-serif;color:#0f172a}.gk-mode span span{display:block;color:#64748b;font-size:15.5px;line-height:1.5;margin-top:4px}.gk-inside{display:block;margin-top:10px;font-size:13.5px;font-weight:800;color:#64748b;background:#f1f5f9;border-radius:999px;padding:4px 11px}.gk-hint{color:#94a3b8;font-size:15.5px;margin-top:22px}</style>' +
-    '<div class="gk-door">' +
+  return '<main class="gk-door">' +
     '<p class="gk-hello">' + gre + '</p>' +
     '<h1 class="gk-ask">What shall we do today?</h1>' +
     '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#15803d,#166534);box-shadow:0 14px 34px rgba(21,128,61,.28)">' +
-      '<span class="gk-primary__ico">&#127934;</span>' +
+      '<span class="gk-primary__ico">🎾</span>' +
       '<span><b>Start today\u2019s match</b><span>About an hour on the court, prepared from what you have already done.</span></span></a>' +
     '<div class="gk-grid">' +
-        '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
-      '<span class="gk-mode__ico">&#128218;</span>' +
-      '<b>Learn a new trick</b><span><span>One thinking technique at a time, taught and then practised.</span></span>' +
-      '<span class="gk-inside">reasoning ladder &middot; the ten cases</span></a>' +
-    '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
-      '<span class="gk-mode__ico">&#127918;</span>' +
-      '<b>Games &amp; puzzles</b><span><span>Detective cases, Minecraft quests, shape patterns and rotations.</span></span>' +
-      '<span class="gk-inside">10 cases &middot; patterns &middot; rotations</span></a>' +
-    '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
-      '<span class="gk-mode__ico">&#127941;</span>' +
-      '<b>Beat the hard ones</b><span><span>Two-rule number series, shifting codes and the boss cases.</span></span>' +
-      '<span class="gk-inside">the traps &middot; boss level</span></a>' +
-    '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
-      '<span class="gk-mode__ico">&#128640;</span>' +
-      '<b>Build something real</b><span><span>Real logic problems: a timetable that works, a seating plan that fits.</span></span>' +
-      '<span class="gk-inside">timetable clash &middot; seating plan</span></a>' +
-'</div>' +
-    '<p class="gk-hint">No idea what to do? Start today\u2019s match — it is already planned for you.</p></div>';
+      '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
+        '<span class="gk-mode__ico">📘</span>' +
+        '<b>Learn a new trick</b>' +
+        '<span><span>One thinking technique at a time, taught and then practised.</span></span>' +
+        '<span class="gk-inside">reasoning ladder · the ten cases</span></a>' +
+      '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
+        '<span class="gk-mode__ico">🎮</span>' +
+        '<b>Games &amp; puzzles</b>' +
+        '<span><span>Detective cases, Minecraft quests, shape patterns and rotations.</span></span>' +
+        '<span class="gk-inside">10 cases · patterns · rotations</span></a>' +
+      '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
+        '<span class="gk-mode__ico">🏅</span>' +
+        '<b>Beat the hard ones</b>' +
+        '<span><span>Two-rule number series, shifting codes and the boss cases.</span></span>' +
+        '<span class="gk-inside">the traps · boss level</span></a>' +
+      '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
+        '<span class="gk-mode__ico">🚀</span>' +
+        '<b>Build something real</b>' +
+        '<span><span>Real logic problems: a timetable that works, a seating plan that fits.</span></span>' +
+        '<span class="gk-inside">timetable clash · seating plan</span></a>' +
+    '</div>' +
+    '<p class="gk-hint">No idea what to do? Start today\u2019s match — it is already planned for you.</p></main>';
 }
 
   function caseHTML() {
