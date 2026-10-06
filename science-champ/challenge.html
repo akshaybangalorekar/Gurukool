@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Science-Champ — Challenge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .l-wrap { max-width: 840px; margin: 0 auto; padding: 26px 22px 70px; }
+  .l-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .l-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 20px; }
+  .l-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 700px) { .l-grid { grid-template-columns: repeat(2, 1fr); } }
+  .l-card { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,.04); }
+  .l-card:hover { box-shadow: 0 10px 26px rgba(15,23,42,.09); }
+  .l-card .ico { font-size: 24px; }
+  .l-card b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; margin-top: 6px; }
+  .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
+  .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
+  .l-lv.l2 { background: #dbeafe; color: #1e40af; } .l-lv.l3 { background: #dcfce7; color: #166534; }
+  .l-bar { display: block; height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 10px; }
+  .l-bar span { display: block; height: 100%; background: #2a9d8f; }
+  .l-sec { font: 800 20px Nunito, system-ui, sans-serif; color: #0f172a; margin: 26px 0 10px; }
+</style></head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="l-wrap"><div id="s-view"></div></main>
+  <script src="../version.js?v=36"></script>
+  <script src="../gk-fresh.js?v=36"></script>
+  <script src="assets/content.js?v=36"></script>
+  <script src="assets/app.js?v=36"></script>
+  <script src="../champ-rail.js?v=36"></script>
+  <script src="assets/nav.js?v=36"></script>
+  <script>
+    ScienceNav.auto();
+    function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+    /* the worlds with the most demanding levels: Level 2 unlocks at 3+ stars on level 1 */
+    var hard = WORLDS.filter(function (w) { return w.id !== 'trivia'; }).slice(0, 10);
+    var cards = hard.map(function (w) {
+      return '<a class="l-card" href="index.html#world-' + w.id + '"><span class="ico">' + w.icon + '</span><b>' + esc(w.name) + '</b>' +
+        '<span class="sub">Level 2 unlocks when you have three stars on Level 1. These are the Olympiad-style questions.</span>' +
+        '<span class="l-lv">Level 2 \u00b7 Olympiad Challenge</span></a>';
+    }).join('');
+    document.getElementById('s-view').innerHTML =
+      '<h1 class="l-h1">Challenge</h1>' +
+      '<p class="l-lead">For when you want to be pushed. These are the harder levels \u2014 the questions that make you stop and think rather than remember.</p>' +
+      '<div class="l-grid">' +
+        '<a class="l-card" href="index.html#trivia"><span class="ico">\u26a1</span><b>Rapid-fire arena</b><span class="sub">Endless timed questions from EVERY world plus bonus trivia. One miss ends the run.</span><span class="l-lv">the boss</span></a>' +
+        '<a class="l-card" href="projects.html"><span class="ico">\ud83d\ude80</span><b>Build something real</b><span class="sub">The projects: code it, wire it, research it.</span></a>' +
+      '</div>' +
+      '<p class="l-sec">Olympiad-level worlds</p><div class="l-grid">' + cards + '</div>';
+</script>
+</body>
+</html>

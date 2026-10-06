@@ -651,6 +651,24 @@ Recent changes (round 35 - v35, a device can no longer get stuck on an old versi
   a manual clear (the old page cannot contain the new check). After that
   it heals itself.
 
+Recent changes (round 36 - v36, Science-Champ gets the same four boxes)
+------------------------
+- SCIENCE-CHAMP now has the same navigation as Maths, built from the 29
+  worlds it already had:
+      Learn     - all 29 worlds, each with the stars earned so far, and the
+                  rule that reading comes before testing
+      Games     - the hands-on Investigations, the rapid-fire arena and the
+                  bonus trivia
+      Challenge - the Olympiad-style Level 2 questions and the endless arena
+      Build     - real projects: code a bouncing ball, build a torch
+                  circuit, run a fair test, design a paper rocket, grow a
+                  seed under three conditions, explain a machine in a page
+  The rail mounts itself from the page filename, so every science page
+  (including Investigations and the dashboard) now wears it.
+- The Build projects are shown as cards with the skills each one needs,
+  marked as being built, so the choice of which to build first is visible
+  in the app.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

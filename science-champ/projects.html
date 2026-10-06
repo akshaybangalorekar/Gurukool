@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Science-Champ — Build something real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .l-wrap { max-width: 840px; margin: 0 auto; padding: 26px 22px 70px; }
+  .l-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .l-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 20px; }
+  .l-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 700px) { .l-grid { grid-template-columns: repeat(2, 1fr); } }
+  .l-card { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,.04); }
+  .l-card:hover { box-shadow: 0 10px 26px rgba(15,23,42,.09); }
+  .l-card .ico { font-size: 24px; }
+  .l-card b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; margin-top: 6px; }
+  .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
+  .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
+  .l-lv.l2 { background: #dbeafe; color: #1e40af; } .l-lv.l3 { background: #dcfce7; color: #166534; }
+  .l-bar { display: block; height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 10px; }
+  .l-bar span { display: block; height: 100%; background: #2a9d8f; }
+  .l-sec { font: 800 20px Nunito, system-ui, sans-serif; color: #0f172a; margin: 26px 0 10px; }
+</style></head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="l-wrap"><div id="s-view"></div></main>
+  <script src="../version.js?v=36"></script>
+  <script src="../gk-fresh.js?v=36"></script>
+  <script src="assets/content.js?v=36"></script>
+  <script src="assets/app.js?v=36"></script>
+  <script src="../champ-rail.js?v=36"></script>
+  <script src="assets/nav.js?v=36"></script>
+  <script>
+    ScienceNav.auto();
+    document.getElementById('s-view').innerHTML =
+      '<h1 class="l-h1">Build something real</h1>' +
+      '<p class="l-lead">Real science you can hold, run or write. Each project opens when you have the skills it needs \u2014 and every one of them ends with you producing something of your own.</p>' +
+      '<div class="l-grid">' +
+        '<div class="l-card"><span class="ico">\ud83d\udcbb</span><b>Code a bouncing ball</b>' +
+          '<span class="sub">Write a tiny program where a ball falls, bounces and loses energy each time \u2014 then tune the numbers until it behaves like the real thing you measured in Investigations.</span>' +
+          '<span class="l-lv">needs: Heat & Energy Flow, Physics Lab</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+        '<div class="l-card"><span class="ico">\ud83d\udd0c</span><b>Build a torch circuit</b>' +
+          '<span class="sub">A battery, a switch and a bulb on paper first \u2014 work out why the bulb lights only when the loop is complete, then test it with a real torch or a kit.</span>' +
+          '<span class="l-lv">needs: Electricity & Magnetism</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+        '<div class="l-card"><span class="ico">\ud83d\udd2c</span><b>Run a fair test</b>' +
+          '<span class="sub">A real research project: pick a question (does a plant grow faster in warm light?), change ONE thing at a time, keep a results table, and write what you found \u2014 including what surprised you.</span>' +
+          '<span class="l-lv">needs: The Living World, Heat & Energy Flow</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+        '<div class="l-card"><span class="ico">\ud83d\ude80</span><b>Design a paper rocket</b>' +
+          '<span class="sub">Fins, nose cone, launch angle. Measure how far it goes, change one thing, measure again \u2014 that is the whole of experimental science in one afternoon.</span>' +
+          '<span class="l-lv">needs: Flight & Space, Physics Lab</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+        '<div class="l-card"><span class="ico">\ud83c\udf31</span><b>Grow a seed under three conditions</b>' +
+          '<span class="sub">Light, dark, and cold. Same seed, same soil, one difference each. Draw the results as a bar chart and say which factor mattered most.</span>' +
+          '<span class="l-lv">needs: The Living World</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+        '<div class="l-card"><span class="ico">\ud83e\udde0</span><b>Explain a machine in one page</b>' +
+          '<span class="sub">Research how something in your house actually works \u2014 a fridge, a microwave, a bicycle gear \u2014 and write it as if teaching a younger child. If you cannot explain it simply, you do not know it yet.</span>' +
+          '<span class="l-lv">needs: any two worlds</span><span class="l-lv">\ud83d\udd27 being built</span></div>' +
+      '</div>' +
+      '<p class="l-lead" style="margin-top:16px">Tell me which one to build first and I will turn it into a step-by-step project with animations, the same way the rocket and the F1 corner work in Maths.</p>';
+</script>
+</body>
+</html>

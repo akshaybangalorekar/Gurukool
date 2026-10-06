@@ -95,7 +95,7 @@ function topBar(){
     '<a class="gk-mini" href="../index.html">🏠 Gurukool</a></div>'+
     (L.nx?'<div class="gk-stat gk-next">'+(L.nx[0]-state.xp)+' XP to reach '+L.nx[1]+' →</div>':'')+'</div>';
 }
-function render(){const app=document.getElementById('app');if(!app)return;const body=view.page==='home'?homeHTML():(view.page==='world'?worldHTML():(view.page==='mission'?missionHTML():(view.page==='journey'?journeyHTML():quizHTML())));const head=document.getElementById('gk-head');if(head){head.innerHTML=topBar();app.innerHTML=body;}else{app.innerHTML=topBar()+body;}}
+function render(){const app=document.getElementById('app');if(!app)return;const body=view.page==='home'?homeHTML():(view.page==='world'?worldHTML():(view.page==='mission'?missionHTML():(view.page==='journey'?journeyHTML():quizHTML())));const head=document.getElementById('gk-head');if(head){head.innerHTML=topBar();app.innerHTML=body;}else{app.innerHTML=topBar()+body;}if(window.ScienceNav&&ScienceNav.auto){try{ScienceNav.auto();}catch(e){}}}
 
 function hasSel(){try{const s=window.getSelection();return s&&!s.isCollapsed&&String(s).trim().length>0;}catch(e){return false;}}
 function toggleLesson(i){if(hasSel())return;const wid=view.wid;if(view.openLesson===i){view.openLesson=null;}else{view.openLesson=i;SFX.open();if(!state.lessons[wid+':'+i]){state.lessons[wid+':'+i]=1;award(10);}}render();}
