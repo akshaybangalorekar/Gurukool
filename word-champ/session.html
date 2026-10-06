@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Word-Champ — Today's practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=50">
+<style>
+  .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
+  .s-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .s-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .s-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
+  .s-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f1f5f9; }
+  .s-row:last-child { border-bottom: none; }
+  .s-row .dot { width: 26px; height: 26px; border-radius: 50%; background: #f1f5f9; color: #94a3b8; font: 800 14px Nunito, system-ui, sans-serif; display: flex; align-items: center; justify-content: center; flex: 0 0 26px; }
+  .s-row.now .dot { background: #1d4ed8; color: #fff; }
+  .s-row.done .dot { background: #34d399; color: #fff; }
+  .s-row b { font: 800 17px Nunito, system-ui, sans-serif; color: #0f172a; display: block; }
+  .s-row span { color: #64748b; font-size: 15px; }
+  .s-row .mins { margin-left: auto; color: #94a3b8; font-weight: 700; font-size: 14.5px; white-space: nowrap; }
+  .s-btn { font: 800 17px Nunito, system-ui, sans-serif; padding: 14px 20px; border-radius: 14px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 6px 8px 0 0; }
+  .s-btn.p { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .s-bar { height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 4px 0 16px; }
+  .s-bar div { height: 100%; background: #1d4ed8; width: 0; transition: width .3s; }
+  .s-clock { color: #64748b; font-weight: 800; font-size: 15px; }
+  .s-note { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; color: #166534; font-weight: 700; font-size: 15.5px; margin-top: 16px; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="s-wrap"><div id="s-view"></div></main>
+  <script src="../version.js?v=50"></script>
+  <script src="../gk-fresh.js?v=50"></script>
+  <script src="../rhythm.js?v=50"></script>
+  <script src="assets/gen.js?v=50"></script>
+  <script src="assets/answers.js?v=50"></script>
+  <script src="assets/practice.js?v=50"></script>
+  <script src="assets/session.js?v=50"></script>
+  <script src="../champ-rail.js?v=50"></script>
+  <script src="assets/nav.js?v=50"></script>
+  <script>
+  (function () {
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    WordSession.ready();
+    var rec = WordSession.today(), plan = rec.plan;
+    var si = Math.min(rec.progress || 0, Math.max(0, plan.stages.length - 1));
+    var qi = 0, stageRight = 0;
+
+    function rows() {
+      return plan.stages.map(function (st, i) {
+        var cls = i < si ? 'done' : (i === si ? 'now' : '');
+        return '<div class="s-row ' + cls + '"><span class="dot">' + (i < si ? '\u2713' : (i + 1)) + '</span>' +
+          '<span><b>' + esc(st.title) + '</b><span>' + esc(st.blurb || '') + '</span></span>' +
+          '<span class="mins">' + st.mins + ' min</span></div>';
+      }).join('');
+    }
+    function head() {
+      var st = plan.stages[si];
+      return '<div class="s-bar"><div style="width:' + Math.round(100 * si / plan.stages.length) + '%"></div></div>' +
+        '<div class="s-clock">Part ' + (si + 1) + ' of ' + plan.stages.length + ' \u00b7 ' + esc(st.title) + ' \u00b7 ' + st.mins + ' min</div>';
+    }
+    function ready() {
+      var last = WordSession.lastResult();
+      el('s-view').innerHTML = '<h1 class="s-h1">\u270d\ufe0f Today\u2019s practice</h1>' +
+        '<p class="s-lead">' + esc(plan.reason) + ' About ' + plan.mins + ' minutes, in five short parts. You do not have to decide anything \u2014 just press start.</p>' +
+        '<div class="s-panel">' + rows() + '</div>' +
+        '<button class="s-btn p" onclick="Sess.start()">\u25b6 Start today\u2019s practice</button>' +
+        (last ? '<p class="s-lead" style="margin-top:14px">Last time: ' + last.right + ' of ' + last.total + ' right.</p>' : '') +
+        '<div class="s-note">\ud83d\udd12 Tomorrow\u2019s practice is prepared for you as soon as you finish this one.</div>';
+    }
+    function renderStage() {
+      var st = plan.stages[si];
+      if (!st) return finish();
+      if (st.type === 'learn') {
+        var d = st.demo;
+        el('s-view').innerHTML = head() + '<div class="s-panel" style="margin-top:14px">' +
+          '<p class="r-ask">Watch me do one first</p>' +
+          (d.art ? d.art : '') +
+          '<p class="r-ask" style="font-size:19px">' + esc(d.q) + '</p>' +
+          '<div class="r-know"><b>The answer is "' + esc(d.ans) + '"</b><ul><li>' + esc(d.sol) + '</li></ul></div>' +
+          '<button class="s-btn p" onclick="Sess.nextStage()">I have got it \u2014 carry on \u2192</button></div>';
+        return;
+      }
+      var q = st.qs[qi];
+      if (!q) return finish();
+      el('s-view').innerHTML = head() + '<div class="s-panel" style="margin-top:14px">' +
+        '<div class="s-clock">Question ' + (qi + 1) + ' of ' + st.qs.length + ' \u00b7 ' + esc(q.topicName || '') + '</div>' +
+        '<div id="wq-host"></div></div>';
+      WordQ.ask(el('wq-host'), q, {
+        onResult: function (firstTry, anyRight) {
+          if (anyRight) {
+            stageRight++;
+            WordSession.award(firstTry ? 12 : 6);
+            WordSession.record(q.topic, true);
+          } else {
+            WordSession.record(q.topic, false);
+          }
+          qi++;
+          if (qi >= st.qs.length) { qi = st.qs.length; Sess.nextStage(); } else renderStage();
+        }
+      });
+    }
+    function finish() {
+      var stats = WordSession.finish();
+      el('s-view').innerHTML = '<h1 class="s-h1">Practice complete \u2705</h1>' +
+        '<div class="s-panel"><p class="r-ask">' + stats.right + ' of ' + stats.total + ' right</p>' +
+        '<p class="s-lead">That is a real session \u2014 the kind that builds a champion. Stopping here is a smart move, not a small one.</p>' +
+        '<div class="s-note">\ud83d\udd12 Tomorrow\u2019s practice is already prepared, built from what you did today.</div>' +
+        '<div style="margin-top:16px"><a class="s-btn p" style="text-decoration:none" href="index.html">Back home</a>' +
+        '<a class="s-btn" style="text-decoration:none" href="learn.html">Teach me a rule</a></div></div>';
+      if (window.WordNav && WordNav.top) WordNav.top();
+    }
+    window.Sess = {
+      start: function () { si = 0; qi = 0; stageRight = 0; renderStage(); },
+      nextStage: function () {
+        var st = plan.stages[si];
+        WordSession.markDone(si, stageRight, (st.qs || []).length);
+        si++; qi = 0; stageRight = 0;
+        WordSession.progress(si);
+        if (si >= plan.stages.length) finish(); else renderStage();
+      }
+    };
+    ready();
+  })();
+  </script>
+</body>
+</html>

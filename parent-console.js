@@ -422,6 +422,39 @@
     var toLevel = Math.max(0, ((reached || first) - first) / 86400000);
     return { questions: atts.length, days: days, toLevel: toLevel };
   }
+
+  /* ---------- reasoning skills (Mind-Champ) ---------- */
+  var REASON_NAMES = { analogies: 'Analogies', oddoneout: 'Odd one out', codes: 'Letter codes',
+    series: 'Number series', patterns: 'Shape patterns', rotations: 'Rotations' };
+  var REASON_LABEL = ['Not started', 'Getting it', 'Solid', 'Mastered'];
+  function reasoningHTML() {
+    var rec = {}, fromMatch = {};
+    try { rec = JSON.parse(localStorage.getItem('gk_reason') || '{}') || {}; } catch (e) {}
+    try {
+      var mc = JSON.parse(localStorage.getItem('mc_state') || 'null');
+      if (mc && mc.reason) fromMatch = mc.reason;
+    } catch (e) {}
+    var keys = Object.keys(REASON_NAMES);
+    var any = keys.some(function (k) { return (rec[k] && rec[k].n) || (fromMatch[k] && fromMatch[k].done); });
+    var h = '<h3>\ud83e\udde0 Reasoning skills (Mind-Champ)</h3>' +
+      '<p class="pc-lead">The reasoning ladder and today\u2019s match together, so you can see which kind of thinking is solid and which needs a turn.' +
+      (any ? '' : ' Nothing yet \u2014 the ladder lives in Mind-Champ under Learn.') + '</p>';
+    keys.forEach(function (k) {
+      var a = rec[k] || {}, b = fromMatch[k] || {};
+      var n = (a.n || 0) + (b.done || 0);
+      var right = (a.right || 0) + (b.right || 0);
+      var acc = n ? Math.round(100 * right / n) : 0;
+      var lv = !n ? 0 : (n < 4 ? 1 : (acc >= 80 && n >= 6 ? 3 : (acc >= 60 ? 2 : 1)));
+      var colour = ['#94a3b8', '#92400e', '#1e40af', '#166534'][lv] || '#94a3b8';
+      var bg = ['#f1f5f9', '#fef3c7', '#dbeafe', '#dcfce7'][lv] || '#f1f5f9';
+      h += '<div class="pc-row"><b>' + esc(REASON_NAMES[k]) + '</b>' +
+        '<span style="background:' + bg + ';color:' + colour + ';font-weight:800;border-radius:999px;padding:3px 10px;font-size:14px">' +
+        (lv ? 'Level ' + lv + ' \u00b7 ' + REASON_LABEL[lv] : 'Not started') + '</span>' +
+        '<span class="pc-meta">' + (n ? n + ' questions \u00b7 ' + acc + '% right' : 'no questions yet') + '</span></div>';
+    });
+    return h;
+  }
+
   function levelsHTML(name, oc) {
     if (!window.Levels || !window.Batches) return '';
     var keys = Batches.list[0].topics;
@@ -497,7 +530,7 @@
         var extra = r.a && r.a.stars !== undefined ? '<span class="pc-meta">' + r.a.n + '/5 puzzles · ' + r.a.stars + '⭐' + (r.a.done ? ' · case closed' : '') + '</span>' : '';
         return rowHTML(r.label, r.a, extra);
       }).join('') : '<div class="pc-empty">No Mind-Champ cases started yet.</div>';
-      if (oc) { h += levelsHTML(current, oc); h += batchesHTML(oc); }
+      if (oc) { h += levelsHTML(current, oc); h += batchesHTML(oc); h += reasoningHTML(); }
       ins.innerHTML = h;
     }
 

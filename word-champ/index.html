@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Word-Champ — English</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=50">
+</head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="gk-door" id="door"></main>
+  <script src="../version.js?v=50"></script>
+  <script src="../gk-fresh.js?v=50"></script>
+  <script src="assets/gen.js?v=50"></script>
+  <script src="../champ-rail.js?v=50"></script>
+  <script src="assets/nav.js?v=50"></script>
+  <script>
+  (function () {
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    var nm = '';
+    try { var st = JSON.parse(localStorage.getItem('wc_state') || 'null'); if (st && st.name) nm = String(st.name).trim(); } catch (e) {}
+    if (!nm) { try { nm = (localStorage.getItem('cc_name') || '').trim(); } catch (e) {} }
+    if (!nm || nm === 'Learner') nm = '';
+    var hh = new Date().getHours();
+    var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
+    function box(icon, title, body, inside, href, colour) {
+      return '<a class="gk-mode" href="' + href + '" style="border-left:6px solid ' + colour + '">' +
+        '<span class="gk-mode__ico">' + icon + '</span><b>' + title + '</b>' +
+        '<span><span>' + body + '</span></span><span class="gk-inside">' + inside + '</span></a>';
+    }
+    document.getElementById('door').innerHTML =
+      '<p class="gk-hello">' + part + (nm ? ', ' + esc(nm) : '') + '.</p>' +
+      '<h1 class="gk-ask">What shall we do today?</h1>' +
+      '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#1d4ed8,#1e3a8a);box-shadow:0 14px 34px rgba(29,78,216,.28)">' +
+        '<span class="gk-primary__ico">\u270d\ufe0f</span>' +
+        '<span><b>Start today\u2019s practice</b><span>About an hour, planned from what you have already done.</span></span></a>' +
+      '<div class="gk-grid">' +
+        box('\ud83d\udcd8', 'Learn a new trick', 'One rule at a time, shown to you first and then practised \u2014 spelling, grammar, punctuation.', 'spelling \u00b7 grammar \u00b7 punctuation \u00b7 meanings', 'learn.html', '#2a9d8f') +
+        box('\ud83c\udfae', 'Games &amp; puzzles', 'Rapid-fire rounds and passage puzzles. No marks, no pressure.', 'rapid-fire \u00b7 passage puzzles', 'play.html', '#f59e0b') +
+        box('\ud83c\udfc5', 'Beat the hard ones', 'The tricks examiners use: silent letters, tricky agreement, semicolons, inference.', 'exam traps \u00b7 comprehension', 'challenge.html', '#7c3aed') +
+        box('\ud83d\ude80', 'Build something real', 'Write something and keep it: a letter, a story opening, a review, a poster.', 'four writing projects', 'projects.html', '#db2777') +
+      '</div>' +
+      '<p class="gk-hint">No idea what to do? Start today\u2019s practice \u2014 it is already planned for you.</p>';
+  })();
+  </script>
+</body>
+</html>

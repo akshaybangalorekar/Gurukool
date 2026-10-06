@@ -79,7 +79,7 @@
     }
     /* desktop: ALL FOUR across, on one line */
     @media (min-width: 1000px) {
-      .champ-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .champ-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
       .champ-card { padding: 22px 20px 18px; }
       .champ-card__name { font-size: 19px; }
       .champ-card__desc { font-size: 14.5px; }
@@ -96,6 +96,7 @@
     .champ-card--science { border-top: 5px solid var(--teal); }
     .champ-card--lr { border-top: 5px solid var(--amber); }
     .champ-card--sk { border-top: 5px solid #b45309; }
+    .champ-card--word { border-top: 5px solid #1d4ed8; }
     .champ-card__badge {
       font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
       text-transform: uppercase; padding: 4px 12px; border-radius: 999px; align-self: flex-start;
@@ -127,6 +128,7 @@
     .champ-card--math .champ-card__go { color: var(--accent); }
     .champ-card--lr .champ-card__go { color: var(--ink-dim); }
     .champ-card--sk .champ-card__go { color: #b45309; }
+    .champ-card--word .champ-card__go { color: #1d4ed8; }
     .champ-card__go svg { width: 16px; height: 16px; }
     .stat-strip {
       display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px;
@@ -263,6 +265,23 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </span>
       </a>
+      <a class="champ-card champ-card--word fade-in" style="--i:5;" href="word-champ/index.html">
+        <span class="champ-card__badge badge--new">New!</span>
+        <span class="champ-card__icon icon--word">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l3-9 5 6 5-9 3 12"/><path d="M3 20h18"/></svg>
+        </span>
+        <h2 class="champ-card__name">Word-Champ</h2>
+        <p class="champ-card__desc">
+          English, the way exams test it: <b>spelling</b>, <b>grammar</b>, <b>punctuation</b>
+          and <b>comprehension</b>. Every question teaches the rule behind it, so it is
+          never guesswork.
+        </p>
+        <span class="champ-card__stats"><span>Spelling · Grammar · Comprehension</span></span>
+        <span class="champ-card__go">Peek inside
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </span>
+      </a>
+
 
     </div>
 

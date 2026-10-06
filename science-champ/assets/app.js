@@ -121,9 +121,24 @@ function render(){const app=document.getElementById('app');if(!app)return;const 
 function hasSel(){try{const s=window.getSelection();return s&&!s.isCollapsed&&String(s).trim().length>0;}catch(e){return false;}}
 function toggleLesson(i){if(hasSel())return;const wid=view.wid;if(view.openLesson===i){view.openLesson=null;}else{view.openLesson=i;SFX.open();if(!state.lessons[wid+':'+i]){state.lessons[wid+':'+i]=1;award(10);}}render();}
 function toggleSteps(i){if(hasSel())return;view.pracSteps[i]=!view.pracSteps[i];render();}
-function checkPractice(i){const w=W(view.wid);if(!w)return;const p=w.practice[i];const el=document.getElementById('pv'+i);const raw=el?el.value:'';view.pracVals[i]=raw;const norm=s=>String(s).toLowerCase().replace(/[\s,₹°]/g,'').replace(/degrees?/g,'');const ok=[p.ans].concat(p.alts||[]).map(norm).indexOf(norm(raw))>=0;const f=document.getElementById('pf'+i);if(!f)return;
+function practiceOK(p,raw){
+  /* A child who writes the right idea in his own words has answered correctly.
+     Exact matching used to mark prose answers wrong however well he wrote them. */
+  const norm=s=>String(s).toLowerCase().replace(/[\s,₹°]/g,'').replace(/degrees?/g,'');
+  const given=norm(raw); if(!given) return false;
+  const keys=[p.ans].concat(p.alts||[]);
+  for(let i=0;i<keys.length;i++) if(norm(keys[i])===given) return true;
+  const STOP=/^(the|a|an|of|to|in|is|it|and|or|for|with|that|this|are|be|as|at|on|by|from|not|no|all|so|they|them|their|then|than|both|same|more|most|less|least|into|also|only|very|much|made|make|uses|used|each|over|when|what|why|which|does|have|has|its|our|your)$/;
+  const words=String(p.ans).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w=>w.length>=4&&!STOP.test(w));
+  if(words.length>=3){
+    const hit=words.filter(w=>given.indexOf(w)>=0).length;
+    if(hit/words.length>=0.6) return true;
+  }
+  return false;
+}
+function checkPractice(i){const w=W(view.wid);if(!w)return;const p=w.practice[i];const el=document.getElementById('pv'+i);const raw=el?el.value:'';view.pracVals[i]=raw;const ok=practiceOK(p,raw);const f=document.getElementById('pf'+i);if(!f)return;
 if(window.Rhythm)window.Rhythm.note(ok);if(ok){SFX.correct();if(!state.practice[w.id+':'+i]){state.practice[w.id+':'+i]=1;award(20);confetti();}else{toast('Correct again — still proud of you!');}f.innerHTML='<div class="why good">✅ Correct — brilliant!</div>';}
-else{f.innerHTML='<div class="why bad">❌ Not quite — try again, or peek at the steps!</div>';}
+else{f.innerHTML='<div class="why bad">❌ Not quite — try again, or peek at the steps! <br><b>A good answer says:</b> '+esc(p.ans)+'</div>';}
 save();}
 
 function startQuiz(wid,lv){let qs;const w=W(wid);if(wid==='trivia'){const pool=[];WORLDS.forEach(x=>{(x.quiz||[]).forEach(q=>pool.push(q));});TRIVIA_EXTRA.forEach(q=>pool.push(q));shuffle(pool);qs=pool.slice(0,10);}else{qs=(lv===2?(LV2[wid]||[]).slice():(ICAS[wid]||w.quiz).slice());shuffle(qs);}if(!qs||!qs.length)qs=w.quiz.slice();view.qz={wid:wid,lv:wid==='trivia'?0:(lv||1),qs:qs,i:0,score:0,picked:-1};view.page='quiz';actx();hideSelUI();render();startTimer();window.scrollTo(0,0);}

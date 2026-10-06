@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Word-Champ — Beat the hard ones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=50">
+<style>
+  .l-wrap { max-width: 840px; margin: 0 auto; padding: 26px 22px 70px; }
+  .l-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .l-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 20px; }
+  .l-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 700px) { .l-grid { grid-template-columns: repeat(2, 1fr); } }
+  .l-card { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,.04); }
+  .l-card b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; margin-top: 6px; }
+  .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
+  .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
+  .l-card .ico { font-size: 24px; }
+  .r-ask { font: 800 19.5px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 16px 0 10px; }
+  .r-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 220px; }
+  .r-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .r-btn.p { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .r-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .r-fb.ok { color: #047857; } .r-fb.no { color: #b45309; }
+  .r-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .r-know li { font-size: 17px; line-height: 1.6; }
+  .r-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .r-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+  .r-dot { width: 30px; height: 6px; border-radius: 999px; background: #e2e8f0; }
+  .r-dot.on { background: #1d4ed8; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="l-wrap"><div id="w-view"></div></main>
+  <script src="../version.js?v=50"></script>
+  <script src="../gk-fresh.js?v=50"></script>
+  <script src="../rhythm.js?v=50"></script>
+  <script src="assets/gen.js?v=50"></script>
+  <script src="assets/answers.js?v=50"></script>
+  <script src="assets/practice.js?v=50"></script>
+  <script src="../champ-rail.js?v=50"></script>
+  <script src="assets/nav.js?v=50"></script>
+  <script>
+
+  (function () {
+    function el(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    var C = { qi:0, right:0, qs:[] };
+    var TRAPS = [
+      { t: 'Silent letters', d: 'k in knife, s in island, b in comb. Say the word and listen for what is missing.', k: 'spelling' },
+      { t: 'Agreement traps', d: '"The list of names IS long." Find the real subject, not the nearest word.', k: 'grammar' },
+      { t: 'Apostrophes', d: 'One owner puts it before the s; it\u2019s always means "it is".', k: 'punctuation' },
+      { t: 'Inference', d: 'The answer is not written down \u2014 you work it out from what happens.', k: 'comprehension' },
+      { t: 'Words in context', d: 'What does "curt" or "flimsy" mean HERE, in this sentence?', k: 'vocabulary' }
+    ];
+    function menu() {
+      el('w-view').innerHTML = '<h1 class="l-h1">\ud83c\udfc5 Beat the hard ones</h1>' +
+        '<p class="l-lead">These are the tricks examiners actually use. Each one is taught here before you are asked it.</p>' +
+        '<div class="l-grid">' + TRAPS.map(function (x) {
+          return '<div class="l-card"><b>' + esc(x.t) + '</b><span class="sub">' + esc(x.d) + '</span>' +
+            '<div style="margin-top:10px"><button class="r-btn p" onclick="Chal.go(\'' + x.k + '\')">Try it</button></div></div>';
+        }).join('') + '</div>' +
+        '<p style="text-align:center;margin:18px 0"><button class="r-btn p" onclick="Chal.mixed()">Ten mixed hard ones \u2192</button></p>';
+    }
+    function question() {
+      if (C.qi >= C.qs.length) return done();
+      var q = C.qs[C.qi];
+      el('w-view').innerHTML = '<button class="r-btn" onclick="Chal.back()">\u2039 Back</button>' +
+        '<h1 class="l-h1" style="margin-top:12px">' + esc(C.title) + '</h1>' +
+        '<div class="r-dots">' + C.qs.map(function (t,i){ return '<span class="r-dot' + (i<=C.qi?' on':'') + '"></span>'; }).join('') + '</div>' +
+        '<div id="wq-host"></div>';
+      WordQ.ask(el('wq-host'), q, { onResult: function (first, any) {
+        if (any) { C.right++; WordSession.award(first?15:8); WordSession.record(q.topic, true); }
+        else WordSession.record(q.topic, false);
+        C.qi++; question();
+      }});
+    }
+    function done() {
+      el('w-view').innerHTML = '<h1 class="l-h1">\ud83c\udfc6 Challenge done</h1>' +
+        '<div class="r-sol"><b>' + C.right + ' of ' + C.qs.length + ' right</b><p style="margin:8px 0 0">Hard questions are supposed to feel hard. What matters is that you now know the rule behind each one.</p></div>' +
+        '<div style="margin-top:16px"><button class="r-btn p" onclick="Chal.back()">Back to the challenges</button></div>';
+      if (window.WordNav && WordNav.top) WordNav.top();
+    }
+    window.Chal = {
+      go: function (key) {
+        C.qs = []; C.qi = 0; C.right = 0; C.title = (EngGen.byKey(key)||{}).name || key;
+        for (var i=0;i<6;i++) C.qs.push(EngGen.make(key, 'hard'));
+        question();
+      },
+      mixed: function () {
+        var keys = EngGen.topics.map(function(t){return t.key;});
+        C.qs = []; C.qi = 0; C.right = 0; C.title = 'Ten hard ones';
+        for (var i=0;i<10;i++) C.qs.push(EngGen.make(keys[i % keys.length], 'hard'));
+        question();
+      },
+      back: function () { menu(); }
+    };
+    menu();
+  })();
+
+  </script>
+</body>
+</html>

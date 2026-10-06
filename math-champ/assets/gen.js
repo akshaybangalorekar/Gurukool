@@ -197,10 +197,10 @@
             hints: ['Build the percentage out of 10% pieces first.', 'Then ADD it to the original — the question asks for the new price.'],
             sol: 'The rise is ' + (n * p / 100) + ', so the new price is ' + n + ' + ' + (n * p / 100) + ' = ' + (n * (100 + p) / 100) + '.' }; },
         hard: function () { var p = pick([20, 25, 40]), n = pick([50, 80, 120]);
-          return { q: 'A price of ' + n + ' is raised by ' + p + '%, then the new price is cut by ' + p + '%. What is the final price?', ans: Math.round(n * (100 + p) * (100 - p)) / 10000 * 100, unit: '',
+          return { q: 'A price of ' + n + ' is raised by ' + p + '%, then the new price is cut by ' + p + '%. What is the final price?', ans: Math.round(n * (100 + p) * (100 - p) / 10000), unit: '',
             know: ['Start: ' + n, 'Raise by ' + p + '%, then cut the NEW price by ' + p + '%', 'The two percentages act on different amounts'],
             hints: ['Do it in two steps, and use the raised price for the second step.', 'Raising then cutting by the same percentage always ends below the start.'],
-            sol: 'After the rise: ' + (n * (100 + p) / 100) + '. Then cut that by ' + p + '%: ' + (Math.round(n * (100 + p) * (100 - p)) / 10000 * 100) + '. The final price is lower than the start, because the cut is taken from a bigger number.' }; }
+            sol: 'After the rise: ' + (n * (100 + p) / 100) + '. Then cut that by ' + p + '%: ' + (Math.round(n * (100 + p) * (100 - p) / 10000)) + '. The final price is lower than the start, because the cut is taken from a bigger number.' }; }
       } },
     { key: 'prime', name: 'Primes and factors', icon: '🔢', blurb: 'Spot primes and find factors.',
       gen: {
@@ -436,7 +436,7 @@
           return { q: 'How many lines of symmetry does a ' + sh[0] + ' have?' + (sh[1] === 999 ? ' (A circle has infinitely many - type 999.)' : ''), ans: sh[1], unit: 'lines',
             know: ['A line of symmetry folds the shape exactly in half', 'The shape is a ' + sh[0]],
             hints: ['Fold it in your head. How many different folds land exactly on themselves?', 'Try vertical, horizontal and diagonal folds.'],
-            sol: 'A ' + sh[0] + ' has ' + (sh[1] === 999 ? 'infinitely many' : sh[1]) + ' lines of symmetry.' }; },
+            sol: 'A ' + sh[0] + ' has ' + (sh[1] === 999 ? 'infinitely many lines of symmetry \u2014 which is why we write 999 for it' : sh[1] + ' lines of symmetry') + '.' }; },
         medium: function () { var sh = pick([['regular pentagon', 5], ['regular hexagon', 6], ['regular octagon', 8]]);
           return { q: 'How many lines of symmetry does a ' + sh[0] + ' have?', ans: sh[1], unit: 'lines',
             know: ['A REGULAR shape has all sides and angles equal', 'The shape is a ' + sh[0]],

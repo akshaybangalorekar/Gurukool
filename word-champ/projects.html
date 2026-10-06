@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="Pragma" content="no-cache">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Word-Champ — Build something real</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=50">
+<style>
+  .l-wrap { max-width: 840px; margin: 0 auto; padding: 26px 22px 70px; }
+  .l-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .l-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 20px; }
+  .l-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 700px) { .l-grid { grid-template-columns: repeat(2, 1fr); } }
+  .l-card { display: block; text-decoration: none; background: #fff; border: 1px solid #e6ebf1; border-radius: 18px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,.04); }
+  .l-card b { display: block; font: 800 20px/1.2 Nunito, system-ui, sans-serif; color: #0f172a; margin-top: 6px; }
+  .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
+  .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
+  .l-card .ico { font-size: 24px; }
+  .r-ask { font: 800 19.5px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 16px 0 10px; }
+  .r-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 220px; }
+  .r-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .r-btn.p { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .r-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .r-fb.ok { color: #047857; } .r-fb.no { color: #b45309; }
+  .r-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .r-know li { font-size: 17px; line-height: 1.6; }
+  .r-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .r-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+  .r-dot { width: 30px; height: 6px; border-radius: 999px; background: #e2e8f0; }
+  .r-dot.on { background: #1d4ed8; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="l-wrap"><div id="w-view"></div></main>
+  <script src="../version.js?v=50"></script>
+  <script src="../gk-fresh.js?v=50"></script>
+  <script src="../rhythm.js?v=50"></script>
+  <script src="assets/gen.js?v=50"></script>
+  <script src="assets/answers.js?v=50"></script>
+  <script src="assets/practice.js?v=50"></script>
+  <script src="../champ-rail.js?v=50"></script>
+  <script src="assets/nav.js?v=50"></script>
+  <script>
+
+  (function () {
+    function el(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    var KEY = 'wc_projects';
+    function load(){ try { return JSON.parse(localStorage.getItem(KEY)||'{}')||{}; } catch(e){ return {}; } }
+    function save(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
+    var LIST = [
+      { key:'letter', icon:'\u2709\ufe0f', title:'Write a letter to your future self',
+        need:'Open with "Dear Atharv of 2035," then three paragraphs: what you are good at now, what you are working on, and one question for him.',
+        check:['A greeting and a sign-off','Three clear paragraphs','At least one full stop per sentence','Read it aloud once'] },
+      { key:'story', icon:'\ud83d\udcd6', title:'Open a story in six sentences',
+        need:'Six sentences only. The first must set the place, the second must introduce a problem, and the last must make the reader want sentence seven.',
+        check:['Exactly six sentences','A place in sentence 1','A problem by sentence 2','No sentence over 20 words'] },
+      { key:'review', icon:'\ud83c\udfac', title:'Review something you finished',
+        need:'A book, a film or a game. Say what it is, what happens, and then \u2014 the important part \u2014 whether it is worth someone else\u2019s time, and why.',
+        check:['Names the thing and its maker','Says what it is about','Gives a clear opinion','Gives one reason for that opinion'] },
+      { key:'poster', icon:'\ud83d\udcf0', title:'Design a poster about saving water',
+        need:'A headline of six words or fewer, three facts, and one line telling people what to do. Punctuation matters on a poster \u2014 every fact needs a full stop.',
+        check:['Headline under seven words','Three separate facts','Each fact ends with a full stop','One clear instruction'] }
+    ];
+    function list() {
+      var done = load();
+      el('w-view').innerHTML = '<h1 class="l-h1">\ud83d\ude80 Build something real</h1>' +
+        '<p class="l-lead">Writing is the one skill you cannot practise by tapping. Each project gives you a clear brief and a checklist \u2014 tick the boxes when it is done, and keep what you wrote.</p>' +
+        '<div class="l-grid">' + LIST.map(function (p) {
+          return '<div class="l-card"><span class="ico">' + p.icon + '</span><b>' + esc(p.title) + '</b>' +
+            '<span class="sub">' + esc(p.need) + '</span>' +
+            (done[p.key] ? '<span class="l-lv" style="background:#dcfce7;color:#166534">\u2713 finished</span>' : '<span class="l-lv">' + p.check.length + ' things to tick</span>') +
+            '<div style="margin-top:10px"><button class="r-btn p" onclick="Proj.open(\'' + p.key + '\')">Open the brief</button></div></div>';
+        }).join('') + '</div>';
+    }
+    function open(key) {
+      var p = null; LIST.forEach(function (x) { if (x.key === key) p = x; });
+      var done = load();
+      el('w-view').innerHTML = '<button class="r-btn" onclick="Proj.back()">\u2039 All projects</button>' +
+        '<h1 class="l-h1" style="margin-top:12px">' + p.icon + ' ' + esc(p.title) + '</h1>' +
+        '<div class="r-sol"><b>The brief</b><p style="margin:8px 0 0">' + esc(p.need) + '</p></div>' +
+        '<div class="r-know"><b>Before you say it is finished:</b><ul>' +
+        p.check.map(function (c, i) {
+          return '<li><label><input type="checkbox" class="pchk" data-k="' + key + '" data-i="' + i + '" ' + ((done[key] && done[key][i]) ? 'checked' : '') + '> ' + esc(c) + '</label></li>';
+        }).join('') + '</ul></div>' +
+        '<button class="r-btn p" style="margin-top:14px" onclick="Proj.finish(\'' + key + '\')">I have finished it</button>' +
+        '<p class="l-lead" style="margin-top:12px">Write it on paper or in Notes. The ticking is for you \u2014 a real writer checks their own work.</p>';
+      Array.prototype.slice.call(document.querySelectorAll('.pchk')).forEach(function (cb) {
+        cb.addEventListener('change', function () { tick(); });
+      });
+    }
+    function tick() {
+      var d = load();
+      Array.prototype.slice.call(document.querySelectorAll('.pchk')).forEach(function (cb) {
+        var k = cb.getAttribute('data-k'), i = +cb.getAttribute('data-i');
+        d[k] = d[k] || {}; d[k][i] = cb.checked;
+      });
+      save(d);
+    }
+    window.Proj = {
+      open: open,
+      back: function () { list(); },
+      finish: function (key) {
+        tick();
+        var d = load(); d[key] = d[key] || {}; d[key].done = true; save(d);
+        WordSession.award(25);
+        el('w-view').innerHTML = '<h1 class="l-h1">\ud83c\udfc6 Project finished</h1>' +
+          '<div class="r-sol"><b>You wrote something real</b><p style="margin:8px 0 0">That is worth more than a hundred tapping questions. Keep it \u2014 read it again in a year and you will see how far you have come.</p></div>' +
+          '<div style="margin-top:16px"><button class="r-btn p" onclick="Proj.back()">Back to the projects</button></div>';
+        if (window.WordNav && WordNav.top) WordNav.top();
+      }
+    };
+    list();
+  })();
+
+  </script>
+</body>
+</html>
