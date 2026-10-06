@@ -151,6 +151,92 @@
         { say: 'Multiplying by 10 moves the point one place to the right; dividing by 10 moves it left. That is all the rule is.',
           ask: '0.25 \u00d7 8 = ?', ans: 2, hint: '25 \u00d7 8 = 200, then divide by 100.' }
       ] },
+    { key: 'volume', name: 'Volume', icon: '\ud83d\udce6', what: 'Volume is the space inside a solid, measured in CUBIC units. For a box it is length \u00d7 width \u00d7 height.',
+      steps: [
+        { say: 'Volume asks how much would fit inside. A box is length times width times height \u2014 three numbers, not two.',
+          ask: 'A box is 4 cm by 3 cm by 2 cm. What is its volume in cubic centimetres?', ans: 24, hint: '4 \u00d7 3 = 12, then \u00d7 2.' },
+        { say: 'A cube has all three sides equal, so its volume is side cubed.',
+          ask: 'A cube has sides of 5 cm. What is its volume?', ans: 125, hint: '5 \u00d7 5 = 25, then \u00d7 5.' },
+        { say: 'Volume is always in CUBIC units \u2014 cm\u00b3, m\u00b3. Writing cm instead of cm\u00b3 is the commonest slip.',
+          ask: 'A box is 6 cm by 2 cm by 1 cm. What is its volume in cubic centimetres?', ans: 12, hint: '6 \u00d7 2 \u00d7 1.' },
+        { say: 'One cubic metre holds 1000 litres, which is how tanks and pools are measured.',
+          ask: 'A tank is 2 m by 1 m by 1 m. How many litres does it hold?', ans: 2000, hint: '2 cubic metres, and each is 1000 litres.' }
+      ] },
+    { key: 'symmetry', name: 'Symmetry', icon: '\ud83e\udd8b', what: 'A line of symmetry folds a shape exactly onto itself. For a regular shape, the number of lines equals the number of sides.',
+      steps: [
+        { say: 'Fold the shape. If both halves land exactly on each other, that fold was a line of symmetry.',
+          ask: 'How many lines of symmetry does a square have?', ans: 4, hint: 'Two through the middles of opposite sides, two through the corners.' },
+        { say: 'A rectangle is not the same: the diagonal folds do not match.',
+          ask: 'How many lines of symmetry does a rectangle have?', ans: 2, hint: 'Only the two through the middles of the sides.' },
+        { say: 'For REGULAR shapes there is a lovely shortcut: the lines of symmetry equal the number of sides.',
+          ask: 'How many lines of symmetry does a regular hexagon have?', ans: 6, hint: 'How many sides does a hexagon have?' },
+        { say: 'Shapes also have turning symmetry: how many times they fit themselves in one full turn. For a regular shape that is the same number again.',
+          ask: 'A square is spun about its centre. How many times does it look the same in one full turn?', ans: 4, hint: 'A quarter turn each time.' }
+      ] },
+    { key: 'coordinates', name: 'Coordinates', icon: '\ud83d\uddfa\ufe0f', what: 'A coordinate is written (x, y): across first, then up. The x value is always the first number.',
+      steps: [
+        { say: 'Coordinates are a pair: across, then up. The first number is x and the second is y.',
+          ask: 'A point is at (3, 5). What is its x-coordinate?', ans: 3, hint: 'x is the first number.' },
+        { say: 'The midpoint of two points is the average of their coordinates \u2014 the number exactly halfway in each direction.',
+          ask: 'What is the x-coordinate of the midpoint of (2, 4) and (8, 4)?', ans: 5, hint: '2 + 8 = 10, then halve it.' },
+        { say: 'If two points share a coordinate, they line up straight across or straight up, so the distance is a simple subtraction.',
+          ask: 'How far apart are (2, 3) and (2, 9)?', ans: 6, hint: 'Same x, so subtract the y values.' },
+        { say: 'The trap: mixing up the order and reading (x, y) as (y, x). Across the corridor first, then up the stairs.',
+          ask: 'A point is at (7, 2). What is its y-coordinate?', ans: 2, hint: 'y is the second number.' }
+      ] },
+    { key: 'mean', name: 'Mean and median', icon: '\ud83d\udcca', what: 'The mean shares the total out equally (total \u00f7 how many). The median is the middle value once they are in order.',
+      steps: [
+        { say: 'The mean is what each one would get if the total were shared out equally: add them, then divide by how many there are.',
+          ask: 'What is the mean of 4, 6, 8 and 10?', ans: 7, hint: 'They add to 28, and there are four numbers.' },
+        { say: 'The median is different: put the numbers in order and take the middle one.',
+          ask: 'What is the median of 3, 9, 7, 12, 5? (Put them in order first.)', ans: 7, hint: 'In order: 3, 5, 7, 9, 12 \u2014 the middle is the third.' },
+        { say: 'The trap: the median is NOT the mean. For 3, 5, 7, 9, 12 the mean is 7.2 but the median is 7.',
+          ask: 'What is the median of 1, 2, 100?', ans: 2, hint: 'The middle one \u2014 the big number does not pull the median.' },
+        { say: 'You can work backwards from a mean too, because the mean tells you the TOTAL.',
+          ask: 'Five numbers have a mean of 10. What is their total?', ans: 50, hint: '5 \u00d7 10.' }
+      ] },
+    { key: 'graphs', name: 'Reading graphs', icon: '\ud83d\udcc8', what: 'A graph is read in three steps: find the axis labels, read the heights, then answer what is actually asked.',
+      steps: [
+        { say: 'Start by reading what the axes mean \u2014 what is being counted and what the units are. Most graph mistakes come from skipping this.',
+          ask: 'A chart shows books read: Mon 8, Tue 15, Wed 16, Thu 19. On which day were the most read? Type the day.', ans: 'Thu', hint: 'The tallest bar is the biggest number.' },
+        { say: '"Altogether" means add every bar up.',
+          ask: 'Using Mon 8, Tue 15, Wed 16, Thu 19, how many books altogether?', ans: 58, hint: '8 + 15 + 16 + 19.' },
+        { say: 'A graph question can ask for a FRACTION of the total, so be ready to turn one bar into a fraction of the whole.',
+          ask: 'Mon 8 out of 58 altogether. Give that as a simplified fraction, like 4/29.', ans: '4/29', hint: 'Divide both by 2.' }
+      ] },
+    { key: 'probability', name: 'Probability', icon: '\ud83c\udfb2', what: 'Probability = how many outcomes you want \u00f7 how many outcomes there are. It is always a fraction between 0 and 1.',
+      steps: [
+        { say: 'Count the outcomes you want, and count all the possible outcomes. Put the first over the second.',
+          ask: 'What is the probability of getting heads with a fair coin? Give the fraction like 1/2.', ans: '1/2', hint: 'One side out of two.' },
+        { say: 'The total always goes on the bottom. For a die that is 6, for a coin it is 2.',
+          ask: 'A fair die is rolled. What is the probability of getting a 6? Give the fraction like 1/6.', ans: '1/6', hint: 'One number out of six.' },
+        { say: 'Then simplify, exactly as you would any fraction.',
+          ask: 'A fair die is rolled. What is the probability of an EVEN number? Give the fraction like 1/2.', ans: '1/2', hint: '2, 4 and 6 are even: 3 out of 6.' },
+        { say: 'The trap: forgetting to count everything. With 3 red and 5 blue counters, the bottom is 8, not 5.',
+          ask: 'A bag has 3 red and 5 blue counters. What is the probability of a red one? Give the fraction like 3/8.', ans: '3/8', hint: 'There are 8 counters altogether.' }
+      ] },
+    { key: 'substitution', name: 'Substitution', icon: '\ud83d\udd24', what: 'Substitution means putting a number in place of a letter. A number written next to a letter means multiply.',
+      steps: [
+        { say: 'A letter is just a box holding a number. Substitution is dropping the number into the box.',
+          ask: 'If a = 4, what is a + 7?', ans: 11, hint: 'Replace a with 4.' },
+        { say: 'When a number sits next to a letter, they are multiplied \u2014 3x means 3 \u00d7 x.',
+          ask: 'If x = 5, what is 3x?', ans: 15, hint: '3 \u00d7 5.' },
+        { say: 'Do the multiplying parts first, then the adding or subtracting.',
+          ask: 'If x = 5, what is 3x \u2212 2?', ans: 13, hint: '3x is 15, then take away 2.' },
+        { say: 'With two letters, each one gets its own number. Keep them separate.',
+          ask: 'If x = 3 and y = 4, what is 2x + 3y?', ans: 18, hint: '2x is 6 and 3y is 12.' }
+      ] },
+    { key: 'formulas', name: 'Using a formula', icon: '\ud83d\udcd0', what: 'A formula is a rule with letters in it. Substitute the numbers, do the bracket first, and follow the order of operations.',
+      steps: [
+        { say: 'A formula is a recipe: the letters are the slots, and the rule tells you what to do with them.',
+          ask: 'Using P = 2(l + w), what is P when l = 5 and w = 3?', ans: 16, hint: 'Bracket first: 5 + 3 = 8, then double.' },
+        { say: 'Whatever is inside a bracket is done before anything else.',
+          ask: 'Using A = (b \u00d7 h) \u00f7 2, what is A when b = 8 and h = 5?', ans: 20, hint: '8 \u00d7 5 = 40, then halve.' },
+        { say: 'The formula for speed is v = d \u00f7 t: distance divided by time.',
+          ask: 'Using v = d \u00f7 t, what is v when d = 180 and t = 3?', ans: 60, hint: '180 \u00f7 3.' },
+        { say: 'The trap: reading a formula too fast and adding instead of multiplying. Say the rule out loud before you substitute.',
+          ask: 'Using V = l \u00d7 w \u00d7 h, what is V when l = 4, w = 3 and h = 2?', ans: 24, hint: 'Three numbers multiplied.' }
+      ] },
     { key: 'money', name: 'Money', icon: '\ud83d\udcb0', what: 'Money questions are multiplication, subtraction and percentages wearing a price tag. Always ask: what is the whole, and what is being taken away?',
       steps: [
         { say: 'Equal items mean multiplication. Four pens at 15 rupees is four lots of 15.',

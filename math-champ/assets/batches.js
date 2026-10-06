@@ -10,7 +10,7 @@
       topics: ['frac', 'ratio', 'pct', 'prime', 'balance', 'speed', 'time', 'money'] }   /* all eight have a lesson and questions */,
     { n: 2, built: true, note: 'In the app now.',
       topics: ['length', 'weight', 'capacity', 'roots', 'angles', 'area', 'perimeter', 'decimals'] },
-    { n: 3, built: false, note: 'Ask for this batch when batch 2 is mastered.',
+    { n: 3, built: true, note: 'In the app now.',
       topics: ['volume', 'symmetry', 'coordinates', 'mean', 'graphs', 'probability', 'substitution', 'formulas'] }
   ];
   var NAMES = { frac: 'Fractions', ratio: 'Ratio', pct: 'Percentages', prime: 'Primes and factors',

@@ -13,6 +13,31 @@
   function isPrime(n) { if (n < 2) return false; for (var i = 2; i * i <= n; i++) if (n % i === 0) return false; return true; }
   function frac(n, d) { var g = gcd(n, d); return (n / g) + '/' + (d / g); }
 
+  /* four distinct values, so "the most" and "the smallest" are never a tie */
+  function fourDistinct(lo, hi) {
+    var out = [];
+    while (out.length < 4) {
+      var v = ri(lo, hi);
+      if (out.indexOf(v) < 0) out.push(v);
+    }
+    return out;
+  }
+
+  /* a small bar chart, drawn to scale, for the reading-graphs questions */
+  function barArt(names, vals) {
+    var max = Math.max.apply(null, vals), w = 60, gap = 24, x = 30, out = '', i;
+    for (i = 0; i < vals.length; i++) {
+      var h = Math.max(6, Math.round(110 * vals[i] / max));
+      out += '<rect x="' + x + '" y="' + (140 - h) + '" width="' + w + '" height="' + h + '" rx="4" fill="#2a9d8f"/>' +
+        '<text x="' + (x + w / 2) + '" y="' + (134 - h) + '" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a" font-family="Nunito,sans-serif">' + vals[i] + '</text>' +
+        '<text x="' + (x + w / 2) + '" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#475569" font-family="Nunito,sans-serif">' + names[i] + '</text>';
+      x += w + gap;
+    }
+    return '<svg viewBox="0 0 400 175" style="width:100%;max-width:400px;display:block;margin:8px auto">' +
+      '<rect width="400" height="175" fill="#f8fafc" rx="12"/>' +
+      '<line x1="20" y1="140" x2="390" y2="140" stroke="#94a3b8" stroke-width="2"/>' + out + '</svg>';
+  }
+
   var TOPICS = [
     { key: 'frac', name: 'Fractions', icon: '🍕', blurb: 'Find a fraction of an amount.',
       gen: {
@@ -291,6 +316,158 @@
             know: ['A decimal times a whole number', 'The answer may come out as a whole number'],
             hints: ['Multiply without the point, then count the decimal places.', a + ' \u00d7 ' + n + '.'],
             sol: a + ' \u00d7 ' + n + ' = ' + (Math.round(a * n * 1000) / 1000) + '. Multiplying by 4 or 8 can clear a quarter or an eighth into a whole number.' }; }
+      } },
+    { key: 'volume', name: 'Volume', icon: '\ud83d\udce6', blurb: 'The space inside a box, in cubic units.',
+      gen: {
+        easy: function () { var a = ri(2, 6), b = ri(2, 6), c = ri(2, 6);
+          return { q: 'A box is ' + a + ' cm by ' + b + ' cm by ' + c + ' cm. What is its volume, in cubic centimetres?', ans: a * b * c, unit: 'cm\u00b3',
+            know: ['Length ' + a + ', width ' + b + ', height ' + c, 'Volume of a box = length \u00d7 width \u00d7 height'],
+            hints: ['Multiply the three numbers together.', a + ' \u00d7 ' + b + ' = ' + (a * b) + ', then multiply by ' + c + '.'],
+            sol: a + ' \u00d7 ' + b + ' \u00d7 ' + c + ' = ' + (a * b * c) + ' cm\u00b3. Volume is always in CUBIC units.' }; },
+        medium: function () { var n = ri(2, 9);
+          return { q: 'A cube has sides of ' + n + ' cm. What is its volume, in cubic centimetres?', ans: n * n * n, unit: 'cm\u00b3',
+            know: ['A cube has all sides equal: ' + n + ' cm', 'Volume = side \u00d7 side \u00d7 side'],
+            hints: ['Cube the side length.', n + ' \u00d7 ' + n + ' = ' + (n * n) + ', then \u00d7 ' + n + '.'],
+            sol: n + '\u00b3 = ' + (n * n * n) + ' cm\u00b3.' }; },
+        hard: function () { var a = ri(1, 3), b = ri(1, 2), c = pick([0.5, 1, 2]);
+          return { q: 'A water tank is ' + a + ' m by ' + b + ' m by ' + c + ' m. How many litres does it hold? (1 cubic metre = 1000 litres.)', ans: a * b * c * 1000, unit: 'litres',
+            know: ['Tank: ' + a + ' m \u00d7 ' + b + ' m \u00d7 ' + c + ' m', '1 cubic metre = 1000 litres', 'Volume first, then convert'],
+            hints: ['Find the volume in cubic metres first.', 'Then multiply by 1000 for litres.'],
+            sol: a + ' \u00d7 ' + b + ' \u00d7 ' + c + ' = ' + (a * b * c) + ' cubic metres, which is ' + (a * b * c * 1000) + ' litres.' }; }
+      } },
+    { key: 'symmetry', name: 'Symmetry', icon: '\ud83e\udd8b', blurb: 'Lines of symmetry and turning symmetry.',
+      gen: {
+        easy: function () { var sh = pick([['square', 4], ['rectangle', 2], ['equilateral triangle', 3], ['circle', 999]]);
+          return { q: 'How many lines of symmetry does a ' + sh[0] + ' have?' + (sh[1] === 999 ? ' (A circle has infinitely many - type 999.)' : ''), ans: sh[1], unit: 'lines',
+            know: ['A line of symmetry folds the shape exactly in half', 'The shape is a ' + sh[0]],
+            hints: ['Fold it in your head. How many different folds land exactly on themselves?', 'Try vertical, horizontal and diagonal folds.'],
+            sol: 'A ' + sh[0] + ' has ' + (sh[1] === 999 ? 'infinitely many' : sh[1]) + ' lines of symmetry.' }; },
+        medium: function () { var sh = pick([['regular pentagon', 5], ['regular hexagon', 6], ['regular octagon', 8]]);
+          return { q: 'How many lines of symmetry does a ' + sh[0] + ' have?', ans: sh[1], unit: 'lines',
+            know: ['A REGULAR shape has all sides and angles equal', 'The shape is a ' + sh[0]],
+            hints: ['For a regular shape, the number of lines of symmetry equals the number of sides.', 'Count the sides.'],
+            sol: 'A ' + sh[0] + ' has ' + sh[1] + ' sides, so it has ' + sh[1] + ' lines of symmetry. That rule works for every regular shape.' }; },
+        hard: function () { var sh = pick([['square', 4], ['equilateral triangle', 3], ['regular hexagon', 6]]);
+          return { q: 'A ' + sh[0] + ' is turned about its centre. After how many equal turns does it look exactly the same as it started? (That is its order of rotational symmetry.)', ans: sh[1], unit: 'turns',
+            know: ['Rotational symmetry: how many times it fits itself in one full turn', 'The shape is a ' + sh[0]],
+            hints: ['For a regular shape this number is the same as its number of sides.', 'A full turn is 360 degrees.'],
+            sol: 'A ' + sh[0] + ' fits itself ' + sh[1] + ' times in a full turn, so its rotational order is ' + sh[1] + '.' }; }
+      } },
+    { key: 'coordinates', name: 'Coordinates', icon: '\ud83d\uddfa\ufe0f', blurb: 'Reading and working with (x, y) positions.',
+      gen: {
+        easy: function () { var x = ri(1, 9), y = ri(1, 9);
+          return { q: 'A point is at (' + x + ', ' + y + '). What is its x-coordinate?', ans: x, unit: '',
+            know: ['A coordinate is written (x, y)', 'The point is (' + x + ', ' + y + ')'],
+            hints: ['The x-coordinate is the FIRST number.', 'Across first, then up.'],
+            sol: 'The x-coordinate is ' + x + '. The x value is always the first number in the pair.' }; },
+        medium: function () { var x1 = ri(1, 6) * 2, y1 = ri(1, 6) * 2, x2 = x1 + ri(1, 4) * 2, y2 = y1 + ri(1, 4) * 2;
+          return { q: 'What is the x-coordinate of the midpoint of (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + ')?', ans: (x1 + x2) / 2, unit: '',
+            know: ['The two points: (' + x1 + ', ' + y1 + ') and (' + x2 + ', ' + y2 + ')', 'A midpoint is exactly halfway in BOTH directions', 'The x-coordinate of the midpoint is the average of the two x values'],
+            hints: ['Add the two x values: ' + (x1 + x2) + '.', 'Then halve it.'],
+            sol: '(' + x1 + ' + ' + x2 + ') \u00f7 2 = ' + ((x1 + x2) / 2) + '. A midpoint is the average of the coordinates.' }; },
+        hard: function () { var x = ri(1, 8), y1 = ri(1, 5), y2 = y1 + ri(3, 9);
+          return { q: 'How far apart are the points (' + x + ', ' + y1 + ') and (' + x + ', ' + y2 + '), in units?', ans: y2 - y1, unit: 'units',
+            know: ['Both points have the same x-coordinate: ' + x, 'So the distance is straight up the page', 'Subtract the smaller y from the larger'],
+            hints: ['Same x means the line is vertical.', 'Just subtract: ' + y2 + ' \u2212 ' + y1 + '.'],
+            sol: y2 + ' \u2212 ' + y1 + ' = ' + (y2 - y1) + ' units. When one coordinate matches, the distance is a simple subtraction.' }; }
+      } },
+    { key: 'mean', name: 'Mean and median', icon: '\ud83d\udcca', blurb: 'Averages: the mean and the middle value.',
+      gen: {
+        easy: function () {
+          var m = ri(6, 20), a = m - 3, b = m - 1, c = m + 1, d = m + 3;
+          return { q: 'What is the mean of ' + a + ', ' + b + ', ' + c + ' and ' + d + '?', ans: m, unit: '',
+            know: ['The four numbers: ' + a + ', ' + b + ', ' + c + ', ' + d, 'Mean = total \u00f7 how many numbers'],
+            hints: ['Add them all: ' + (a + b + c + d) + '.', 'Then divide by 4, because there are four numbers.'],
+            sol: '(' + a + ' + ' + b + ' + ' + c + ' + ' + d + ') \u00f7 4 = ' + ((a + b + c + d) / 4) + '. The mean shares the total out equally.' }; },
+        medium: function () { var arr = [ri(1, 20), ri(21, 40), ri(41, 60), ri(61, 80), ri(81, 100)];
+          arr.sort(function (x, y) { return x - y; });
+          return { q: 'What is the MEDIAN of ' + arr.join(', ') + '?', ans: arr[2], unit: '',
+            know: ['The numbers in order: ' + arr.join(', '), 'The median is the MIDDLE one when they are in order', 'There are 5 numbers, so the middle is the 3rd'],
+            hints: ['Put them in order first (they already are).', 'Count in from both ends at once.'],
+            sol: 'With five numbers in order, the median is the third: ' + arr[2] + '. The median is the middle, not the average.' }; },
+        hard: function () { var mean = ri(8, 20), four = [mean - 2, mean - 1, mean + 1, mean + 2];
+          var fifth = 5 * mean - four.reduce(function (a, b) { return a + b; }, 0);
+          return { q: 'Five numbers have a mean of ' + mean + '. Four of them are ' + four.join(', ') + '. What is the fifth number?', ans: fifth, unit: '',
+            know: ['Mean of 5 numbers: ' + mean, 'So the total of all five is 5 \u00d7 ' + mean + ' = ' + (5 * mean), 'Four of them add to ' + four.reduce(function (a, b) { return a + b; }, 0)],
+            hints: ['Find the total first: 5 \u00d7 ' + mean + '.', 'Then take away the four you know.'],
+            sol: 'The five numbers add to ' + (5 * mean) + ', and the four known ones add to ' + four.reduce(function (a, b) { return a + b; }, 0) + ', so the fifth is ' + fifth + '. Working backwards from a mean is a total question.' }; }
+      } },
+    { key: 'graphs', name: 'Reading graphs', icon: '\ud83d\udcc8', blurb: 'Reading values off a chart, with the chart drawn.',
+      gen: {
+        easy: function () { var v = fourDistinct(6, 20), names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+          var mx = v.indexOf(Math.max.apply(null, v));
+          return { q: 'The chart shows books read: ' + names.map(function (n, i) { return n + ' ' + v[i]; }).join(', ') + '. On which day were the MOST read? Type the day.', ans: names[mx], unit: '',
+            art: barArt(names, v),
+            know: ['The four values: ' + v.join(', '), 'The tallest bar is the largest value'],
+            hints: ['Find the biggest number.', 'It is ' + v[mx] + '.'],
+            sol: 'The tallest bar is ' + names[mx] + ' with ' + v[mx] + '. Always read the axis labels, not just the bar heights.' }; },
+        medium: function () { var v = fourDistinct(4, 15), names = ['Mon', 'Tue', 'Wed', 'Thu'];
+          return { q: 'The chart shows ' + names.map(function (n, i) { return n + ' ' + v[i]; }).join(', ') + '. How many altogether?', ans: v.reduce(function (a, b) { return a + b; }, 0), unit: '',
+            art: barArt(names, v),
+            know: ['The four values: ' + v.join(', '), 'Altogether means add them'],
+            hints: ['Add all four bars.', v.join(' + ') + '.'],
+            sol: v.join(' + ') + ' = ' + v.reduce(function (a, b) { return a + b; }, 0) + '. A total is a sum of the bars.' }; },
+        hard: function () { var v = fourDistinct(4, 12), names = ['Mon', 'Tue', 'Wed', 'Thu'];
+          var tot = v.reduce(function (a, b) { return a + b; }, 0), mn = v.indexOf(Math.min.apply(null, v));
+          return { q: 'The chart shows ' + names.map(function (n, i) { return n + ' ' + v[i]; }).join(', ') + '. The smallest bar is ' + v[mn] + ' out of ' + tot + ' altogether. What fraction is that? Give it like 3/20.', ans: frac(v[mn], tot), unit: '',
+            art: barArt(names, v),
+            know: ['The smallest value: ' + v[mn], 'The total: ' + tot, 'A fraction of the total is part \u00f7 total'],
+            hints: ['Write it as ' + v[mn] + '/' + tot + '.', 'Then simplify by dividing both by their highest common factor.'],
+            sol: v[mn] + '/' + tot + ' simplifies to ' + frac(v[mn], tot) + '. Reading a graph and then doing a fraction with it is exactly what exam questions do.' }; }
+      } },
+    { key: 'probability', name: 'Probability', icon: '\ud83c\udfb2', blurb: 'How likely something is, as a fraction.',
+      gen: {
+        easy: function () { var c = pick([['a fair coin', 'heads', 1, 2], ['a fair die', 'an even number', 3, 6], ['a fair die', 'a 6', 1, 6]]);
+          return { q: 'What is the probability of getting ' + c[1] + ' with ' + c[0] + '? Give the fraction like 1/2.', ans: frac(c[2], c[3]), unit: '',
+            know: ['Probability = favourable outcomes \u00f7 total outcomes', 'Favourable: ' + c[2], 'Total: ' + c[3]],
+            hints: ['Write it as ' + c[2] + '/' + c[3] + '.', 'Then simplify.'],
+            sol: c[2] + '/' + c[3] + ' = ' + frac(c[2], c[3]) + '. Probability is always a fraction between 0 and 1.' }; },
+        medium: function () { var r = ri(2, 6), b = ri(2, 8);
+          return { q: 'A bag has ' + r + ' red and ' + b + ' blue counters. What is the probability of pulling out a red one? Give the fraction like 3/8.', ans: frac(r, r + b), unit: '',
+            know: ['Red: ' + r, 'Blue: ' + b, 'Total counters: ' + (r + b)],
+            hints: ['Add the counters first: ' + r + ' + ' + b + ' = ' + (r + b) + '.', 'Then red over total.'],
+            sol: r + '/' + (r + b) + ' = ' + frac(r, r + b) + '. Always count the TOTAL for the bottom of the fraction.' }; },
+        hard: function () { var n = pick([6, 8, 10, 12]), evens = Math.floor(n / 2);
+          return { q: 'A fair spinner has ' + n + ' equal sections numbered 1 to ' + n + '. What is the probability of landing on a MULTIPLE of 3? Give the fraction like 1/3.', ans: frac(Math.floor(n / 3), n), unit: '',
+            know: ['Sections: 1 to ' + n, 'Multiples of 3 up to ' + n + ': ' + Math.floor(n / 3), 'Probability = how many you want \u00f7 how many there are'],
+            hints: ['Count the multiples of 3 from 1 to ' + n + '.', 'That is ' + Math.floor(n / 3) + ' of the ' + n + ' sections.'],
+            sol: Math.floor(n / 3) + '/' + n + ' = ' + frac(Math.floor(n / 3), n) + '. Listing the outcomes that count is the whole method.' }; }
+      } },
+    { key: 'substitution', name: 'Substitution', icon: '\ud83d\udd24', blurb: 'Putting numbers into letters.',
+      gen: {
+        easy: function () { var a = ri(2, 9), b = ri(2, 15);
+          return { q: 'If a = ' + a + ', what is a + ' + b + '?', ans: a + b, unit: '',
+            know: ['a stands for ' + a, 'The expression is a + ' + b],
+            hints: ['Replace the letter a with ' + a + '.', a + ' + ' + b + '.'],
+            sol: 'a + ' + b + ' becomes ' + a + ' + ' + b + ' = ' + (a + b) + '. A letter is just a box holding a number.' }; },
+        medium: function () { var x = ri(2, 9), m = ri(2, 6), c = ri(1, 12);
+          return { q: 'If x = ' + x + ', what is ' + m + 'x \u2212 ' + c + '?', ans: m * x - c, unit: '',
+            know: ['x stands for ' + x, 'The expression is ' + m + 'x \u2212 ' + c, m + 'x means ' + m + ' \u00d7 x'],
+            hints: ['Work out ' + m + 'x first: ' + m + ' \u00d7 ' + x + '.', 'Then take away ' + c + '.'],
+            sol: m + 'x = ' + (m * x) + ', and ' + (m * x) + ' \u2212 ' + c + ' = ' + (m * x - c) + '. A number next to a letter means multiply.' }; },
+        hard: function () { var x = ri(2, 6), y = ri(2, 6), a = ri(2, 4), b = ri(2, 4);
+          return { q: 'If x = ' + x + ' and y = ' + y + ', what is ' + a + 'x + ' + b + 'y?', ans: a * x + b * y, unit: '',
+            know: ['x = ' + x + ', y = ' + y, 'The expression is ' + a + 'x + ' + b + 'y', 'Each letter is replaced by its own number'],
+            hints: ['Work out ' + a + 'x: ' + a + ' \u00d7 ' + x + '.', 'Work out ' + b + 'y: ' + b + ' \u00d7 ' + y + ', then add.'],
+            sol: a + 'x = ' + (a * x) + ' and ' + b + 'y = ' + (b * y) + ', so the total is ' + (a * x + b * y) + '.' }; }
+      } },
+    { key: 'formulas', name: 'Using a formula', icon: '\ud83d\udcd0', blurb: 'Using a rule with letters in it.',
+      gen: {
+        easy: function () { var l = ri(3, 12), w = ri(2, 10);
+          return { q: 'Using P = 2(l + w), what is P when l = ' + l + ' and w = ' + w + '?', ans: 2 * (l + w), unit: '',
+            know: ['The formula: P = 2(l + w)', 'l = ' + l + ', w = ' + w],
+            hints: ['Add l and w first: ' + l + ' + ' + w + '.', 'Then double it.'],
+            sol: 'P = 2(' + l + ' + ' + w + ') = 2 \u00d7 ' + (l + w) + ' = ' + (2 * (l + w)) + '. The bracket is done first.' }; },
+        medium: function () { var b = ri(4, 16), h = ri(3, 12);
+          return { q: 'Using A = (b \u00d7 h) \u00f7 2, what is A when b = ' + b + ' and h = ' + h + '?', ans: b * h / 2, unit: '',
+            know: ['The formula: A = (b \u00d7 h) \u00f7 2', 'b = ' + b + ', h = ' + h],
+            hints: ['Multiply first: ' + b + ' \u00d7 ' + h + '.', 'Then halve it.'],
+            sol: 'A = (' + b + ' \u00d7 ' + h + ') \u00f7 2 = ' + (b * h) + ' \u00f7 2 = ' + (b * h / 2) + '.' }; },
+        hard: function () { var d = ri(60, 400), t = pick([2, 3, 4, 5]);
+          return { q: 'Using v = d \u00f7 t, what is v when d = ' + d + ' and t = ' + t + '?', ans: d / t, unit: '',
+            know: ['The formula: v = d \u00f7 t', 'd = ' + d + ', t = ' + t],
+            hints: ['Divide the distance by the time.', d + ' \u00f7 ' + t + '.'],
+            sol: 'v = ' + d + ' \u00f7 ' + t + ' = ' + (d / t) + '. A formula is just a recipe - put the numbers in the right slots.' }; }
       } },
     { key: 'money', name: 'Money', icon: '\ud83d\udcb0', blurb: 'Prices, change and discounts.',
       gen: {

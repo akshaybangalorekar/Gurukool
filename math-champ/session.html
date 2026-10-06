@@ -13,7 +13,7 @@
   <title>Math-Champ — Today's session</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=33">
+  <link rel="stylesheet" href="assets/style.css?v=34">
 <style>
   body { padding-bottom: env(safe-area-inset-bottom); }
   .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; }
@@ -46,13 +46,13 @@
 <body>
   <header class="topnav" id="topnav"></header>
   <main class="s-wrap"><div id="s-view"></div></main>
-  <script src="../version.js?v=33"></script>
-  <script src="../rhythm.js?v=33"></script>
-  <script src="assets/app.js?v=33"></script>
-  <script src="assets/gen.js?v=33"></script>
-  <script src="assets/session.js?v=33"></script>
-  <script src="../champ-rail.js?v=33"></script>
-  <script src="assets/nav.js?v=33"></script>
+  <script src="../version.js?v=34"></script>
+  <script src="../rhythm.js?v=34"></script>
+  <script src="assets/app.js?v=34"></script>
+  <script src="assets/gen.js?v=34"></script>
+  <script src="assets/session.js?v=34"></script>
+  <script src="../champ-rail.js?v=34"></script>
+  <script src="assets/nav.js?v=34"></script>
   <script>
   (function () {
     var S = OC.STATE;
@@ -117,7 +117,7 @@
       var q = st.qs[qi];
       el('s-view').innerHTML = head + '<div class="s-panel" style="margin-top:14px">' +
         '<div class="s-clock">Question ' + (qi + 1) + ' of ' + st.qs.length + '</div>' +
-        '<p class="s-q">' + esc(q.q) + '</p>' +
+        '<p class="s-q">' + esc(q.q) + '</p>' + (q.art ? q.art : '') +
         '<input class="s-in" id="s-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
         '<button class="s-btn p" onclick="Sess.check()">Check</button>' +
         '<button class="s-btn" id="s-know-btn" onclick="Sess.know()">What do we know?</button>' +

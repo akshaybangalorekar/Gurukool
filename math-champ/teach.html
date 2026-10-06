@@ -13,7 +13,7 @@
   <title>Math-Champ — Teach me a topic</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=33">
+  <link rel="stylesheet" href="assets/style.css?v=34">
 <style>
   body { padding-bottom: env(safe-area-inset-bottom); }
   .t-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 70px; }
@@ -48,14 +48,14 @@
   <main class="t-wrap">
     <div id="t-view"></div>
   </main>
-  <script src="../version.js?v=33"></script>
-  <script src="../rhythm.js?v=33"></script>
-  <script src="assets/app.js?v=33"></script>
-  <script src="assets/gen.js?v=33"></script>
-  <script src="assets/teach.js?v=33"></script>
-  <script src="assets/levels.js?v=33"></script>
-  <script src="../champ-rail.js?v=33"></script>
-  <script src="assets/nav.js?v=33"></script>
+  <script src="../version.js?v=34"></script>
+  <script src="../rhythm.js?v=34"></script>
+  <script src="assets/app.js?v=34"></script>
+  <script src="assets/gen.js?v=34"></script>
+  <script src="assets/teach.js?v=34"></script>
+  <script src="assets/levels.js?v=34"></script>
+  <script src="../champ-rail.js?v=34"></script>
+  <script src="assets/nav.js?v=34"></script>
   <script>
   (function () {
     var S = OC.STATE;
@@ -124,7 +124,7 @@
       var q = pQueue[pIndex];
       el('t-view').innerHTML = '<div class="t-panel">' +
         '<div class="t-meta">Question ' + (pIndex + 1) + ' of ' + pQueue.length + ' · ' + esc(L.name) + '</div>' +
-        '<p class="t-ask">' + esc(q.q) + '</p>' +
+        '<p class="t-ask">' + esc(q.q) + '</p>' + (q.art ? q.art : '') +
         '<input class="t-in" id="t-in" inputmode="text" autocomplete="off" placeholder="answer"> ' +
         '<button class="t-btn p" onclick="T.checkP()">Check</button>' +
         '<button class="t-btn" id="t-know-btn" onclick="T.know()">What do we know?</button>' +

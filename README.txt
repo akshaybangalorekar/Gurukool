@@ -609,6 +609,32 @@ Recent changes (round 33 - v33, the deployment is fixed)
   "Gurukool v33". If it shows an older number, the device is still on a
   cached copy.
 
+Recent changes (round 34 - v34, batch 3: the last eight topics)
+------------------------
+- BATCH 3 IS IN THE APP: eight more topics, each with a lesson AND its
+  own questions, so all three batches are now complete:
+      VOLUME      - length x width x height, cubic units, and cubic metres
+                    into litres
+      SYMMETRY    - lines of symmetry, the regular-shape shortcut, and
+                    turning symmetry
+      COORDINATES - (x, y) order, midpoints as averages, and distance when
+                    one coordinate matches
+      MEAN AND MEDIAN - sharing the total out equally versus the middle
+                    value, and working backwards from a mean
+      READING GRAPHS - with a real bar chart drawn in the question
+      PROBABILITY - favourable over total, simplified
+      SUBSTITUTION - putting numbers into letters, and 3x meaning 3 times x
+      USING A FORMULA - P = 2(l + w), A = (b x h) / 2, v = d / t
+- THE LADDER IS NOW 24 TOPICS WITH LESSONS (25 with questions): batch 1,
+  batch 2 and batch 3, all reachable from Learn a new trick, with practice
+  that rises as his level rises.
+- Graph questions now draw the bar chart in the question itself, on the
+  lesson page, the daily test and inside a session.
+- Bugs caught by sweeping thousands of generated questions this round: the
+  reading-graphs question could have a TIE for the tallest bar (so "the
+  most" had two right answers), and some means and midpoints came out as
+  awkward decimals. All fixed and guarded.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
