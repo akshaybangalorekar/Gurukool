@@ -692,6 +692,24 @@ Recent changes (round 37 - v37, Mind-Champ four boxes + the reasoning ladder)
 - The non-verbal questions carry real diagrams, so the child sees the
   shapes and arrows rather than reading about them.
 
+Recent changes (round 38 - v38, the science projects are built)
+------------------------
+- THREE SCIENCE PROJECTS, one for each way of doing science, each with
+  its own animation or simulation:
+      CODE IT     - Code a bouncing ball. A falling-speed slider (9.8 m/s
+                    every second), bouncing heights that shrink by a
+                    percentage, the program loop itself, and tuning it.
+      WIRE IT     - Build a torch circuit. Press the switch and watch the
+                    bulb light only when the loop is complete; see why one
+                    broken bulb kills a series circuit but not a parallel
+                    one; add up battery voltages.
+      RESEARCH IT - Run a fair test. Change exactly one thing, use a
+                    control group, read a real results table, and write a
+                    conclusion that does not overreach.
+  Each opens when the worlds it needs have earned a star, and the cards
+  show which worlds those are. Three more are listed as being built: the
+  paper rocket, seeds under three conditions, and explaining a machine.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
