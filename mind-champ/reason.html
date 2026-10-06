@@ -50,15 +50,16 @@
 <body>
   <header class="topnav" id="gk-head"></header>
   <main class="l-wrap"><div id="m-view"></div></main>
-  <script src="../version.js?v=49"></script>
-  <script src="../gk-fresh.js?v=49"></script>
-  <script src="assets/content.js?v=49"></script>
-  <script src="assets/app.js?v=49"></script>
-  <script src="assets/reason.js?v=49"></script>
-  <script src="assets/answers.js?v=49"></script>
-  <script src="../champ-rail.js?v=49"></script>
-  <script src="assets/nav.js?v=49"></script>
-      MindNav.auto();
+  <script src="../version.js?v=52"></script>
+  <script src="../gk-fresh.js?v=52"></script>
+  <script src="assets/content.js?v=52"></script>
+  <script src="assets/app.js?v=52"></script>
+  <script src="assets/reason.js?v=52"></script>
+  <script src="assets/answers.js?v=52"></script>
+  <script src="../champ-rail.js?v=52"></script>
+  <script src="assets/nav.js?v=52"></script>
+  <script>
+    MindNav.auto();
     var S = (window.MC && MC.S && MC.S()) || {};
     function el(id){ return document.getElementById(id); }
     function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -90,7 +91,7 @@
     function renderStep() {
       var st = T.lesson[stepI];
       var dots = T.lesson.map(function (s, i) { return '<span class="r-dot' + (i <= stepI ? ' on' : '') + '"></span>'; }).join('');
-      el('m-view').innerHTML = '<button class="r-btn" onclick="location.hash=''">&#8249; All skills</button>' +
+      el('m-view').innerHTML = '<button class="r-btn" onclick="location.hash=\'\'">&#8249; All skills</button>' +
         '<h1 class="l-h1">' + T.icon + ' ' + esc(T.name) + '</h1>' +
         '<div style="background:#fff;border:1px solid #e6ebf1;border-radius:18px;padding:20px">' +
         '<div class="r-dots">' + dots + '</div>' +
@@ -111,7 +112,7 @@
           '<p class="r-say">You have answered ' + p.n + ' questions on this skill, ' + p.right + ' of them right (' + p.acc + ' per cent). ' +
           (lvOf(T.key) >= 3 ? 'That is Level 3 \u2014 mastered.' : 'Level ' + lvOf(T.key) + ' so far. Come back for more whenever you like.') + '</p>' +
           '<button class="r-btn p" onclick="R.again()">Practise more</button>' +
-          '<button class="r-btn" onclick="location.href='learn.html'">Back to Learn</button></div>';
+          '<button class="r-btn" onclick="location.href=\'learn.html\'">Back to Learn</button></div>';
         return;
       }
       var q = queue[qi];

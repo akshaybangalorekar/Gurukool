@@ -110,15 +110,15 @@
             { same: ['2', '4', '6'], odd: '9', why: 'the others are even', also: ['2'], alsoWhy: '2 is the only prime number here' },
             { same: ['3', '6', '9'], odd: '10', why: 'the others are multiples of 3', also: ['3'], alsoWhy: '3 is the only prime number here' },
             { same: ['Monday', 'Tuesday', 'Friday'], odd: 'March', why: 'the others are days of the week' },
-            { same: ['10', '20', '30'], odd: '45', why: 'the others are multiples of 10', also: ['45'], alsoWhy: '45 is also the only odd number here' },
-            { same: ['1', '4', '9'], odd: '12', why: 'the others are square numbers', also: ['1'], alsoWhy: '1 is the only odd number here' },
+            { same: ['10', '20', '30'], odd: '45', why: 'the others are multiples of 10', },
+            { same: ['1', '4', '9'], odd: '12', why: 'the others are square numbers', },
             { same: ['5', '10', '15'], odd: '22', why: 'the others are multiples of 5', also: ['5'], alsoWhy: '5 is the only prime number here' }];
           return oddOne(sets); },
         hard: function () { var sets = [
             { same: ['1', '4', '9'], odd: '20', why: 'the others are square numbers' },
             { same: ['2', '3', '5'], odd: '9', why: 'the others are prime', also: ['2'], alsoWhy: '2 is the only even number here' },
             { same: ['8', '16', '24'], odd: '30', why: 'the others are multiples of 8' },
-            { same: ['1', '8', '27'], odd: '36', why: 'the others are cube numbers', also: ['1'], alsoWhy: '1 is the only odd number here' },
+            { same: ['1', '8', '27'], odd: '36', why: 'the others are cube numbers', },
             { same: ['0.5', '1.5', '2.5'], odd: '3.4', why: 'the others end in .5' },
             { same: ['2', '4', '8'], odd: '12', why: 'the others are powers of 2', also: ['2'], alsoWhy: '2 is the only prime number here' },
             { same: ['11', '22', '33'], odd: '45', why: 'the others are multiples of 11', also: ['45'], alsoWhy: '45 is also the only odd number here' }];

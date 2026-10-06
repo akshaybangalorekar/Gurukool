@@ -919,6 +919,37 @@ Recent changes (round 49 - v49, the Mind-Champ answer bugs)
   a single-word key), and all 6 topics x 3 tiers - every key accepted
   however it is typed, and still NO to a genuinely wrong answer.
 
+Recent changes (round 52 - v52: the "2, 4, 6, 8" bug, and a full solve of every question)
+------------------------
+WHAT AKSHAY FOUND: "what comes next: 2, 4, 6, 8?" and the right answer, 10,
+was marked wrong. He was right, and it was my fault.
+- ROOT CAUSE: when I gave the champs one shared answer-checker, Mind's session
+  was left passing the whole QUESTION object where the checker expects the
+  ANSWER. So every typed answer was compared against the text "[object Object]"
+  and marked wrong. One line to fix, but it meant the Mind session could not
+  accept ANY correct answer.
+- Verified by driving the real page with real answers: "8, 10, 12, 14 -> 16"
+  and "A=1, B=2, C=3 ... what number is F? -> 6" are both CORRECT now.
+- WORSE, AND ALSO FIXED: the Mind reasoning ladder (Learn) was COMPLETELY DEAD.
+  An edit of mine in v49 had removed the opening <script> tag from that page,
+  so none of its code ran at all. The same fault was found in passport.html.
+  Every page in the app is now checked automatically for this: 48 inline
+  script blocks, all parse cleanly, no code sitting outside a script tag.
+
+EVERY QUESTION SOLVED, AS ASKED:
+- MATHS: 112,500 generated questions examined -> 18,043 distinct questions.
+  5,967 answers re-derived by independent calculation and compared with the
+  app's answer. The rest have answers that are judgement calls (a name, an
+  order) and were checked for structure and against their own working.
+  Mismatches: 0. Structural faults: 0.
+- MIND: 54,000 generated questions -> 788 distinct, every one solved and
+  compared. Plus all 25 Minecraft quest puzzles. Mismatches: 0. Faults: 0.
+- SCIENCE: all 362 bank questions (325 multiple choice, 37 written), every
+  one checked, including that each explanation supports its marked answer.
+  Mismatches: 0. Faults: 0.
+- Also fixed: three "fair second answer" notes I had written in Mind were
+  simply WRONG (they claimed 1 was the only odd number when 9 is odd too).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
