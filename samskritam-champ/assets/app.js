@@ -151,6 +151,27 @@
     }
   }
 
+  /* Does this text contain any actual letters (Latin or Devanagari)?
+     If not, the engine would only read the punctuation aloud - which is
+     exactly the "it says exclamation" bug. */
+  function hasLetters(t) { return /[A-Za-z\u0900-\u097F]/.test(String(t || '')); }
+  function devanagariCount(t) { var m = String(t || '').match(/[\u0900-\u097F]/g); return m ? m.length : 0; }
+
+  /* Speak a Latin line with the best voice we have. Used as the safety net
+     when a Devanagari voice is listed but is not really installed. */
+  function speakLatin(latText) {
+    var synth = window.speechSynthesis, U = window.SpeechSynthesisUtterance;
+    if (!synth || !U) { sayNote(latText); return; }
+    var list = refreshVoices();
+    var v = voiceFor(['en-in', 'en-gb', 'en'], list) || (list.length ? list[0] : null);
+    var u = new U();
+    u.text = latText;
+    if (v) { u.voice = v; u.lang = v.lang || 'en-IN'; } else { u.lang = 'en-IN'; }
+    u.rate = 0.82; u.pitch = 1.5; u.volume = 1;
+    u.onerror = function () { sayNote(latText); };
+    try { synth.speak(u); } catch (e) { sayNote(latText); }
+  }
+
   /* speak(devText, latinText) — always tries hard to be heard */
   function speak(devText, latinText) {
     var synth = window.speechSynthesis;
@@ -168,11 +189,23 @@
     else if (en) { text = latSay; u.voice = en; u.lang = en.lang || 'en-IN'; }
     else if (fallback) { text = latSay; u.voice = fallback; u.lang = fallback.lang || 'en-IN'; }
     else { text = latSay; u.lang = 'en-IN'; }
+    /* safety: if what we are about to say has no letters at all, the child
+       would only hear the punctuation. Say the Latin line instead. */
+    if (!hasLetters(text)) { text = latSay; }
+    if (!hasLetters(text)) { sayNote(''); return; }
     /* pitch 1.5 + a gentle pace = the young, friendly voice of a boy like Krishna */
     u.text = text; u.rate = 0.82; u.pitch = 1.5; u.volume = 1;
-    var started = false;
+    var started = false, ended = false, t0 = Date.now();
     u.onstart = function () { started = true; };
     u.onerror = function () { if (!started) sayNote(latinText || devText); };
+    u.onend = function () {
+      if (ended) return; ended = true;
+      var spoke = Date.now() - t0;
+      var need = 90 + 45 * devanagariCount(text);   /* a real reading takes time */
+      /* it finished far too quickly for the text it was given: that voice is
+         not really there, so say the Latin line so the child still hears it */
+      if (devanagariCount(text) >= 2 && spoke < need) { speakLatin(latSay); }
+    };
     try { if (synth.speaking || synth.pending) synth.cancel(); } catch (e) {}
     try { synth.speak(u); } catch (e) { sayNote(latinText || devText); return; }
     setTimeout(function () {

@@ -777,6 +777,25 @@ Recent changes (round 43 - v43, sessions now ASK questions instead of sending hi
   14,000 generated questions swept across 800 sessions for empty text,
   missing answers, wrong option counts and bad answer keys. Zero problems.
 
+Recent changes (round 44 - v44, the Sanskrit speaker fixed)
+------------------------
+- THE SPEAKER BUG: on an iPad whose Hindi voice is LISTED but not really
+  installed, iOS cannot pronounce the Devanagari, so it read out only the
+  punctuation - which is why the speaker said "exclamation" for नमस्ते!
+  and "question mark" on the next page. The words were reaching the
+  speaker correctly; the device voice was silently dropping them.
+- Fixed three ways, so the child always hears the word:
+    1. If what we are about to say has no letters in it at all (only
+       punctuation), we say the Latin line instead. Never read "!" aloud.
+    2. A watchdog: if the Devanagari reading finishes impossibly fast for
+       the text it was given, the voice is not really there - so the app
+       immediately says the Latin line, e.g. "namaste!".
+    3. With no Hindi voice at all, it says the Latin line as before.
+- A working Hindi voice still reads the Devanagari, once, as before.
+- Tested against four device situations: broken Hindi voice (reads
+  नमस्ते! then namaste!), working Hindi voice (reads once), English-only
+  (reads namaste!), and punctuation-only input (never spoken).
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
