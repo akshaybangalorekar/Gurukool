@@ -635,6 +635,22 @@ Recent changes (round 34 - v34, batch 3: the last eight topics)
   most" had two right answers), and some means and midpoints came out as
   awkward decimals. All fixed and guarded.
 
+Recent changes (round 35 - v35, a device can no longer get stuck on an old version)
+------------------------
+- WHY A DEVICE COULD SHOW AN OLD VERSION EVEN AFTER A SUCCESSFUL DEPLOY:
+  the version stamp covered the scripts but not the PAGE itself, and both
+  Safari and an iPad Home Screen app cache pages hard. So a device could
+  keep showing v33 while the server was already serving v34.
+- FIX (gk-fresh.js, on every page): the page now asks the server for the
+  real version, bypassing the cache. If the page it is running is behind,
+  it jumps once to a fresh copy - a different URL, which the browser
+  cannot answer from its cache. So from v35 onwards, any device that is
+  behind catches itself up the next time it opens.
+- Also added no-cache hints to every page.
+- NOTE: the very first time a device that is stuck on v33 or older needs
+  a manual clear (the old page cannot contain the new check). After that
+  it heals itself.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
