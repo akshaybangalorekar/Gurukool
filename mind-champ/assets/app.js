@@ -126,29 +126,39 @@
     return '<div class="tech' + (on ? '' : ' off') + '"><span class="ticon">' + t.icon + '</span><div><b>' + t.name + '</b><span>' + (on ? esc(t.desc) : 'crack the quest to unlock this technique') + '</span></div></div>';
   }
 
-  function homeHTML() {
-    var L = levelOf(S.xp);
-    var cards = MC_LEVELS.map(function (Q, i) {
-      var st = S.cases[Q.id] || { done: false, stars: 0, used: [] };
-      var unlocked = levelUnlocked(i);
-      var stars = st.used.length ? '⭐ ' + st.used.length + '/5 solved' : (st.done ? '✅ case closed' : '');
-      var divider = (i === 5) ? '<div style="flex-basis:100%;margin:26px 0 6px;padding-top:18px;border-top:3px dashed #cbd5e1"><h3 style="margin:0 0 4px">🕵️ The Detective Files</h3><p style="margin:0;color:#64748b;font-weight:600">Read between the lines: five more cases where the clue is in the small words, the times and the silences.</p></div>' : '';
-      return divider + '<div class="qcard' + (unlocked ? '' : ' locked') + (st.done ? ' done' : '') + '" onclick="' + (unlocked ? "openCase('" + Q.id + "')" : 'lockedMsg()') + '">' +
-        '<div class="qicon">' + (unlocked ? Q.icon : '🔒') + '</div>' +
-        '<div class="qbody"><b>Quest ' + (i + 1) + ': ' + Q.name + '</b>' +
-        '<span class="qtech">' + Q.tech.icon + ' technique: ' + Q.tech.name + '</span>' +
-        '<span class="qst">' + (st.done ? '🏆 Case closed!' : stars) + '</span></div>' +
-        '<div class="qgo">' + (st.done ? '🏅' : (unlocked ? '▶' : '')) + '</div></div>';
-    }).join('');
-    var techs = MC_TECHS.map(function (t) { return techChip(t, S.techniques.indexOf(t.id) >= 0); }).join('');
-    return headerHTML() +
-      '<h1>🧠 Mind-Champ</h1>' +
-      '<p class="sub">Real cases. Real thinking. Every quest makes you <b>think, draw, discuss, analyse</b> — and hands you a technique detectives use for life. No lesson, no test — just cases that crack open your brain (in a good way).</p>' +
-      '<div class="questgrid">' + cards + '</div>' +
-      '<p class="section-label">🧰 My technique toolkit</p>' +
-      '<div class="techgrid">' + techs + '</div>' +
-      '<p class="muted" style="text-align:center">Progress saves on this device and syncs to the family cloud locker every 3 minutes. Made with ❤️ for a future detective.</p>';
-  }
+  function homeHTML(){
+  var st = (window.S) || {};
+  var nm = String(st.name || '').trim();
+  var hh = new Date().getHours();
+  var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
+  var gre = nm ? (part + ', ' + nm + '.') : (part + '.');
+  return '<style>.gk-door{max-width:820px;margin:0 auto;padding:26px 20px 70px;font-family:Nunito,system-ui,sans-serif}.gk-hello{color:#64748b;font-weight:700;font-size:17px;margin:0 0 4px}.gk-ask{font-family:Baloo 2,Nunito,sans-serif;font-weight:800;font-size:34px;line-height:1.15;color:#0f172a;margin:0 0 22px}.gk-primary{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:20px;padding:20px 22px;margin-bottom:16px;color:#fff}.gk-primary b{display:block;font:800 23px/1.2 Nunito,system-ui,sans-serif}.gk-primary span span{display:block;font-size:16px;opacity:.94;margin-top:3px}.gk-primary__ico{font-size:22px}.gk-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}@media (min-width:700px){.gk-grid{grid-template-columns:repeat(2,1fr)}}.gk-mode{display:block;text-decoration:none;background:#fff;border:1px solid #e6ebf1;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.04)}.gk-mode__ico{font-size:24px;display:block;margin-bottom:8px}.gk-mode b{display:block;font:800 20px/1.2 Nunito,system-ui,sans-serif;color:#0f172a}.gk-mode span span{display:block;color:#64748b;font-size:15.5px;line-height:1.5;margin-top:4px}.gk-inside{display:block;margin-top:10px;font-size:13.5px;font-weight:800;color:#64748b;background:#f1f5f9;border-radius:999px;padding:4px 11px}.gk-hint{color:#94a3b8;font-size:15.5px;margin-top:22px}</style>' +
+    '<div class="gk-door">' +
+    '<p class="gk-hello">' + gre + '</p>' +
+    '<h1 class="gk-ask">What shall we do today?</h1>' +
+    '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#15803d,#166534);box-shadow:0 14px 34px rgba(21,128,61,.28)">' +
+      '<span class="gk-primary__ico">&#127934;</span>' +
+      '<span><b>Start today\u2019s match</b><span>About an hour on the court, prepared from what you have already done.</span></span></a>' +
+    '<div class="gk-grid">' +
+        '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
+      '<span class="gk-mode__ico">&#128218;</span>' +
+      '<b>Learn a new trick</b><span><span>One thinking technique at a time, taught and then practised.</span></span>' +
+      '<span class="gk-inside">reasoning ladder &middot; the ten cases</span></a>' +
+    '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
+      '<span class="gk-mode__ico">&#127918;</span>' +
+      '<b>Games &amp; puzzles</b><span><span>Detective cases, Minecraft quests, shape patterns and rotations.</span></span>' +
+      '<span class="gk-inside">10 cases &middot; patterns &middot; rotations</span></a>' +
+    '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
+      '<span class="gk-mode__ico">&#127941;</span>' +
+      '<b>Beat the hard ones</b><span><span>Two-rule number series, shifting codes and the boss cases.</span></span>' +
+      '<span class="gk-inside">the traps &middot; boss level</span></a>' +
+    '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
+      '<span class="gk-mode__ico">&#128640;</span>' +
+      '<b>Build something real</b><span><span>Real logic problems: a timetable that works, a seating plan that fits.</span></span>' +
+      '<span class="gk-inside">timetable clash &middot; seating plan</span></a>' +
+'</div>' +
+    '<p class="gk-hint">No idea what to do? Start today\u2019s match — it is already planned for you.</p></div>';
+}
 
   function caseHTML() {
     var Q = levelById(view.lid); if (!Q) return homeHTML();

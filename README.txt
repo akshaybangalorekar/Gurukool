@@ -710,6 +710,26 @@ Recent changes (round 38 - v38, the science projects are built)
   show which worlds those are. Three more are listed as being built: the
   paper rocket, seeds under three conditions, and explaining a machine.
 
+Recent changes (round 39 - v39, Science and Mind get the same door as Maths)
+------------------------
+- The old multi-option home screens in Science and Mind are GONE. Both now
+  open on the same calm door as Maths:
+      a greeting with his name,
+      ONE button at the top, and
+      four plain boxes: Learn a new trick, Games and puzzles, Beat the hard
+      ones, Build something real.
+  Nothing else is on the screen, so there is no "which one do I pick?".
+- The session button is themed, as asked:
+      SCIENCE - "Start today's investigation", with a detective/investigation
+                look, and a five-part session: warm up, learn, investigate,
+                check yourself, one hard one.
+      MIND    - "Start today's match", with a tennis-court look, and a
+                five-part match: warm up, learn, practise, check yourself,
+                match point.
+  Both sessions tick off as he goes and remember where he is.
+- All four champs now share the same shape: one door, four boxes, one
+  prepared session at the top. Sanskrit is the last one to convert.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

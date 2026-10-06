@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Science-Champ - today's investigation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+<style>
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .s-wrap { max-width: 760px; margin: 0 auto; padding: 26px 22px 70px; font-family: Nunito, system-ui, sans-serif; }
+  .s-h1 { font-family: "Baloo 2", Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .s-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .s-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
+  .s-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+  .s-row:last-child { border-bottom: none; }
+  .s-row .dot { width: 28px; height: 28px; border-radius: 50%; background: #f1f5f9; color: #94a3b8; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; flex: 0 0 28px; }
+  .s-row.done .dot { background: #2a9d8f; color: #fff; }
+  .s-row b { display: block; font-weight: 800; font-size: 17px; color: #0f172a; }
+  .s-row span { color: #64748b; font-size: 15px; }
+  .s-row a { margin-left: auto; text-decoration: none; font-weight: 800; font-size: 15px; color: #2a9d8f; white-space: nowrap; }
+  .s-btn { font: 800 17px Nunito, system-ui, sans-serif; padding: 14px 20px; border-radius: 14px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 6px 8px 0 0; }
+  .s-btn.p { background: #2a9d8f; border-color: #2a9d8f; color: #fff; }
+  .s-bar { height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin: 4px 0 16px; }
+  .s-bar div { height: 100%; background: #2a9d8f; width: 0; transition: width .3s; }
+  .s-clock { color: #64748b; font-weight: 800; font-size: 15px; margin-bottom: 6px; }
+  .s-note { background: #f0fdf4; border: 1px solid #86efac; border-radius: 12px; padding: 12px 14px; color: #166534; font-weight: 700; font-size: 15.5px; margin-top: 16px; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="gk-head"></header>
+  <main class="s-wrap"><div id="s-view"></div></main>
+  <script src="../version.js?v=39"></script>
+  <script src="../gk-fresh.js?v=39"></script>
+  <script src="assets/content.js?v=39"></script>
+  <script src="assets/app.js?v=39"></script>
+  <script src="../champ-rail.js?v=39"></script>
+  <script src="assets/nav.js?v=39"></script>
+  <script>
+  (function () {
+    (window.ScienceNav || {auto:function(){}}).auto();
+    var STAGES = [
+      { t: 'Warm up', b: 'Ten quick questions from every world, against the clock.', href: 'challenge.html', mins: 5 },
+      { t: 'Learn', b: 'Read a lesson, then take the quiz and earn your stars.', href: 'learn.html', mins: 15 },
+      { t: 'Investigate', b: 'A real mystery to test with your own hands: predict, experiment, prove.', href: 'investigations.html', mins: 20 },
+      { t: 'Check yourself', b: 'Back to the world you just read, and beat your best score.', href: 'learn.html', mins: 10 },
+      { t: 'One hard one', b: 'The Level 2 Olympiad-style question, if you are feeling brave.', href: 'challenge.html', mins: 10 }
+    ];
+    var KEY = 'gk_session_science';
+    function el(id) { return document.getElementById(id); }
+    function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } }
+    function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+    function today() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    var rec = load();
+    if (rec.date !== today()) { rec = { date: today(), done: {} }; save(rec); }
+    function pct() { var n = 0; STAGES.forEach(function (s, i) { if (rec.done[i]) n++; }); return Math.round(100 * n / STAGES.length); }
+    function rows() {
+      return STAGES.map(function (s, i) {
+        return '<div class="s-row' + (rec.done[i] ? ' done' : '') + '"><span class="dot">' + (rec.done[i] ? '&#10003;' : (i + 1)) + '</span>' +
+          '<span><b>' + s.t + '</b><span>' + s.b + '</span></span>' +
+          '<a href="' + s.href + '" onclick="mark(' + i + ')">open &#8250;</a></div>';
+      }).join('');
+    }
+    function render() {
+      var done = 0; STAGES.forEach(function (s, i) { if (rec.done[i]) done++; });
+      el('s-view').innerHTML = '<h1 class="s-h1">Today&#8217;s investigation</h1>' +
+        '<p class="s-lead">A science session, planned from what you have already done. About an hour, in ' + STAGES.length + ' short parts. You do not have to decide anything.</p>' +
+        '<div class="s-bar"><div style="width:' + pct() + '%"></div></div>' +
+        '<div class="s-panel">' + rows() + '</div>' +
+        '<p class="s-clock" style="margin-top:14px">' + done + ' of ' + STAGES.length + ' parts done</p>' +
+        (done >= STAGES.length
+          ? '<div class="s-note">Session complete. Stopping here is a smart move, and tomorrow is already planned.</div>' +
+            '<button class="s-btn p" onclick="reset()">Start fresh</button>'
+          : '<button class="s-btn p" onclick="next()">Carry on with part ' + (done + 1) + '</button>');
+    }
+    window.mark = function (i) { rec.done[i] = true; save(rec); };
+    window.next = function () {
+      for (var i = 0; i < STAGES.length; i++) { if (!rec.done[i]) { rec.done[i] = true; save(rec); location.href = STAGES[i].href; return; } }
+      render();
+    };
+    window.reset = function () { rec = { date: today(), done: {} }; save(rec); render(); };
+    render();
+  })();
+  </script>
+</body>
+</html>

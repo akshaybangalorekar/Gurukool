@@ -53,8 +53,39 @@ function setTab(t){view.tab=t;view.qz=null;render();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}}
 
-function homeHTML(){const L=levelInfo();const cards=WORLDS.map(w=>{const p=wprog(w);const s=w.id==='trivia'?'':' '+starStr(stars(w.id));return '<div class="wcard" style="--c:'+w.color+'" onclick="openWorld(\''+w.id+'\')"><div class="ic">'+w.icon+(p.pct>=100?' ✅':'')+'</div><div class="nm">'+w.name+'</div><div class="tg">'+w.tag+'</div><div class="bar"><i style="width:'+p.pct+'%"></i></div><div class="pct">'+p.pct+'% · '+p.txt+s+'</div></div>';}).join('');
-return MISSIONBANNER()+'<h1>🔬 Science-Champ</h1><p class="sub">Level up from Rookie to Gurukool Champion — '+WORLDS.length+' worlds of physics, chemistry, biology, earth and space, electricity, light, heat, robotics, drones, coding, quantum computing, genetics, Vedic science, great scientists, kitchen science and rapid-fire trivia!</p><p class="muted" style="margin:0 0 12px">💡 Tip: confused by a word? Press and hold on it (or select it with your mouse), then tap <b>✨ Explain simply</b>. You will also spot Sanskrit twin-words next to English terms — like <i>vega वेग</i> for speed, <i>śakti शक्ति</i> for energy and <i>vidyut विद्युत्</i> for electricity — so the language of ancient Indian science feels natural!</p>' + '<a class="inv-banner" href="investigations.html" style="display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#f1f8e9,#fffdf7 70%);border:2px solid #9ccc65;border-radius:16px;padding:14px;margin:0 0 16px;text-decoration:none;color:inherit"><span style="font-size:2rem">🔍</span><div style="flex:1"><b style="font-size:1.1rem">Investigations — test it yourself</b><br><span style="color:#7a6f60;font-size:15px;line-height:1.4">Real mysteries to solve hands-on: why a charger gets hot, why a ball stops bouncing, how a computer knows what to do. Predict, experiment, draw, prove.</span></div><span style="font-weight:900;color:#2e7d32;font-size:1.4rem">▶</span></a>' + (window.GK_BOOKS ? GK_BOOKS.card() : '') + '<div class="grid">'+cards+'</div><div class=\"note\">📱 <b>Moving between devices?</b> Saving is automatic — progress lives in this browser and syncs to your family cloud locker every 3 minutes (set up once per device in the <b>Admin Console</b>, from the Gurukool home page). You can also move progress with the shared <b>Progress Passport</b> or the Admin Console — both from the Gurukool home page. Progress always merges, nothing is lost.</div><p class="muted" style="text-align:center">Made with ❤️ by Gurukool for a future scientist</p>';}
+function homeHTML(){
+  var st = (window.state) || {};
+  var nm = String(st.name || '').trim();
+  var hh = new Date().getHours();
+  var part = hh < 12 ? 'Good morning' : (hh < 17 ? 'Good afternoon' : 'Good evening');
+  var gre = nm ? (part + ', ' + nm + '.') : (part + '.');
+  return '<style>.gk-door{max-width:820px;margin:0 auto;padding:26px 20px 70px;font-family:Nunito,system-ui,sans-serif}.gk-hello{color:#64748b;font-weight:700;font-size:17px;margin:0 0 4px}.gk-ask{font-family:Baloo 2,Nunito,sans-serif;font-weight:800;font-size:34px;line-height:1.15;color:#0f172a;margin:0 0 22px}.gk-primary{display:flex;align-items:center;gap:16px;text-decoration:none;border-radius:20px;padding:20px 22px;margin-bottom:16px;color:#fff}.gk-primary b{display:block;font:800 23px/1.2 Nunito,system-ui,sans-serif}.gk-primary span span{display:block;font-size:16px;opacity:.94;margin-top:3px}.gk-primary__ico{font-size:22px}.gk-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:6px}@media (min-width:700px){.gk-grid{grid-template-columns:repeat(2,1fr)}}.gk-mode{display:block;text-decoration:none;background:#fff;border:1px solid #e6ebf1;border-radius:18px;padding:18px;box-shadow:0 2px 10px rgba(15,23,42,.04)}.gk-mode__ico{font-size:24px;display:block;margin-bottom:8px}.gk-mode b{display:block;font:800 20px/1.2 Nunito,system-ui,sans-serif;color:#0f172a}.gk-mode span span{display:block;color:#64748b;font-size:15.5px;line-height:1.5;margin-top:4px}.gk-inside{display:block;margin-top:10px;font-size:13.5px;font-weight:800;color:#64748b;background:#f1f5f9;border-radius:999px;padding:4px 11px}.gk-hint{color:#94a3b8;font-size:15.5px;margin-top:22px}</style>' +
+    '<div class="gk-door">' +
+    '<p class="gk-hello">' + gre + '</p>' +
+    '<h1 class="gk-ask">What shall we do today?</h1>' +
+    '<a class="gk-primary" href="session.html" style="background:linear-gradient(135deg,#2a9d8f,#1d7d72);box-shadow:0 14px 34px rgba(42,157,143,.28)">' +
+      '<span class="gk-primary__ico">&#128269;</span>' +
+      '<span><b>Start today\u2019s investigation</b><span>About an hour, prepared from what you have already done.</span></span></a>' +
+    '<div class="gk-grid">' +
+    '<a class="gk-mode" href="learn.html" style="border-left:6px solid #2a9d8f">' +
+      '<span class="gk-mode__ico">&#128218;</span>' +
+      '<b>Learn a new trick</b><span><span>Read the lesson, then take the quiz. Reading comes before testing, always.</span></span>' +
+      '<span class="gk-inside">29 worlds &middot; physics, chemistry, biology, space</span></a>' +
+    '<a class="gk-mode" href="play.html" style="border-left:6px solid #f59e0b">' +
+      '<span class="gk-mode__ico">&#128269;</span>' +
+      '<b>Games &amp; puzzles</b><span><span>Investigations you do with your own hands, and questions against the clock.</span></span>' +
+      '<span class="gk-inside">investigations &middot; rapid-fire arena &middot; trivia</span></a>' +
+    '<a class="gk-mode" href="challenge.html" style="border-left:6px solid #7c3aed">' +
+      '<span class="gk-mode__ico">&#127941;</span>' +
+      '<b>Beat the hard ones</b><span><span>The Olympiad-style Level 2 questions. Bring your thinking.</span></span>' +
+      '<span class="gk-inside">harder levels &middot; the boss arena</span></a>' +
+    '<a class="gk-mode" href="projects.html" style="border-left:6px solid #db2777">' +
+      '<span class="gk-mode__ico">&#128640;</span>' +
+      '<b>Build something real</b><span><span>Code it, wire it, research it. Three real projects, one at a time.</span></span>' +
+      '<span class="gk-inside">bouncing ball &middot; torch circuit &middot; fair test</span></a>' +
+    '</div>' +
+    '<p class="gk-hint">No idea what to do? Start today\u2019s investigation — it is already planned for you.</p></div>';
+}
 
 function worldHTML(){const w=W(view.wid);if(!w)return homeHTML();let h='<button class="btn sec" onclick="go(\'home\')">← All worlds</button><div class="whead" style="--c:'+w.color+'"><div class="ic">'+w.icon+'</div><h2>'+w.name+'</h2><p>'+w.tag+'</p></div><div class="art'+(w.id==='sky'?' night':'')+'">'+(WORLD_ART[w.id]||'')+'</div>';
 if(w.id==='trivia'){const q=state.quiz.trivia;h+='<div class="note">⚡ Rapid-fire: 10 random questions from EVERY world plus bonus trivia. 7+ correct = ⭐⭐, a perfect 10 = ⭐⭐⭐.<br>Best so far: '+(q?q.s+' / '+q.t:'—')+' '+starStr(stars('trivia'))+'</div><button class="btn" onclick="startQuiz(\'trivia\')">▶ Play Trivia Arena</button>';return h;}
