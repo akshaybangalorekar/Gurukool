@@ -950,6 +950,30 @@ EVERY QUESTION SOLVED, AS ASKED:
 - Also fixed: three "fair second answer" notes I had written in Mind were
   simply WRONG (they claimed 1 was the only odd number when 9 is odd too).
 
+Recent changes (round 53 - v53: two Mind quest puzzles had wrong answers)
+------------------------
+- Found by working every quest puzzle out from scratch instead of trusting it:
+    * The Minecart Path puzzle "pass through the fuel station" said its two legs
+      were 4 moves and 8 moves, then stored the answer as 10. 4 + 8 = 12.
+      Worse, the fuel was drawn ABOVE the cart, and the cart can only move
+      across or down - so the puzzle could not be solved as drawn at all.
+      The map is rebuilt (the fuel is now on the cart's own row), the hints
+      and working now say 3 + 7 = 10, and 10 is the true fewest moves.
+    * The first Minecart puzzle claimed "3 across + 5 down = 8" for a map where
+      the cart is 6 columns and 4 rows from the chest. Its map is rebuilt too,
+      and 10 is the true fewest moves.
+- HOW THEY WERE CHECKED: a breadth-first search over the actual grid, counting
+  the fewest moves the cart can make without entering lava - the same thing the
+  child has to do by eye. Both puzzles now agree with the search.
+- Every other quest picture was worked out the same way: the wall-count puzzles
+  by adding their rows, the path puzzles by searching the map. All correct.
+- MIND in full: 54,000 generated questions -> 788 distinct, every one solved
+  and compared (number series, letter codes, rotations and shape patterns all
+  re-derived by rule, not by eye). Plus all 25 Minecraft quest puzzles.
+  Answer mismatches: 0. Structural faults: 0.
+- MATHS: 18,118 distinct questions, 5,963 answers re-derived independently.
+  SCIENCE: all 362 bank questions. Both: 0 mismatches, 0 faults.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
