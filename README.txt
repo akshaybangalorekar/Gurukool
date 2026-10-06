@@ -669,6 +669,29 @@ Recent changes (round 36 - v36, Science-Champ gets the same four boxes)
   marked as being built, so the choice of which to build first is visible
   in the app.
 
+Recent changes (round 37 - v37, Mind-Champ four boxes + the reasoning ladder)
+------------------------
+- MIND-CHAMP (logical reasoning) now has the same four boxes:
+      Learn     - the reasoning ladder AND the ten cases
+      Games     - the Minecraft quests, the Detective Files, shape patterns,
+                  rotations
+      Challenge - the hardest inference, two-rule number series, shifting
+                  codes
+      Build     - real logic problems: the school timetable clash, the
+                  wedding seating plan, the power cut, the bus route puzzle
+- THE REASONING LADDER (mind-champ/assets/reason.js) covers the exam skills
+  that EduTest, AAS, ICAS and Olympiad papers test and that no other champ
+  had:
+      VERBAL       - analogies, odd one out, letter codes
+      QUANTITATIVE - number series (arithmetic, doubling, squares, and the
+                     two-rule alternating kind)
+      NON-VERBAL   - shape patterns and rotations, DRAWN as SVG diagrams
+  Six topics, each with a lesson taught in pieces with checks, then six
+  fresh questions that never repeat. Answers are verified by independent
+  recomputation (3000 checks this round).
+- The non-verbal questions carry real diagrams, so the child sees the
+  shapes and arrows rather than reading about them.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

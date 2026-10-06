@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Science-Champ — Challenge</title>
+  <title>Mind-Champ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -29,37 +29,51 @@
   .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
   .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
   .l-lv.l2 { background: #dbeafe; color: #1e40af; } .l-lv.l3 { background: #dcfce7; color: #166534; }
+  .l-lv.strand { background: #fae8ff; color: #86198f; }
   .l-bar { display: block; height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 10px; }
-  .l-bar span { display: block; height: 100%; background: #2a9d8f; }
+  .l-bar span { display: block; height: 100%; background: #7c3aed; }
   .l-sec { font: 800 20px Nunito, system-ui, sans-serif; color: #0f172a; margin: 26px 0 10px; }
-</style></head>
+  .r-say { background: #f8fafc; border-left: 4px solid #7c3aed; border-radius: 10px; padding: 14px 16px; font-size: 18px; line-height: 1.7; color: #1f2937; }
+  .r-ask { font: 800 19.5px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 16px 0 10px; }
+  .r-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 170px; }
+  .r-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .r-btn.p { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+  .r-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .r-fb.ok { color: #047857; } .r-fb.no { color: #b45309; }
+  .r-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .r-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .r-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+  .r-dot { width: 30px; height: 6px; border-radius: 999px; background: #e2e8f0; }
+  .r-dot.on { background: #7c3aed; }
+</style>
+</head>
 <body>
   <header class="topnav" id="gk-head"></header>
-  <main class="l-wrap"><div id="s-view"></div></main>
+  <main class="l-wrap"><div id="m-view"></div></main>
   <script src="../version.js?v=37"></script>
   <script src="../gk-fresh.js?v=37"></script>
   <script src="assets/content.js?v=37"></script>
   <script src="assets/app.js?v=37"></script>
+  <script src="assets/reason.js?v=37"></script>
   <script src="../champ-rail.js?v=37"></script>
   <script src="assets/nav.js?v=37"></script>
   <script>
-    ScienceNav.auto();
+    MindNav.auto();
     function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-    /* the worlds with the most demanding levels: Level 2 unlocks at 3+ stars on level 1 */
-    var hard = WORLDS.filter(function (w) { return w.id !== 'trivia'; }).slice(0, 10);
-    var cards = hard.map(function (w) {
-      return '<a class="l-card" href="index.html#world-' + w.id + '"><span class="ico">' + w.icon + '</span><b>' + esc(w.name) + '</b>' +
-        '<span class="sub">Level 2 unlocks when you have three stars on Level 1. These are the Olympiad-style questions.</span>' +
-        '<span class="l-lv">Level 2 \u00b7 Olympiad Challenge</span></a>';
+    var hard = MC_LEVELS.slice(5, 10).map(function (c) {
+      return '<a class="l-card" href="index.html"><span class="ico">' + c.icon + '</span><b>' + esc(c.name) + '</b>' +
+        '<span class="sub">' + esc(c.tech ? c.tech.desc : 'The hardest cases') + '</span><span class="l-lv">boss level</span></a>';
     }).join('');
-    document.getElementById('s-view').innerHTML =
+    document.getElementById('m-view').innerHTML =
       '<h1 class="l-h1">Challenge</h1>' +
-      '<p class="l-lead">For when you want to be pushed. These are the harder levels \u2014 the questions that make you stop and think rather than remember.</p>' +
+      '<p class="l-lead">The hardest thinking in the champ. Every one still has hints and a worked solution, but you have to try first.</p>' +
       '<div class="l-grid">' +
-        '<a class="l-card" href="index.html#trivia"><span class="ico">\u26a1</span><b>Rapid-fire arena</b><span class="sub">Endless timed questions from EVERY world plus bonus trivia. One miss ends the run.</span><span class="l-lv">the boss</span></a>' +
-        '<a class="l-card" href="projects.html"><span class="ico">\ud83d\ude80</span><b>Build something real</b><span class="sub">The projects: code it, wire it, research it.</span></a>' +
+        '<a class="l-card" href="reason.html#series"><span class="ico">&#128290;</span><b>Two-rule number series</b><span class="sub">Where the odd positions and the even positions follow DIFFERENT rules. Most people never spot it.</span><span class="l-lv">the trap</span></a>' +
+        '<a class="l-card" href="reason.html#codes"><span class="ico">&#128288;</span><b>Shifting letter codes</b><span class="sub">Every letter moves along the alphabet. Work out the shift, then apply it letter by letter.</span></a>' +
+        '<a class="l-card" href="projects.html"><span class="ico">&#128640;</span><b>Build something real</b><span class="sub">The timetable clash and the seating plan: real problems that need real logic.</span></a>' +
       '</div>' +
-      '<p class="l-sec">Olympiad-level worlds</p><div class="l-grid">' + cards + '</div>';
-</script>
+      '<p class="l-sec">The Detective Files</p><div class="l-grid">' + hard + '</div>';
+
+  </script>
 </body>
 </html>

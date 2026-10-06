@@ -11,7 +11,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Science-Champ — Games</title>
+  <title>Mind-Champ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/style.css">
@@ -29,29 +29,46 @@
   .l-card .sub { display: block; color: #64748b; font-size: 15.5px; line-height: 1.5; margin-top: 4px; }
   .l-lv { display: inline-block; margin: 10px 6px 0 0; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #f1f5f9; color: #475569; }
   .l-lv.l2 { background: #dbeafe; color: #1e40af; } .l-lv.l3 { background: #dcfce7; color: #166534; }
+  .l-lv.strand { background: #fae8ff; color: #86198f; }
   .l-bar { display: block; height: 6px; border-radius: 999px; background: #e2e8f0; overflow: hidden; margin-top: 10px; }
-  .l-bar span { display: block; height: 100%; background: #2a9d8f; }
+  .l-bar span { display: block; height: 100%; background: #7c3aed; }
   .l-sec { font: 800 20px Nunito, system-ui, sans-serif; color: #0f172a; margin: 26px 0 10px; }
-</style></head>
+  .r-say { background: #f8fafc; border-left: 4px solid #7c3aed; border-radius: 10px; padding: 14px 16px; font-size: 18px; line-height: 1.7; color: #1f2937; }
+  .r-ask { font: 800 19.5px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 16px 0 10px; }
+  .r-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 170px; }
+  .r-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
+  .r-btn.p { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+  .r-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
+  .r-fb.ok { color: #047857; } .r-fb.no { color: #b45309; }
+  .r-know { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+  .r-sol { background: #f5f3ff; border: 1px solid #c4b5fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .r-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+  .r-dot { width: 30px; height: 6px; border-radius: 999px; background: #e2e8f0; }
+  .r-dot.on { background: #7c3aed; }
+</style>
+</head>
 <body>
   <header class="topnav" id="gk-head"></header>
-  <main class="l-wrap"><div id="s-view"></div></main>
+  <main class="l-wrap"><div id="m-view"></div></main>
   <script src="../version.js?v=37"></script>
   <script src="../gk-fresh.js?v=37"></script>
   <script src="assets/content.js?v=37"></script>
   <script src="assets/app.js?v=37"></script>
+  <script src="assets/reason.js?v=37"></script>
   <script src="../champ-rail.js?v=37"></script>
   <script src="assets/nav.js?v=37"></script>
   <script>
-    ScienceNav.auto();
-    document.getElementById('s-view').innerHTML =
+    MindNav.auto();
+    document.getElementById('m-view').innerHTML =
       '<h1 class="l-h1">Games</h1>' +
-      '<p class="l-lead">Science you do with your hands, and questions you play against the clock. Nothing here is marked \u2014 the goal is to find out.</p>' +
+      '<p class="l-lead">Puzzles to mess about with. No marks, no timer unless you want one. Both quest lines are hands-on: you solve by tapping, weighing, drawing and crossing off.</p>' +
       '<div class="l-grid">' +
-        '<a class="l-card" href="investigations.html"><span class="ico">\ud83d\udd0d</span><b>Investigations</b><span class="sub">Real mysteries: why a charger gets hot, why a ball stops bouncing, how a computer knows what to do. Predict, experiment, draw, prove.</span></a>' +
-        '<a class="l-card" href="challenge.html"><span class="ico">\u26a1</span><b>Rapid-fire arena</b><span class="sub">Ten random questions from every world. Seven right earns two stars, a perfect ten earns three.</span></a>' +
-        '<a class="l-card" href="index.html#trivia"><span class="ico">\ud83c\udfaf</span><b>Bonus trivia</b><span class="sub">The odd, wonderful facts that do not fit anywhere else.</span></a>' +
+        '<a class="l-card" href="index.html"><span class="ico">&#9935;</span><b>The Minecraft Quests</b><span class="sub">Five cases in a blocky world: count the wall, draw the route, work backwards, cross the river, crack the vault.</span><span class="l-lv">5 cases</span></a>' +
+        '<a class="l-card" href="index.html"><span class="ico">&#128373;</span><b>The Detective Files</b><span class="sub">Read between the lines: the small words, comparing two statements, checking the times, noticing what is NOT said.</span><span class="l-lv">5 cases</span></a>' +
+        '<a class="l-card" href="reason.html#patterns"><span class="ico">&#128311;</span><b>Shape patterns</b><span class="sub">Find the cycle and predict the next shape, drawn rather than described.</span></a>' +
+        '<a class="l-card" href="reason.html#rotations"><span class="ico">&#128260;</span><b>Rotations</b><span class="sub">Turn the arrow in your head and say where it points.</span></a>' +
       '</div>';
-</script>
+
+  </script>
 </body>
 </html>

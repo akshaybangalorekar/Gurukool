@@ -105,6 +105,7 @@
   function esc(s) { return String(s).replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>'); }
 
   function render() {
+    if (window.MindNav && MindNav.auto) { try { MindNav.auto(); } catch (e) {} }
     var app = $('app'); if (!app) return;
     app.innerHTML = view.page === 'home' ? homeHTML() : caseHTML();
     window.scrollTo(0, 0);
