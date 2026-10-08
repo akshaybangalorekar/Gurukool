@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="icon" href="../icon.png" type="image/png">
+<link rel="apple-touch-icon" href="../icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="../manifest.json">
+<meta name="apple-mobile-web-app-title" content="Gurukool">
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Math-Champ — Homework Club</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css?v=55">
+<style>
+  .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 70px; }
+  .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
+  .h-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
+  .h-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
+  .h-card { background: #fff; border: 1px solid #e6ebf1; border-left: 6px solid #0ea5e9; border-radius: 18px; padding: 16px 18px; margin: 0 0 14px; }
+  .h-card b.t { display: block; font: 800 19px Nunito, system-ui, sans-serif; color: #0f172a; margin-bottom: 8px; }
+  .h-q { font: 700 17.5px/1.6 Nunito, system-ui, sans-serif; color: #1e293b; background: #f8fafc; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px; }
+  .h-ans { font: 800 16px Nunito, system-ui, sans-serif; color: #047857; margin: 0 0 10px; }
+  .h-steps { margin: 0 0 12px; padding-left: 20px; }
+  .h-steps li { font-size: 16px; line-height: 1.6; color: #475569; }
+  .h-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 8px 0 0; }
+  .h-btn.p { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
+  .h-btn.big { font-size: 18px; padding: 16px 22px; }
+  .h-opt { display: block; width: 100%; text-align: left; font: 800 19px Nunito, system-ui, sans-serif; padding: 15px 18px; border: 2px solid #cbd5e1; background: #fff; color: #1e293b; border-radius: 14px; margin: 0 0 10px; cursor: pointer; }
+  .h-opt.ok { border-color: #34d399; background: #ecfdf5; color: #065f46; }
+  .h-opt.no { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
+  .h-fb { font: 800 18px Nunito, system-ui, sans-serif; margin: 14px 0 0; min-height: 26px; }
+  .h-fb.ok { color: #047857; } .h-fb.no { color: #b45309; }
+  .h-sol { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 14px 16px; margin-top: 12px; font-size: 17px; line-height: 1.7; }
+  .h-clock { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; }
+  .h-bar { flex: 1; height: 10px; border-radius: 999px; background: #e2e8f0; overflow: hidden; }
+  .h-bar div { height: 100%; background: #0ea5e9; width: 100%; transition: width 1s linear; }
+  .h-time { font: 800 17px Nunito, system-ui, sans-serif; color: #0f172a; white-space: nowrap; }
+  .h-chip { display: inline-block; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #e0f2fe; color: #075985; margin: 0 6px 6px 0; }
+  .h-note { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 14px; font-size: 16px; color: #78350f; margin-top: 14px; }
+</style>
+</head>
+<body>
+  <header class="topnav" id="topnav"></header>
+  <main class="h-wrap"><div id="h-view"></div></main>
+  <script src="../version.js?v=55"></script>
+  <script src="../gk-fresh.js?v=55"></script>
+  <script src="../rhythm.js?v=55"></script>
+  <script src="assets/app.js?v=55"></script>
+  <script src="assets/gen.js?v=55"></script>
+  <script src="assets/homework.js?v=55"></script>
+  <script src="../champ-rail.js?v=55"></script>
+  <script src="assets/nav.js?v=55"></script>
+  <script>MathNav.mount('homework'); MathNav.top();</script>
+  <script>
+  (function () {
+    var KEY = 'gk_hw';
+    function load() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+    function el(id) { return document.getElementById(id); }
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    var S = { on: false, ends: 0, total: 0, right: 0, done: {}, q: null, answered: false, tick: null, mode: 'mixed', typeId: null };
+
+    /* ---------- home ---------- */
+    function home() {
+      stopClock();
+      var rec = load();
+      var cards = HW.types.map(function (t) {
+        var r = rec[t.id] || { n: 0, right: 0 };
+        return '<div class="h-card"><b class="t">' + t.icon + ' ' + esc(t.name) + '</b>' +
+          '<div class="h-q">' + esc(t.homework) + '</div>' +
+          '<div class="h-ans">The answer: ' + esc(t.homeworkAnswer) + '</div>' +
+          '<ol class="h-steps">' + t.method.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ol>' +
+          '<span class="h-chip">' + (r.n ? r.n + ' practised · ' + Math.round(100 * r.right / r.n) + '% right' : 'not practised yet') + '</span>' +
+          '<div><button class="h-btn p" onclick="HWClub.startType(\'' + t.id + '\')">Practise this type</button></div></div>';
+      }).join('');
+      el('h-view').innerHTML = '<h1 class="h-h1">\ud83d\udcd8 Homework Club</h1>' +
+        '<p class="h-lead">Only the kinds of question your teacher sets — nothing else. Each one below is the actual question from your sheet, worked out, and then you get endless fresh ones of the same kind with different numbers.</p>' +
+        '<div class="h-panel"><b style="font:800 19px Nunito;color:#0f172a">How long shall we go for?</b>' +
+        '<p class="h-lead" style="margin:8px 0 12px">The five types are mixed together, just like the sheet.</p>' +
+        '<button class="h-btn p big" onclick="HWClub.start(15)">15 minutes</button>' +
+        '<button class="h-btn p big" onclick="HWClub.start(30)">30 minutes</button>' +
+        '<button class="h-btn p big" onclick="HWClub.start(60)">1 hour</button></div>' +
+        '<p class="h-lead" style="margin:22px 0 10px"><b>The five types on your sheet</b></p>' + cards +
+        '<div class="h-note">Nothing else lives in the Homework Club. When your teacher sends a new kind of question, tell me and I will add it here.</div>';
+      if (window.MathNav && MathNav.top) MathNav.top();
+    }
+
+    /* ---------- the clock ---------- */
+    function startClock(mins) {
+      S.ends = Date.now() + mins * 60000;
+      S.total = mins;
+      if (S.tick) clearInterval(S.tick);
+      S.tick = setInterval(function () {
+        var left = Math.max(0, S.ends - Date.now());
+        var bar = el('h-barfill'), clock = el('h-left');
+        if (bar) bar.style.width = Math.round(100 * left / (S.total * 60000)) + '%';
+        if (clock) clock.textContent = fmt(left);
+        if (left <= 0) finish();
+      }, 1000);
+    }
+    function stopClock() { if (S.tick) { clearInterval(S.tick); S.tick = null; } }
+    function fmt(ms) {
+      var s = Math.ceil(ms / 1000), m = Math.floor(s / 60);
+      s = s % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    /* ---------- a question ---------- */
+    function nextQuestion() {
+      if (!S.on) return;
+      if (Date.now() >= S.ends) return finish();
+      var n = S.n || 0;
+      var id = S.mode === 'one' ? S.typeId : HW.types[n % HW.types.length].id;
+      S.n = n + 1;
+      S.q = HW.make(id);
+      S.answered = false;
+      renderQuestion();
+    }
+    function renderQuestion() {
+      var q = S.q;
+      el('h-view').innerHTML =
+        '<div class="h-clock"><span class="h-time" id="h-left">' + fmt(Math.max(0, S.ends - Date.now())) + '</span>' +
+        '<span class="h-bar"><div id="h-barfill"></div></span>' +
+        '<button class="h-btn" onclick="HWClub.stop()">Finish</button></div>' +
+        '<div class="h-panel"><div class="h-chip">' + esc(q.typeName) + '</div>' +
+        '<div class="h-chip">Question ' + (S.n || 1) + '</div>' +
+        '<p class="h-q" style="font-size:19px">' + esc(q.q) + '</p>' +
+        q.options.map(function (o, i) {
+          return '<button class="h-opt" id="h-opt' + i + '" onclick="HWClub.pick(' + i + ')">' +
+            String.fromCharCode(65 + i) + '.  ' + esc(o) + '</button>';
+        }).join('') +
+        '<button class="h-btn" id="h-know" onclick="HWClub.how()">Show me how this type works</button>' +
+        '<p class="h-fb" id="h-fb"></p><div id="h-sol"></div></div>';
+    }
+
+    window.HWClub = {
+      start: function (mins) { S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0; startClock(mins); nextQuestion(); },
+      startType: function (id) { S.on = true; S.mode = 'one'; S.typeId = id; S.n = 0; S.right = 0; startClock(15); nextQuestion(); },
+      how: function () {
+        var t = HW.byId(S.q.typeId);
+        el('h-sol').innerHTML = '<div class="h-sol"><b>How this type works</b><ol class="h-steps" style="margin:8px 0 0">' +
+          t.method.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ol>' +
+          '<p style="margin:10px 0 0"><b>On your sheet:</b> ' + esc(t.homework) + ' → ' + esc(t.homeworkAnswer) + '</p></div>';
+      },
+      pick: function (i) {
+        if (S.answered) return;
+        var q = S.q, fb = el('h-fb'), btn = el('h-opt' + i);
+        var rec = load(), r = rec[q.typeId] = rec[q.typeId] || { n: 0, right: 0 };
+        r.n++;
+        if (i === q.answer) {
+          S.answered = true; S.right++; r.right++; save(rec);
+          btn.className = 'h-opt ok';
+          if (window.Rhythm) Rhythm.note(true);
+          if (window.OC && OC.record) { try { OC.record({ kind: 'homework', id: 'hw:' + q.typeId, correct: true, xp: 12, topic: q.typeId, timeSec: 0, targetSec: 0 }); } catch (e) {} }
+          fb.className = 'h-fb ok'; fb.textContent = 'Correct.';
+          el('h-sol').innerHTML = '<div class="h-sol"><b>Why</b><p style="margin:8px 0 0">' + esc(q.sol) + '</p>' +
+            '<button class="h-btn p" style="margin-top:12px" onclick="HWClub.next()">Next question \u2192</button></div>';
+        } else {
+          S.answered = true; save(rec);
+          btn.className = 'h-opt no'; btn.disabled = true;
+          el('h-opt' + q.answer).className = 'h-opt ok';
+          if (window.Rhythm) Rhythm.note(false);
+          if (window.OC && OC.record) { try { OC.record({ kind: 'homework', id: 'hw:' + q.typeId, correct: false, xp: 0, topic: q.typeId, timeSec: 0, targetSec: 0 }); } catch (e) {} }
+          fb.className = 'h-fb no';
+          fb.textContent = 'Not this time. ' + (q.hints[0] || '');
+          el('h-sol').innerHTML = '<div class="h-sol"><b>How it works</b><p style="margin:8px 0 0">' + esc(q.sol) + '</p>' +
+            '<button class="h-btn p" style="margin-top:12px" onclick="HWClub.next()">Next question \u2192</button></div>';
+        }
+      },
+      next: function () { nextQuestion(); },
+      stop: function () { finish(); }
+    };
+
+    function finish() {
+      stopClock();
+      S.on = false;
+      var mins = S.total || 0;
+      el('h-view').innerHTML = '<h1 class="h-h1">\ud83c\udfc6 Homework Club session done</h1>' +
+        '<div class="h-panel"><p class="h-q">You answered ' + S.done.count + ' question' + (S.done.count === 1 ? '' : 's') +
+        ' and got ' + S.right + ' right.</p>' +
+        '<p class="h-lead">Every one of those was a variation of your teacher\'s five types. If a type still feels slippery, practise it on its own from the list below.</p>' +
+        '<button class="h-btn p" onclick="HWClub.back()">Back to the five types</button></div>';
+      if (window.MathNav && MathNav.top) MathNav.top();
+    }
+    window.HWClub.back = home;
+
+    home();
+  })();
+  </script>
+</body>
+</html>

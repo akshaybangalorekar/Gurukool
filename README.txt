@@ -999,6 +999,39 @@ Recent changes (round 54 - v54: the final full check of every question, all five
     WORD     108 distinct questions across its five topics.
   Answer mismatches: 0.  Structural faults: 0.
 
+Recent changes (round 55 - v55: THE HOMEWORK CLUB)
+------------------------
+NEW: Homework Club, a new item in the maths rail (Today | Learn | Homework |
+Games | Challenge | Build). It holds ONLY the kinds of question the teacher
+actually sets - nothing else ever goes in here.
+
+Built from Atharv's sheet of 1 Oct 2026 ("HW - Atharv - Plickers", 12
+questions). The five types he needed help with (questions 4, 5, 6, 11, 12):
+  1. Fractions on both sides      (2x + 1) / 3 = (x + 5) / 2
+  2. Two fractions of x added     x / 3 + x / 4 = 7
+  3. A word problem hiding an equation   "5 added to 3x = 3 less than 5x"
+  4. Adjacent angles on a straight line  (4x + 10) + (2x - 10) = 180
+  5. Two fractions subtracted     (x - 1) / 2 - (x - 3) / 3 = 2
+The other seven questions on the sheet were the same kinds of equation
+practice, so they are covered by these five shapes too.
+
+HOW IT WORKS
+- Opens with a choice: 15 minutes, 30 minutes, or 1 hour. The five types are
+  mixed together, just like the sheet.
+- Every card shows the TEACHER'S OWN QUESTION with its answer and the four
+  steps of the method, so he can see the kind before practising it.
+- "Practise this type" drills one kind on its own, for when one feels slippery.
+- Endless fresh questions: same shape, different numbers, four choices each
+  (A-D, exactly like the sheet). The wrong choices are the mistakes children
+  really make, so the wrong answer is a teaching moment.
+- Every question shows "how this type works" on request, and the full working
+  after answering.
+- Progress is kept per type and feeds the Parent Console.
+
+VERIFIED: 15,000 generated questions across the five types, every one solved
+independently and compared - 0 wrong. Then a real 15-minute session driven in
+a browser: 40 questions answered, 40 graded correct.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

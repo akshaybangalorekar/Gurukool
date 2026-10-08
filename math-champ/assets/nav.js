@@ -16,6 +16,7 @@
   var GROUPS = [
     { key: 'today', icon: '\u2600\ufe0f', label: 'Today', href: 'session.html' },
     { key: 'learn', icon: '\ud83d\udcd8', label: 'Learn', href: 'learn.html' },
+    { key: 'homework', icon: '\ud83d\udcd3', label: 'Homework', href: 'homework.html' },
     { key: 'games', icon: '\ud83c\udfae', label: 'Games', href: 'play.html' },
     { key: 'challenge', icon: '\ud83c\udfc5', label: 'Challenge', href: 'challenge.html' },
     { key: 'build', icon: '\ud83d\ude80', label: 'Build', href: 'projects.html' }
@@ -32,7 +33,7 @@
               quests: 'games', speed: 'games', play: 'games',
               oly: 'challenge', challenge: 'challenge',
               build: 'build', projects: 'build',
-              dash: '', toolbox: '', hub: '', session: 'today' };
+              dash: '', toolbox: '', hub: '', session: 'today', homework: 'homework' };
 
   window.MathNav = {
     groups: GROUPS, more: MORE, map: MAP,
