@@ -102,7 +102,11 @@
   /* ---------- data per child ---------- */
   function childNames() {
     var names = {}, i;
-    function add(x) { if (x && String(x).trim()) names[String(x).trim().toLowerCase()] = String(x).trim(); }
+    function add(x) {
+      if (!x) return;
+      var v = String(x).trim().replace(/^[\s"']+|[\s"']+$/g, '');   /* a stored name can arrive wrapped in quotes */
+      if (v) names[v.toLowerCase()] = v;
+    }
     try { add(localStorage.getItem('cc_name')); } catch (e) {}
     var oc = read('oc_state'); if (oc) add(oc.name);
     var ocs = read('oc_profiles') || {}; for (i in ocs) add(ocs[i] && ocs[i].name);
@@ -142,7 +146,8 @@
     (oc.attempts || []).forEach(function (a) {
       if (a.kind === 'daily') return;   /* the daily test belongs to the child, not to the parent view */
       var key, label;
-      if (a.kind === 'word') { key = 'word'; label = 'Word problems'; }
+      if (a.kind === 'homework') { var hid = String(a.id || '').replace(/^hw:/, '') || 'other'; key = 'hw:' + hid; label = 'Homework \u00B7 ' + (HW_NAME[hid] || hid); }
+      else if (a.kind === 'word') { key = 'word'; label = 'Word problems'; }
       else if (a.kind === 'mission') { var tid = String(a.id || '').split('-L')[0]; key = 'm:' + tid; label = MATH_TOPIC[tid] || ('Mission · ' + tid); }
       else if (a.kind === 'quest') { var m = String(a.id || '').match(/^(eq|rb)\d/); if (!m) return; key = 'q:' + m[0]; label = QUEST_NAME[m[0]] || m[0]; }
       else if (a.kind === 'drill') { key = 'd:' + (a.drill || 'drill'); label = 'Speed drills'; }
@@ -504,6 +509,255 @@
 
   /* ---------- rendering ---------- */
   var current = '';
+  /* ============================================================
+     THE PICTURE - a graphic of the work, and a plain-English note
+     on which skills are moving and which need more time.
+     Reads every champ, the Homework Club included.
+     ============================================================ */
+  var HW_NAME = {
+    bothsides: 'Fractions on both sides',
+    addfractions: 'Two fractions of x added',
+    wordproblem: 'Word problem hiding an equation',
+    angles: 'Adjacent angles on a straight line',
+    subfractions: 'Two fractions subtracted'
+  };
+  var WC_NAME = { spelling: 'Spelling', grammar: 'Grammar', punctuation: 'Punctuation',
+                  comprehension: 'Comprehension', meanings: 'Word meanings' };
+
+  function wordState(name) {
+    var w = read('wc_state');
+    if (!w) return null;
+    if (name && (w.name || '').trim().toLowerCase() !== (name || '').trim().toLowerCase()) return null;
+    return w;
+  }
+
+  function wordRows(name) {
+    var w = wordState(name), rows = [];
+    if (!w || !w.topics) return rows;
+    Object.keys(w.topics).forEach(function (k) {
+      var r = w.topics[k] || {}, n = r.n || 0, right = r.right || 0;
+      if (!n) return;
+      var acc = right / n;
+      rows.push({ label: WC_NAME[k] || k, a: { n: n, acc: Math.round(acc * 100), t: 0, tg: 0, trend: 'flat',
+        verdict: n < 5 ? 'starting' : (acc >= 0.8 ? 'strong' : (acc >= 0.6 ? 'practice' : 'struggle')), noSpeed: true } });
+    });
+    return rows;
+  }
+
+  function homeworkRows(oc) {
+    var rows = [], groups = {}, order = [];
+    ((oc && oc.attempts) || []).forEach(function (a) {
+      if (a.kind !== 'homework') return;
+      var tid = String(a.id || '').replace(/^hw:/, '') || 'other';
+      if (!groups[tid]) { groups[tid] = []; order.push(tid); }
+      groups[tid].push(a);
+    });
+    order.forEach(function (t) { rows.push({ label: HW_NAME[t] || t, a: analyse(groups[t]), key: 'hw:' + t }); });
+    return rows;
+  }
+
+  /* ---------- bars ---------- */
+  function barColor(a) {
+    if (!a || !a.n) return '#d8cfbe';
+    if (a.verdict === 'strong') return '#2e7d32';
+    if (a.verdict === 'practice') return '#ef8f00';
+    if (a.verdict === 'struggle') return '#c62828';
+    return '#9c8f7a';
+  }
+  function barRow(label, pct, right, colour) {
+    return '<div class="pc-bar"><div class="pc-bar-lab">' + esc(label) + '</div>' +
+      '<div class="pc-bar-track"><div class="pc-bar-fill" style="width:' +
+      Math.max(3, Math.min(100, Math.round(pct))) + '%;background:' + colour + '"></div></div>' +
+      '<div class="pc-bar-val">' + esc(right) + '</div></div>';
+  }
+  function skillBar(r) {
+    var a = r.a;
+    if (!a || !a.n) {
+      return '<div class="pc-bar"><div class="pc-bar-lab">' + esc(r.label) + '</div>' +
+        '<div class="pc-bar-track"><div class="pc-bar-fill" style="width:3%;background:#d8cfbe"></div></div>' +
+        '<div class="pc-bar-val">not tried yet</div></div>';
+    }
+    var tail = a.note ? a.note : (a.acc + '% \u00B7 ' + a.n + ' tries' +
+      (a.trend === 'up' ? ' \u2197' : (a.trend === 'down' ? ' \u2198' : '')));
+    return barRow(r.label, a.acc, tail, barColor(a));
+  }
+
+  /* ---------- the summary row per champ ---------- */
+  function champSummary(name) {
+    var oc = stateFor('math', name) || {}, sq = stateFor('science', name) || {},
+        mc = stateFor('mind', name) || {}, sk = skFor(name) || {}, wc = wordState(name) || {};
+    var att = (oc.attempts || []).filter(function (a) { return a.kind !== 'daily'; });
+    var hw = att.filter(function (a) { return a.kind === 'homework'; });
+    var math = att.filter(function (a) { return a.kind !== 'homework'; });
+    var out = [];
+    out.push({ icon: '\u26A1', name: 'Math-Champ', a: analyse(math), unit: 'questions' });
+    out.push({ icon: '\uD83D\uDCD8', name: 'Homework Club', a: analyse(hw), unit: 'questions' });
+
+    var q = sq.quiz || {}, sn = 0, sr = 0;
+    Object.keys(q).forEach(function (w) { sn += (q[w].t || 0); sr += (q[w].s || 0); });
+    out.push({ icon: '\uD83D\uDD2C', name: 'Science-Champ', unit: 'quiz questions',
+      a: sn ? { n: sn, acc: Math.round(100 * sr / sn), verdict: sn < 5 ? 'starting' : (sr / sn >= 0.8 ? 'strong' : (sr / sn >= 0.6 ? 'practice' : 'struggle')), trend: 'flat' } : null });
+
+    var wn = 0, wr = 0;
+    Object.keys((wc.topics || {})).forEach(function (k) { wn += (wc.topics[k].n || 0); wr += (wc.topics[k].right || 0); });
+    out.push({ icon: '\uD83D\uDCDD', name: 'Word-Champ', unit: 'questions',
+      a: wn ? { n: wn, acc: Math.round(100 * wr / wn), verdict: wn < 5 ? 'starting' : (wr / wn >= 0.8 ? 'strong' : (wr / wn >= 0.6 ? 'practice' : 'struggle')), trend: 'flat' } : null });
+
+    var cases = mc.cases || {}, closed = 0, started = 0;
+    Object.keys(cases).forEach(function (k) { if (cases[k] && cases[k].done) closed++; if (((cases[k] || {}).used || []).length) started++; });
+    out.push({ icon: '\uD83E\uDDE0', name: 'Mind-Champ', a: null, pct: closed * 10,
+      unit: closed + ' of 10 cases closed \u00B7 ' + started + ' started' });
+
+    var scenes = Object.keys((sk.scenes || {})).length, words = Object.keys((sk.words || {})).length;
+    out.push({ icon: '\uD83E\uDE94', name: 'Samskritam-Champ', a: null, pct: Math.round(100 * scenes / 5),
+      unit: scenes + ' of 5 conversations \u00B7 ' + words + ' words learned' });
+    return out;
+  }
+
+  /* ---------- the two-week strip ---------- */
+  function stripHTML() {
+    var days = rhythmDays(), week = [], i, d, key;
+    for (i = 13; i >= 0; i--) {
+      d = new Date(Date.now() - i * 86400000);
+      key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      week.push({ key: key, day: ['S', 'M', 'T', 'W', 'T', 'F', 'S'][d.getDay()], mins: Math.round(days[key] || 0) });
+    }
+    var max = 1;
+    week.forEach(function (w) { if (w.mins > max) max = w.mins; });
+    var html = '<div class="pc-strip">', total = 0, active = 0;
+    week.forEach(function (w) {
+      total += w.mins;
+      if (w.mins > 0) active++;
+      var t = w.mins / max;
+      var shade = w.mins === 0 ? '#efe7d7' : 'rgba(46,125,50,' + (0.20 + 0.72 * t).toFixed(2) + ')';
+      html += '<div class="pc-strip-day" title="' + w.key + ' \u00B7 ' + w.mins + ' minutes">' +
+        '<div class="pc-strip-sq" style="background:' + shade + '"></div><span>' + w.day + '</span></div>';
+    });
+    html += '</div>';
+    html += '<p class="pc-meta" style="margin-top:8px">' + total + ' minutes of learning-clock time across ' +
+      active + ' of the last 14 days. Darker squares are longer days.</p>';
+    return html;
+  }
+
+  /* ---------- the note ---------- */
+  function noteHTML(groups, hwRows) {
+    var every = [], all = [], progress = [];
+    groups.forEach(function (g) {
+      g.rows.forEach(function (r) {
+        if (!r.a || !r.a.n) return;
+        var row = { label: r.label, champ: g.title, a: r.a };
+        every.push(row);
+        /* a row that carries its own wording measures how far he has got, not
+           how often he is right, so it must never be called his weakest skill */
+        if (r.a.note) progress.push(row); else all.push(row);
+      });
+    });
+    if (!every.length) {
+      return '<div class="pc-empty">Nothing recorded on this device yet. Once Atharv has done a few sessions, ' +
+        'this page fills itself in \u2014 no setting up needed.</div>';
+    }
+    var h = '<div class="pc-note">';
+    var up = all.filter(function (x) { return x.a.trend === 'up' || (x.a.acc >= 85 && x.a.n >= 5); })
+                .sort(function (a, b) { return b.a.acc - a.a.acc; }).slice(0, 3);
+    var down = all.filter(function (x) { return x.a.verdict === 'struggle' || x.a.verdict === 'practice'; })
+                  .sort(function (a, b) { return a.a.acc - b.a.acc; }).slice(0, 3);
+    if (up.length) {
+      h += '<p><b>\u2705 Getting stronger:</b> ' + up.map(function (x) {
+        return esc(x.label) + ' in ' + esc(x.champ) + ' (' + x.a.acc + '%)'; }).join(' \u00B7 ') +
+        '. These are holding up after practice, so they can be left alone for now.</p>';
+    }
+    if (down.length) {
+      h += '<p><b>\uD83C\uDFAF Needs more time:</b> ' + down.map(function (x) {
+        return esc(x.label) + ' in ' + esc(x.champ) + ' (' + x.a.acc + '%)'; }).join(' \u00B7 ') +
+        '. Right often enough to keep going, but not yet quick or sure.</p>';
+    }
+    if (hwRows && hwRows.length) {
+      var solid = hwRows.filter(function (r) { return r.a && r.a.n && r.a.acc >= 80; });
+      var shaky = hwRows.filter(function (r) { return r.a && r.a.n && r.a.acc < 80; })
+                        .sort(function (a, b) { return a.a.acc - b.a.acc; });
+      var line = '';
+      if (solid.length) line += 'Solid on ' + solid.map(function (r) { return esc(r.label); }).join(', ') + '. ';
+      if (shaky.length) line += 'Worth another round on ' + shaky.map(function (r) { return esc(r.label) + ' (' + r.a.acc + '%)'; }).join(', ') + '.';
+      if (line) h += '<p><b>\uD83D\uDCD8 Homework Club:</b> ' + line + '</p>';
+    }
+    if (progress.length) {
+      h += '<p><b>\uD83D\uDCDA Where he has got to:</b> ' + progress.map(function (x) {
+        return esc(x.label) + ' \u2014 ' + esc(x.a.note); }).join(' \u00B7 ') + '. This is ground covered, not a score.</p>';
+    }
+    var done = every.reduce(function (s, x) { return s + x.a.n; }, 0);
+    if (all.length) {
+      var weakest = all.slice().sort(function (a, b) { return a.a.acc - b.a.acc; })[0];
+      h += '<p><b>\u25B6 Do this next:</b> give 15 minutes to <b>' + esc(weakest.label) + '</b> in ' +
+        esc(weakest.champ) + ' \u2014 at ' + weakest.a.acc + '% it is the weakest skill on this page right now. ' +
+        'Everything here is drawn from ' + done + ' recorded answers.</p>';
+    } else {
+      h += '<p><b>\u25B6 Do this next:</b> there is not enough marked work yet to name a weak spot. ' +
+        'A few sessions will give this page something to measure. ' + done + ' answers recorded so far.</p>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  /* ---------- assemble the page ---------- */
+  function pictureHTML(name) {
+    var oc = stateFor('math', name) || {};
+    var math = mathRows(oc).filter(function (r) { return String(r.key || '').indexOf('hw:') !== 0; });
+    var hw = homeworkRows(oc);
+    var sci = scienceRows(stateFor('science', name));
+    var mind = mindRows(stateFor('mind', name));
+    var word = wordRows(name);
+    var champs = champSummary(name);
+    var sk = skFor(name) || {};
+    var skRows = [];
+    var nScenes = Object.keys(sk.scenes || {}).length, nWords = Object.keys(sk.words || {}).length;
+    if (nScenes) skRows.push({ label: 'Conversations read', a: { n: nScenes, acc: Math.round(100 * nScenes / 5),
+      verdict: nScenes >= 4 ? 'strong' : (nScenes >= 2 ? 'practice' : 'starting'), trend: 'flat',
+      note: nScenes + ' of 5 read' } });
+    if (nWords) skRows.push({ label: 'Words in the Shabda-Kosha', a: { n: nWords, acc: Math.min(100, Math.round(100 * nWords / 33)),
+      verdict: nWords >= 20 ? 'strong' : (nWords >= 8 ? 'practice' : 'starting'), trend: 'flat',
+      note: nWords + ' words learned' } });
+    sci = sci.map(function (r) { return { label: r.label.charAt(0).toUpperCase() + r.label.slice(1), a: r.a }; });
+    mind = mind.map(function (r) {
+      var a = r.a || {};
+      var note = a.n + '/5 puzzles' + (a.stars !== undefined ? ' \u00B7 ' + a.stars + '\u2B50' : '') + (a.done ? ' \u00B7 case closed' : '');
+      return { label: r.label, a: { n: a.n, acc: a.acc, t: 0, tg: 0, trend: 'flat', verdict: a.verdict, note: note } };
+    });
+
+    var h = '<p class="pc-lead">Everything recorded on this device for <b>' + esc(name) + '</b>, drawn as a picture. ' +
+      'Each bar is how often he gets it right; a longer bar is better. Green is strong, amber needs practice, red needs help.</p>';
+
+    h += '<h3>\uD83D\uDCCA Where the work is going</h3>';
+    champs.forEach(function (c) {
+      if (c.a && c.a.n) {
+        h += barRow(c.icon + ' ' + c.name, c.a.acc, c.a.acc + '% right \u00B7 ' + c.a.n + ' ' + c.unit, barColor(c.a));
+      } else {
+        h += barRow(c.icon + ' ' + c.name, c.pct || 3, c.unit, c.pct ? '#7e57c2' : '#d8cfbe');
+      }
+    });
+
+    h += '<h3>\uD83D\uDCC5 The last two weeks</h3>' + stripHTML();
+
+    var groups = [
+      { title: 'Math-Champ', rows: math },
+      { title: 'Homework Club', rows: hw },
+      { title: 'Science-Champ', rows: sci },
+      { title: 'Word-Champ', rows: word },
+      { title: 'Mind-Champ', rows: mind },
+      { title: 'Samskritam-Champ', rows: skRows }
+    ];
+    h += '<h3>\uD83E\uDDED Skill by skill</h3>';
+    var any = false;
+    groups.forEach(function (g) {
+      if (!g.rows.length) return;
+      any = true;
+      h += '<div class="pc-grouphead">' + esc(g.title) + '</div>' + g.rows.map(skillBar).join('');
+    });
+    if (!any) h += '<div class="pc-empty">No skill detail recorded yet.</div>';
+
+    h += '<h3>\uD83D\uDCDD What this says</h3>' + noteHTML(groups, hw);
+    return h;
+  }
+
   function renderAll() {
     var names = childNames();
     if (!names.length) names = ['Champion'];
@@ -517,6 +771,9 @@
     var math = mathRows(oc || { attempts: [] });
     var sci = scienceRows(sq);
     var mind = mindRows(mc);
+
+    var pic2 = el('pc-picture');
+    if (pic2) pic2.innerHTML = pictureHTML(current);
 
     var ins = el('pc-insights');
     if (ins) {
@@ -674,16 +931,22 @@
 
     var tabs = document.createElement('div');
     tabs.id = 'pc-tabs';
-    tabs.innerHTML = '<button class="pc-tab on" data-p="setup">⚙️ Setup</button>' +
+    tabs.innerHTML = '<button class="pc-tab on" data-p="picture">📊 Picture</button>' +
+      '<button class="pc-tab" data-p="setup">⚙️ Setup</button>' +
       '<button class="pc-tab" data-p="insights">🧠 Insights</button>' +
       '<button class="pc-tab" data-p="signals">💬 Signals</button>' +
       '<button class="pc-tab" data-p="plan">🎯 This week\'s plan</button>';
+
+    var pic = document.createElement('div');
+    pic.id = 'pc-pane-picture';
+    pic.className = 'pc-pane';
+    pic.innerHTML = '<div class="pc-childrow">Child: <select id="pc-child"></select></div><div id="pc-picture"></div>';
 
     var head = document.createElement('div');
     head.id = 'pc-pane-insights';
     head.className = 'pc-pane';
     head.style.display = 'none';
-    head.innerHTML = '<div class="pc-childrow">Child: <select id="pc-child"></select></div><div id="pc-insights"></div>';
+    head.innerHTML = '<div id="pc-insights"></div>';
     var sig = document.createElement('div');
     sig.id = 'pc-pane-signals';
     sig.className = 'pc-pane';
@@ -695,11 +958,13 @@
     plan.style.display = 'none';
     plan.innerHTML = '<div id="pc-plan"></div>';
     setup.className = 'pc-pane';
+    setup.style.display = 'none';
 
     var playersCard = document.createElement('div');
     playersCard.innerHTML = '<h2>👥 Players on this device</h2><div id="pc-players"></div>';
     content.appendChild(tabs);
     setup.insertBefore(playersCard, setup.firstChild);
+    content.appendChild(pic);
     content.appendChild(setup);
     content.appendChild(head);
     content.appendChild(sig);
@@ -710,7 +975,7 @@
       if (!b) return;
       var p = b.getAttribute('data-p');
       [].forEach.call(tabs.querySelectorAll('.pc-tab'), function (x) { x.classList.toggle('on', x === b); });
-      ['setup', 'insights', 'signals', 'plan'].forEach(function (k) {
+      ['picture', 'setup', 'insights', 'signals', 'plan'].forEach(function (k) {
         var pane = el('pc-pane-' + k);
         if (pane) pane.style.display = (k === p) ? 'block' : 'none';
       });

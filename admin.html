@@ -692,6 +692,24 @@ window.ChampSync = (function () {
 .pc-rec-icon { font-size: 26px; }
 .pc-rec b { font-size: 17.5px; }
 .pc-rec p { margin: 6px 0 0; line-height: 1.5; }
+
+#pc-picture .pc-bar { display: flex; align-items: center; gap: 12px; margin: 7px 0; }
+#pc-picture .pc-bar-lab { flex: 0 0 240px; font-weight: 800; font-size: 16.5px; }
+#pc-picture .pc-bar-track { flex: 1; height: 20px; background: #efe7d7; border-radius: 999px; overflow: hidden; min-width: 90px; }
+#pc-picture .pc-bar-fill { height: 100%; border-radius: 999px; transition: width .4s ease; }
+#pc-picture .pc-bar-val { flex: 0 0 200px; text-align: right; font-size: 15px; font-weight: 700; color: #7a6f60; }
+#pc-picture .pc-strip { display: flex; gap: 5px; margin: 4px 0 0; }
+#pc-picture .pc-strip-day { flex: 1; text-align: center; }
+#pc-picture .pc-strip-sq { height: 40px; border-radius: 8px; }
+#pc-picture .pc-strip-day span { font-size: 13px; font-weight: 700; color: #7a6f60; }
+#pc-picture .pc-grouphead { font-weight: 800; font-size: 16px; color: #2b2620; margin: 18px 0 4px; }
+#pc-picture .pc-note { background: #fffdf7; border: 2px solid #d7e4c3; border-radius: 14px; padding: 14px 18px; }
+#pc-picture .pc-note p { margin: 10px 0; line-height: 1.6; }
+@media (max-width: 620px) {
+  #pc-picture .pc-bar { flex-wrap: wrap; gap: 6px; }
+  #pc-picture .pc-bar-lab { flex: 1 1 100%; }
+  #pc-picture .pc-bar-val { flex: 1 1 100%; text-align: left; }
+}
 </style>
 <script src="math-champ/assets/levels.js?v=31"></script>
 <script src="math-champ/assets/batches.js?v=31"></script>

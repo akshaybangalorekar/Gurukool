@@ -1088,6 +1088,46 @@ The pad still appears the moment a question is on screen, the microphone
 still handles spoken word answers, and the small keyboard key still appears
 if the microphone is unavailable.
 
+Recent changes (round 58 - v58: THE PICTURE in the Parent Console)
+------------------------
+The Parent Console has a new first tab, "Picture", answering two questions at
+a glance: how much work is being done, and which skills are moving.
+
+WHAT IT SHOWS
+1. "Where the work is going" - one bar per champ: Math-Champ, Homework Club,
+   Science-Champ, Word-Champ, Mind-Champ, Samskritam-Champ. Each bar is how
+   often he is right (green strong, amber practice, red needs help). Mind and
+   Sanskrit are progress bars, because there is no right-or-wrong to score.
+2. "The last two weeks" - a strip of 14 squares, one per day, shaded by the
+   learning-clock minutes that day. Darker = longer.
+3. "Skill by skill" - a bar for every skill inside every champ, including all
+   five Homework Club types, with tries and an arrow when it is improving.
+4. "What this says" - the plain-English note:
+     - Getting stronger: the skills that hold up after practice.
+     - Needs more time: right often enough but not yet quick or sure.
+     - Homework Club: which of the teacher's question types are solid and
+       which are worth another round.
+     - Where he has got to: ground covered (Mind cases, Sanskrit scenes and
+       words) - deliberately NOT scored as if it were accuracy.
+     - Do this next: the single weakest skill, named.
+
+FIXES ALONG THE WAY
+- Word-Champ and Samskritam-Champ were not read by the console at all; both
+  are now, so the picture covers all six areas.
+- Homework Club attempts were showing up twice (once inside maths). They now
+  belong to the Homework Club only.
+- A name stored with surrounding quotes (which can happen) silently broke
+  every per-child lookup, so one child's page could read another's data. The
+  name is now cleaned before it is used.
+- Restructuring the tabs briefly dropped the Setup tab; it is back.
+
+VERIFIED: seeded with real-shaped data for all six areas and driven in a
+browser - 23 bars drawn, 22 carrying real data, the 14-day strip, all six
+groups present, and the note naming the right strengths and the right weak
+spots (Homework Club: solid on Fractions on both sides, worth another round
+on Two fractions subtracted). All five tabs were then clicked in turn and
+each rendered its own content.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
