@@ -16,14 +16,14 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=60">
+  <link rel="stylesheet" href="assets/style.css?v=61">
 <style>
-  .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 70px; }
+  .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
   .h-lead { color: #64748b; font-size: 17px; line-height: 1.6; margin: 0 0 18px; }
   .h-panel { background: #fff; border: 1px solid #e6ebf1; border-radius: 20px; padding: 20px; }
   .h-card { background: #fff; border: 1px solid #e6ebf1; border-left: 6px solid #0ea5e9; border-radius: 18px; padding: 16px 18px; margin: 0 0 14px; }
-  .h-card b.t { display: block; font: 800 19px Nunito, system-ui, sans-serif; color: #0f172a; margin-bottom: 8px; }
+  .h-card.picked { border-left-color: #2e7d32; background: #f7fdf6; }
   .h-q { font: 700 17.5px/1.6 Nunito, system-ui, sans-serif; color: #1e293b; background: #f8fafc; border-radius: 12px; padding: 12px 14px; margin: 0 0 8px; }
   .h-ans { font: 800 16px Nunito, system-ui, sans-serif; color: #047857; margin: 0 0 10px; }
   .h-steps { margin: 0 0 12px; padding-left: 20px; }
@@ -31,6 +31,7 @@
   .h-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 8px 0 0; }
   .h-btn.p { background: #0ea5e9; border-color: #0ea5e9; color: #fff; }
   .h-btn.big { font-size: 18px; padding: 16px 22px; }
+  .h-btn.small { font-size: 15px; padding: 9px 13px; }
   .h-opt { display: block; width: 100%; text-align: left; font: 800 19px Nunito, system-ui, sans-serif; padding: 15px 18px; border: 2px solid #cbd5e1; background: #fff; color: #1e293b; border-radius: 14px; margin: 0 0 10px; cursor: pointer; }
   .h-opt.ok { border-color: #34d399; background: #ecfdf5; color: #065f46; }
   .h-opt.no { border-color: #fca5a5; background: #fef2f2; color: #991b1b; }
@@ -43,19 +44,38 @@
   .h-time { font: 800 17px Nunito, system-ui, sans-serif; color: #0f172a; white-space: nowrap; }
   .h-chip { display: inline-block; font: 800 13.5px Nunito, system-ui, sans-serif; border-radius: 999px; padding: 4px 11px; background: #e0f2fe; color: #075985; margin: 0 6px 6px 0; }
   .h-note { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 12px 14px; font-size: 16px; color: #78350f; margin-top: 14px; }
+  /* the assignment rows */
+  .hw-row { display: flex; gap: 14px; align-items: flex-start; }
+  .hw-tick { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; border: 2px solid #cbd5e1; background: #fff; font-size: 24px; line-height: 1; cursor: pointer; color: #94a3b8; }
+  .hw-tick.on { border-color: #2e7d32; background: #e8f5e9; color: #2e7d32; }
+  .hw-main { flex: 1; min-width: 0; }
+  .hw-topic { font: 800 19.5px Nunito, system-ui, sans-serif; color: #0f172a; margin: 0 0 2px; }
+  .hw-given { font: 700 15px Nunito, system-ui, sans-serif; color: #7a6f60; margin: 0 0 8px; }
+  .hw-covers { font-size: 15.5px; line-height: 1.55; color: #475569; margin: 0 0 8px; }
+  .hw-acts { margin-top: 6px; }
+  /* the action bar */
+  .hw-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 800; background: rgba(15,23,42,.96);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); display: none; }
+  .hw-bar.on { display: block; }
+  .hw-bar .hw-count { color: #f8fafc; font: 800 16px Nunito, system-ui, sans-serif; margin: 0 0 8px; }
+  .hw-bar button { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 13px 16px; border-radius: 13px; border: 0; margin: 0 8px 6px 0; cursor: pointer; background: #f8fafc; color: #0f172a; }
+  .hw-bar button.go { background: #0ea5e9; color: #fff; }
+  .hw-bar button.teach { background: #2e7d32; color: #fff; }
+  body.hw-bar-open .h-wrap { padding-bottom: 200px; }
 </style>
 </head>
 <body>
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
-  <script src="../version.js?v=60"></script>
-  <script src="../gk-fresh.js?v=60"></script>
-  <script src="../rhythm.js?v=60"></script>
-  <script src="assets/app.js?v=60"></script>
-  <script src="assets/gen.js?v=60"></script>
-  <script src="assets/homework.js?v=60"></script>
-  <script src="../champ-rail.js?v=60"></script>
-  <script src="assets/nav.js?v=60"></script>
+  <div class="hw-bar" id="hw-bar"></div>
+  <script src="../version.js?v=61"></script>
+  <script src="../gk-fresh.js?v=61"></script>
+  <script src="../rhythm.js?v=61"></script>
+  <script src="assets/app.js?v=61"></script>
+  <script src="assets/gen.js?v=61"></script>
+  <script src="assets/homework.js?v=61"></script>
+  <script src="../champ-rail.js?v=61"></script>
+  <script src="assets/nav.js?v=61"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -65,37 +85,74 @@
     function el(id) { return document.getElementById(id); }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-    var S = { on: false, ends: 0, total: 0, right: 0, done: {}, q: null, answered: false, tick: null, mode: 'mixed', typeId: null };
+    var S = { view: 'list', picked: {}, on: false, ends: 0, total: 0, n: 0, right: 0, q: null, answered: false, tick: null, types: [], mode: 'mixed', typeId: null };
+    var TICK = '\u2611', BLANK = '\u2610';
 
-    /* ---------- home ---------- */
-    function home() {
+    /* ---------- what each assignment has been doing ---------- */
+    function statsFor(a) {
+      var rec = load(), n = 0, right = 0;
+      (a.types || []).forEach(function (t) {
+        var r = rec[t];
+        if (r) { n += (r.n || 0); right += (r.right || 0); }
+      });
+      return { n: n, right: right, pct: n ? Math.round(100 * right / n) : null };
+    }
+
+    /* ---------- the list ---------- */
+    function list() {
       stopClock();
-      var rec = load();
-      var cards = HW.types.map(function (t) {
-        var r = rec[t.id] || { n: 0, right: 0 };
-        return '<div class="h-card"><b class="t">' + t.icon + ' ' + esc(t.name) + '</b>' +
-          '<div class="h-q">' + esc(t.homework) + '</div>' +
-          '<div class="h-ans">The answer: ' + esc(t.homeworkAnswer) + '</div>' +
-          '<ol class="h-steps">' + t.method.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ol>' +
-          '<span class="h-chip">' + (r.n ? r.n + ' practised · ' + Math.round(100 * r.right / r.n) + '% right' : 'not practised yet') + '</span>' +
-          '<div><button class="h-btn p" onclick="HWClub.startType(\'' + t.id + '\')">Practise this type</button></div></div>';
-      }).join('');
-      el('h-view').innerHTML = '<h1 class="h-h1">\ud83d\udcd8 Homework Club</h1>' +
-        '<p class="h-lead">Only the kinds of question your teacher sets — nothing else. Each one below is the actual question from your sheet, worked out, and then you get endless fresh ones of the same kind with different numbers.</p>' +
-        '<div class="h-panel"><b style="font:800 19px Nunito;color:#0f172a">How long shall we go for?</b>' +
-        '<p class="h-lead" style="margin:8px 0 12px">The five types are mixed together, just like the sheet.</p>' +
-        '<button class="h-btn p big" onclick="HWClub.start(15)">15 minutes</button>' +
-        '<button class="h-btn p big" onclick="HWClub.start(30)">30 minutes</button>' +
-        '<button class="h-btn p big" onclick="HWClub.start(60)">1 hour</button></div>' +
-        '<p class="h-lead" style="margin:22px 0 10px"><b>The five types on your sheet</b></p>' + cards +
-        '<div class="h-note">Nothing else lives in the Homework Club. When your teacher sends a new kind of question, tell me and I will add it here.</div>';
-      if (window.MathNav && MathNav.top) MathNav.top();
+      S.view = 'list'; S.on = false;
+      var list = HW.assignments();
+      var h = '<h1 class="h-h1">\ud83d\udcd8 Homework Club</h1>' +
+        '<p class="h-lead">Every piece of homework your teacher set, with the date it was given. ' +
+        'Tick the ones you want \u2014 tick two or three if you like \u2014 then choose how long to practise, or ask to be taught one.</p>';
+      if (!list.length) {
+        h += '<div class="h-note">No assignments on this device yet. A grown-up can add one from the Parent Console.</div>';
+      }
+      list.forEach(function (a) {
+        var st = statsFor(a), on = !!S.picked[a.id];
+        h += '<div class="h-card' + (on ? ' picked' : '') + '"><div class="hw-row">' +
+          '<button class="hw-tick' + (on ? ' on' : '') + '" onclick="HWClub.toggle(\'' + a.id + '\')" aria-label="Tick this assignment">' + (on ? TICK : BLANK) + '</button>' +
+          '<div class="hw-main">' +
+          '<p class="hw-topic">' + esc(a.topic) + '</p>' +
+          '<p class="hw-given">given ' + esc(HW.prettyDate(a.given)) + '</p>' +
+          '<p class="hw-covers">' + (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ') + '</p>' +
+          '<span class="h-chip">' + (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet') + '</span>' +
+          '<div class="hw-acts">' +
+          '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
+          '<button class="h-btn small" onclick="HWClub.teach(\'' + a.id + '\')">Teach me this</button>' +
+          '</div></div></div></div>';
+      });
+      h += '<div class="h-note">Nothing else lives in the Homework Club \u2014 only the kinds of question your teacher actually sets. ' +
+        'When a new sheet comes home, a grown-up adds it from the Parent Console and it appears here.</div>';
+      el('h-view').innerHTML = h;
+      drawBar();
+    }
+
+    /* ---------- the action bar ---------- */
+    function drawBar() {
+      var bar = el('hw-bar'), picked = Object.keys(S.picked).filter(function (k) { return S.picked[k]; });
+      if (S.view !== 'list' || !picked.length) {
+        bar.className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
+        return;
+      }
+      var list = HW.assignments();
+      var names = picked.map(function (id) {
+        var a = list.filter(function (x) { return x.id === id; })[0];
+        return a ? a.topic : id;
+      });
+      bar.className = 'hw-bar on';
+      document.body.classList.add('hw-bar-open');
+      bar.innerHTML = '<p class="hw-count">' + picked.length + ' selected: ' + esc(names.join(' + ')) + '</p>' +
+        '<button class="go" onclick="HWClub.start(15)">15 minutes</button>' +
+        '<button class="go" onclick="HWClub.start(30)">30 minutes</button>' +
+        '<button class="go" onclick="HWClub.start(60)">1 hour</button>' +
+        '<button class="teach" onclick="HWClub.teachPicked()">Teach me these</button>';
     }
 
     /* ---------- the clock ---------- */
     function startClock(mins) {
-      S.ends = Date.now() + mins * 60000;
-      S.total = mins;
+      S.ends = Date.now() + mins * 60000; S.total = mins;
       if (S.tick) clearInterval(S.tick);
       S.tick = setInterval(function () {
         var left = Math.max(0, S.ends - Date.now());
@@ -106,18 +163,14 @@
       }, 1000);
     }
     function stopClock() { if (S.tick) { clearInterval(S.tick); S.tick = null; } }
-    function fmt(ms) {
-      var s = Math.ceil(ms / 1000), m = Math.floor(s / 60);
-      s = s % 60;
-      return m + ':' + (s < 10 ? '0' : '') + s;
-    }
+    function fmt(ms) { var s = Math.ceil(ms / 1000), m = Math.floor(s / 60); s = s % 60; return m + ':' + (s < 10 ? '0' : '') + s; }
 
     /* ---------- a question ---------- */
     function nextQuestion() {
       if (!S.on) return;
       if (Date.now() >= S.ends) return finish();
       var n = S.n || 0;
-      var id = S.mode === 'one' ? S.typeId : HW.types[n % HW.types.length].id;
+      var id = S.mode === 'one' ? S.typeId : S.types[n % S.types.length];
       S.n = n + 1;
       S.q = HW.make(id);
       S.answered = false;
@@ -140,14 +193,65 @@
         '<p class="h-fb" id="h-fb"></p><div id="h-sol"></div></div>';
     }
 
+    /* ---------- teaching ---------- */
+    function teachView(ids) {
+      stopClock();
+      S.view = 'teach'; S.on = false;
+      el('hw-bar').className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
+      var list = HW.assignments().filter(function (a) { return ids.indexOf(a.id) !== -1; });
+      if (!list.length) return list_();
+      var h = '<h1 class="h-h1">\ud83d\udcd6 Teaching' + (list.length === 1 ? ': ' + esc(list[0].topic) : ' ' + list.length + ' assignments') + '</h1>' +
+        '<p class="h-lead">Read this first \u2014 no questions yet. Each kind of question on your sheet, how it works, and your teacher\u2019s own example worked out.</p>';
+      list.forEach(function (a) {
+        h += '<h2 style="font:800 22px Nunito;color:#0f172a;margin:22px 0 8px">' + esc(a.topic) +
+             ' <span style="font:700 15px Nunito;color:#7a6f60">given ' + esc(HW.prettyDate(a.given)) + '</span></h2>';
+        (a.types || []).forEach(function (tid) {
+          var t = HW.byId(tid);
+          if (!t) return;
+          h += '<div class="h-card"><b class="hw-topic">' + t.icon + ' ' + esc(t.name) + '</b>' +
+            '<div class="h-q">' + esc(t.homework) + '</div>' +
+            '<div class="h-ans">The answer: ' + esc(t.homeworkAnswer) + '</div>' +
+            '<ol class="h-steps">' + t.method.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ol></div>';
+        });
+      });
+      h += '<button class="h-btn p big" onclick="HWClub.start(15)">Now practise these \u2014 15 minutes</button>' +
+           '<button class="h-btn" onclick="HWClub.back()">Back to the list</button>';
+      el('h-view').innerHTML = h;
+    }
+    function list_() { list(); }
+
     window.HWClub = {
-      start: function (mins) { S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0; startClock(mins); nextQuestion(); },
-      startType: function (id) { S.on = true; S.mode = 'one'; S.typeId = id; S.n = 0; S.right = 0; startClock(15); nextQuestion(); },
+      back: function () { list(); },
+      toggle: function (id) {
+        S.picked[id] = !S.picked[id];
+        list();
+      },
+      start: function (mins) {
+        var ids = Object.keys(S.picked).filter(function (k) { return S.picked[k]; });
+        S.types = HW.typesFor(ids);
+        S.view = 'run'; S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0;
+        el('hw-bar').className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
+        startClock(mins);
+        nextQuestion();
+      },
+      practiseOne: function (id) {
+        var a = HW.assignments().filter(function (x) { return x.id === id; })[0];
+        if (!a) return;
+        S.types = (a.types || []).slice();
+        S.view = 'run'; S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0;
+        el('hw-bar').className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
+        startClock(15);
+        nextQuestion();
+      },
+      teach: function (id) { teachView([id]); },
+      teachPicked: function () {
+        teachView(Object.keys(S.picked).filter(function (k) { return S.picked[k]; }));
+      },
       how: function () {
         var t = HW.byId(S.q.typeId);
         el('h-sol').innerHTML = '<div class="h-sol"><b>How this type works</b><ol class="h-steps" style="margin:8px 0 0">' +
           t.method.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ol>' +
-          '<p style="margin:10px 0 0"><b>On your sheet:</b> ' + esc(t.homework) + ' → ' + esc(t.homeworkAnswer) + '</p></div>';
+          '<p style="margin:10px 0 0"><b>On your sheet:</b> ' + esc(t.homework) + ' \u2192 ' + esc(t.homeworkAnswer) + '</p></div>';
       },
       pick: function (i) {
         if (S.answered) return;
@@ -181,19 +285,16 @@
     function finish() {
       stopClock();
       S.on = false;
-      var mins = S.total || 0;
       el('h-view').innerHTML = '<h1 class="h-h1">\ud83c\udfc6 Homework Club session done</h1>' +
-        '<div class="h-panel"><p class="h-q">You answered ' + S.done.count + ' question' + (S.done.count === 1 ? '' : 's') +
+        '<div class="h-panel"><p class="h-q">You answered ' + (S.n || 0) + ' question' + ((S.n || 0) === 1 ? '' : 's') +
         ' and got ' + S.right + ' right.</p>' +
-        '<p class="h-lead">Every one of those was a variation of your teacher\'s five types. If a type still feels slippery, practise it on its own from the list below.</p>' +
-        '<button class="h-btn p" onclick="HWClub.back()">Back to the five types</button></div>';
-      if (window.MathNav && MathNav.top) MathNav.top();
+        '<p class="h-lead">Every one of those came from the homework you ticked. If one kind still feels slippery, ' +
+        'go back and tick just that one, or ask to be taught it.</p>' +
+        '<button class="h-btn p" onclick="HWClub.back()">Back to the assignments</button></div>';
     }
-    window.HWClub.back = home;
 
-    home();
+    list();
   })();
   </script>
-  <script src="../kidpad.js?v=60"></script>
 </body>
 </html>

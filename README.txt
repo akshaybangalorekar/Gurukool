@@ -1200,6 +1200,41 @@ closest is cutting. Tap the one you meant", speaking a word exactly said
 re-ordered when the closest was not already first, and a typed number question
 still converted speech to a number in the box.
 
+Recent changes (round 61 - v61: the Homework Club opens on the assignments)
+------------------------
+The Homework Club now opens on a LIST of the homework the teacher actually
+set, instead of going straight into practice.
+
+THE FIRST PAGE
+- One row per assignment: a tick box, the topic name, the date it was given,
+  the kinds of question it contains, and how it has been going so far.
+- Tick one, or two, or three. A bar appears at the bottom reading
+  "2 selected: Linear equations + Angles and shapes" with:
+     15 minutes | 30 minutes | 1 hour | Teach me these
+- Each row also has "Practise just this" and "Teach me this".
+- Practising uses ONLY the kinds of question from the assignments ticked.
+- "Teach me" shows the method and the teacher's own worked example for each
+  kind - no questions - then offers to practise.
+
+ADDING MORE
+A new section in the Parent Console (Setup tab): topic name, date given, and
+which kinds of question. It writes to the same place the child's page reads,
+so a new sheet appears in the Homework Club immediately. An empty topic name
+is refused, and at least one kind must be ticked.
+
+The real sheet is already in there: "Linear equations", given 1 Oct 2026, with
+all five kinds from the 12-question worksheet.
+
+VERIFIED: the list rendered three seeded assignments with their dates; ticking
+showed "1 selected: ..." and the action bar; starting 15 minutes produced ONLY
+the ticked assignment's kinds of question (Fractions on both sides and Two
+fractions of x added, with angles and subtraction correctly absent); "Teach me
+this" opened "Teaching: Linear equations" with the methods and answers. Then
+the console form was driven: it added an assignment with exactly the three
+ticked kinds, refused an empty topic name, and wrote the same shape the child's
+page reads. The action bar was measured at iPad width - all four buttons on
+screen, nothing cut off.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

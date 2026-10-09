@@ -275,8 +275,66 @@
       make: typeTwoFractionsSubtracted }
   ];
 
+  /* ============================================================
+     THE ASSIGNMENTS
+     One entry per piece of homework the teacher actually set: the topic, the
+     date it was given, and which of the question types it contains. The list
+     lives on the device, so a new one can be added without touching code.
+     ============================================================ */
+  var ASSIGN_KEY = 'gk_hw_assignments';
+  var DEFAULT_ASSIGNMENTS = [
+    { id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01',
+      types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }
+  ];
+
+  function readAssignments() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(ASSIGN_KEY));
+      if (raw && raw.length) return raw;
+    } catch (e) {}
+    return DEFAULT_ASSIGNMENTS.slice();
+  }
+  function writeAssignments(list) {
+    try { localStorage.setItem(ASSIGN_KEY, JSON.stringify(list || [])); } catch (e) {}
+  }
+  function prettyDate(iso) {
+    var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return String(iso || '');
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return (+m[3]) + ' ' + months[(+m[2]) - 1] + ' ' + m[1];
+  }
+  function typesFor(ids) {
+    var list = readAssignments(), out = [], seen = {};
+    (list || []).forEach(function (a) {
+      if (ids && ids.length && ids.indexOf(a.id) === -1) return;
+      (a.types || []).forEach(function (t) { if (!seen[t]) { seen[t] = 1; out.push(t); } });
+    });
+    return out.length ? out : TYPES.map(function (t) { return t.id; });
+  }
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
   window.HW = {
     types: TYPES,
+    assignments: readAssignments,
+    saveAssignments: writeAssignments,
+    prettyDate: prettyDate,
+    typesFor: typesFor,
+    addAssignment: function (topic, given, types) {
+      var list = readAssignments();
+      var id = 'a-' + (given || todayISO()) + '-' + Math.random().toString(36).slice(2, 6);
+      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(),
+                  types: (types && types.length) ? types : TYPES.map(function (t) { return t.id; }) });
+      writeAssignments(list);
+      return id;
+    },
+    removeAssignment: function (id) {
+      var list = readAssignments().filter(function (a) { return a.id !== id; });
+      writeAssignments(list);
+      return list;
+    },
     byId: function (id) { for (var i = 0; i < TYPES.length; i++) if (TYPES[i].id === id) return TYPES[i]; return null; },
     make: function (id) { var t = window.HW.byId(id) || TYPES[0]; var q = t.make(); q.typeId = t.id; q.typeName = t.name; return q; },
     /* a mixed paper: the five types, in rotation */

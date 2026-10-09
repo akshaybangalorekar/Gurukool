@@ -758,6 +758,60 @@
     return h;
   }
 
+  /* ============================================================
+     HOMEWORK ASSIGNMENTS - added by the parent, read by the child's
+     Homework Club. Stored under the same key homework.js reads.
+     ============================================================ */
+  var HWA_KEY = 'gk_hw_assignments';
+  var HWA_TYPES = [
+    { id: 'bothsides', name: 'Fractions on both sides' },
+    { id: 'addfractions', name: 'Two fractions of x added' },
+    { id: 'wordproblem', name: 'A word problem hiding an equation' },
+    { id: 'angles', name: 'Adjacent angles on a straight line' },
+    { id: 'subfractions', name: 'Two fractions subtracted' }
+  ];
+  function hwaRead() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(HWA_KEY));
+      if (raw && raw.length) return raw;
+    } catch (e) {}
+    return [{ id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01',
+              types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }];
+  }
+  function hwaWrite(list) { try { localStorage.setItem(HWA_KEY, JSON.stringify(list || [])); } catch (e) {} }
+  function hwaDate(iso) {
+    var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!m) return String(iso || '');
+    var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return (+m[3]) + ' ' + mo[(+m[2]) - 1] + ' ' + m[1];
+  }
+  function renderHW() {
+    var host = el('pc-hw');
+    if (!host) return;
+    var list = hwaRead();
+    var today = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
+    var h = '<p class="pc-lead">What the maths teacher actually set. Each one appears in Atharv\'s Homework Club, where he ticks the ones he wants and chooses 15 minutes, 30 minutes, an hour, or to be taught it.</p>';
+    h += '<div style="background:#fffdf7;border:1.5px solid rgba(43,38,32,.12);border-radius:14px;padding:14px 16px;margin:0 0 16px">' +
+      '<b style="font-size:17px">Add an assignment</b>' +
+      '<div style="margin:10px 0 6px"><label style="font-weight:700;font-size:15px">Topic &nbsp;</label>' +
+      '<input id="hwa-topic" type="text" placeholder="e.g. Linear equations" style="font:600 16px inherit;padding:9px 12px;border-radius:10px;border:2px solid rgba(43,38,32,.25);min-width:250px"></div>' +
+      '<div style="margin:6px 0 10px"><label style="font-weight:700;font-size:15px">Date given &nbsp;</label>' +
+      '<input id="hwa-given" type="date" value="' + today + '" style="font:600 16px inherit;padding:9px 12px;border-radius:10px;border:2px solid rgba(43,38,32,.25)"></div>' +
+      '<div style="margin:0 0 10px"><b style="font-size:15px">Which kinds of question</b><div style="margin-top:6px">' +
+      HWA_TYPES.map(function (t) {
+        return '<label style="display:inline-block;font-size:15px;font-weight:600;margin:0 14px 6px 0">' +
+          '<input type="checkbox" class="hwa-t" value="' + t.id + '" checked> ' + esc(t.name) + '</label>';
+      }).join('') + '</div></div>' +
+      '<button class="pc-tab" onclick="PC.addHW()" style="border-color:#2e7d32;background:linear-gradient(135deg,#f1f8e9,#fffdf7)">Add this assignment</button>' +
+      '<span id="hwa-msg" style="margin-left:12px;font-weight:700;color:#2e7d32"></span></div>';
+    h += list.length ? list.map(function (a) {
+      return '<div class="pc-row"><b>' + esc(a.topic) + '</b><span class="pc-meta">given ' + esc(hwaDate(a.given)) + ' \u00b7 ' +
+        (a.types || []).length + ' kinds</span>' +
+        '<button class="pc-tab" style="margin-left:auto;font-size:14px;padding:6px 12px" onclick="PC.delHW(\'' + a.id + '\')">Remove</button></div>';
+    }).join('') : '<div class="pc-empty">No assignments yet \u2014 add the first one above.</div>';
+    host.innerHTML = h;
+  }
+
   function renderAll() {
     var names = childNames();
     if (!names.length) names = ['Champion'];
@@ -921,6 +975,26 @@
   window.ParentConsole = { render: renderAll, rename: renamePlayer, del: deletePlayer, players: allProfiles, names: namesOnDevice, setChild: function (n) { current = n; renderAll(); } };
 
   /* ---------- wire into admin.html ---------- */
+  window.PC = window.PC || {};
+  window.PC.addHW = function () {
+    var topic = (el('hwa-topic') && el('hwa-topic').value || '').trim();
+    var given = (el('hwa-given') && el('hwa-given').value) || '';
+    var types = [].slice.call(document.querySelectorAll('.hwa-t'))
+      .filter(function (c) { return c.checked; })
+      .map(function (c) { return c.value; });
+    if (!topic) { if (el('hwa-msg')) el('hwa-msg').textContent = 'Give it a topic name first.'; return; }
+    if (!types.length) { if (el('hwa-msg')) el('hwa-msg').textContent = 'Tick at least one kind of question.'; return; }
+    var list = hwaRead();
+    list.push({ id: 'a-' + (given || 'x') + '-' + Math.random().toString(36).slice(2, 6), topic: topic, given: given, types: types });
+    hwaWrite(list);
+    renderHW();
+    if (el('hwa-msg')) el('hwa-msg').textContent = 'Added. It is in the Homework Club now.';
+  };
+  window.PC.delHW = function (id) {
+    hwaWrite(hwaRead().filter(function (a) { return a.id !== id; }));
+    renderHW();
+  };
+
   function build() {
     var content = el('admin-content');
     if (!content || el('pc-tabs')) return;
@@ -964,6 +1038,9 @@
     playersCard.innerHTML = '<h2>👥 Players on this device</h2><div id="pc-players"></div>';
     content.appendChild(tabs);
     setup.insertBefore(playersCard, setup.firstChild);
+    var hwCard = document.createElement('div');
+    hwCard.innerHTML = '<h2>\ud83d\udcd8 Homework assignments</h2><div id="pc-hw"></div>';
+    setup.insertBefore(hwCard, playersCard.nextSibling);
     content.appendChild(pic);
     content.appendChild(setup);
     content.appendChild(head);
@@ -985,6 +1062,7 @@
     if (childSel) childSel.addEventListener('change', function () { current = childSel.value; renderAll(); });
 
     renderPlayers();
+    renderHW();
     renderAll();
   }
 
