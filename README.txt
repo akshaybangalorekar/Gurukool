@@ -1168,6 +1168,38 @@ odd-one-out question showed its four items as buttons, and a number topic
 still offered the typing box. Options are also shuffled once per question, so
 the right one is never in the same place.
 
+Recent changes (round 60 - v60: voice rescue in the Kid Pad)
+------------------------
+When the microphone mishears him, the pad now shows what it heard and puts the
+tappable options in order of how much they SOUND like it, ringing the closest.
+Nothing is ever tapped for him, so a right answer can still never be marked
+wrong - he just gets a nudge toward the one he meant.
+
+HOW THE SOUND MATCHING WORKS
+kidpad.js carries a small English "sounds like" key: silent letters dropped
+(kn-, wr-, ps-), ph->f, ck->k, ch->C, th->0, soft c->s, vowels stripped,
+doubles collapsed. Two words are then compared by how far apart those keys are,
+with a bonus for sharing the first sounds. No dictionary is shipped - it is
+about forty lines.
+
+WHAT WAS MEASURED FIRST
+A real pronunciation dictionary (117,000 words) was used to test the idea as
+literally stated - "five to eight words that sound like what he said". It found
+eight candidates for 21 of 23 test words, BUT most were obscure names and
+non-words (chicken -> chinen, chacon, charron). Restricted to words a child
+knows, most answers have two to four near-homophones and some have none
+(triangle -> one). So the literal version was not honest; the rescue version
+is. That is why the options are ranked rather than replaced.
+
+VERIFIED: the matcher puts knight with night, plane with plain, sum with some,
+and - the case that matters - hearing "cunning" ranks "cutting" first. On a
+real page the pad appears on a choice question, the mic key shows as ready,
+speaking "cunning" rang "cutting" with the message "I heard cunning - the
+closest is cutting. Tap the one you meant", speaking a word exactly said
+"that is one of the choices", nothing was ever auto-tapped, the options
+re-ordered when the closest was not already first, and a typed number question
+still converted speech to a number in the box.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

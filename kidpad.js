@@ -99,6 +99,8 @@
       '#kidpad .kp-go{background:#2a9d8f;color:#fff;font-size:18px;letter-spacing:.3px;flex:1 1 60px;}' +
       '#kidpad .kp-mic{background:#e8e0cf;}' +
       '#kidpad .kp-mic.listening{background:#ef5350;color:#fff;animation:kpulse 1s infinite;}' +
+'#kidpad .kp-mic.ready{background:#c8e6c9;}' +
+'.kp-close{box-shadow:0 0 0 3px #0ea5e9, 0 0 0 6px rgba(14,165,233,.22) !important;}' +
       '@keyframes kpulse{50%{opacity:.55;}}' +
       'body.kidpad-open{padding-bottom:140px;}';
     document.head.appendChild(css);
@@ -205,6 +207,91 @@
     try { t.click(); } catch (e) {}
   }
 
+  var MIC_ESC = '\uD83C\uDFA4';
+
+  /* ---------- sounds like ----------
+     A child's voice is often misheard, and a noisy room makes it worse. So
+     when the microphone hears something that does not match any option, the
+     options are put in order of how much they SOUND like what was heard, and
+     the closest one is ringed. Nothing is ever tapped for him - he still
+     chooses - so a right answer can never be marked wrong. */
+  function soundKey(w) {
+    var t = String(w || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (!t) return '';
+    t = t.replace(/^kn/, 'n').replace(/^gn/, 'n').replace(/^wr/, 'r').replace(/^ps/, 's');
+    t = t.replace(/ph/g, 'f').replace(/ck/g, 'k').replace(/qu/g, 'kw').replace(/x/g, 'ks');
+    t = t.replace(/sh/g, 'X').replace(/ch/g, 'C').replace(/th/g, '0').replace(/wh/g, 'w');
+    t = t.replace(/gh/g, 'g').replace(/dg/g, 'j');
+    t = t.replace(/c(?=[eiy])/g, 's').replace(/c/g, 'k');   /* soft c, then hard c */
+    t = t.replace(/([a-z])\1+/g, '$1');
+    t = t.replace(/e$/, '');
+    t = t.replace(/[aeiouy]/g, function (m, i) { return i === 0 ? m : ''; });
+    return t.replace(/([a-z])\1+/g, '$1');
+  }
+  function soundClose(a, b) {
+    var ka = soundKey(a), kb = soundKey(b);
+    if (!ka || !kb) return 0;
+    if (ka === kb) return 1;
+    var prev = [], i, j;
+    for (i = 0; i <= kb.length; i++) prev[i] = i;
+    for (i = 1; i <= ka.length; i++) {
+      var cur = [i];
+      for (j = 1; j <= kb.length; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (ka[i - 1] === kb[j - 1] ? 0 : 1));
+      }
+      prev = cur;
+    }
+    var sc = 1 - prev[kb.length] / Math.max(ka.length, kb.length);
+    if (ka.charAt(0) === kb.charAt(0)) sc += 0.12;
+    if (ka.slice(0, 2) === kb.slice(0, 2)) sc += 0.08;
+    return Math.max(0, Math.min(1, sc));
+  }
+
+  /* the tappable options on the page, if there are any */
+  var CHOICE_SEL = '.r-opt, .wc-opt, .h-opt, .opt, .inv-opt, [data-choice]';
+  function choiceGroup() {
+    var all = document.querySelectorAll(CHOICE_SEL), vis = [], i;
+    for (i = 0; i < all.length; i++) {
+      var b = all[i], t = (b.textContent || '').trim();
+      if (!visible(b)) continue;
+      if (!t || t.length > 40) continue;
+      vis.push(b);
+    }
+    return (vis.length >= 3 && vis.length <= 8) ? vis : [];
+  }
+
+  function rescueWithVoice(heard) {
+    var group = choiceGroup();
+    if (!group.length) return false;
+    var scored = group.map(function (b) {
+      var t = (b.textContent || '').trim();
+      return { b: b, t: t, s: soundClose(heard, t) };
+    });
+    scored.sort(function (a, b) { return b.s - a.s; });
+    var top = scored[0], k;
+    /* put them in sound order, without disturbing anything else on the page */
+    var parent = group[0].parentNode;
+    var last = group[group.length - 1], after = null;
+    for (var n = last.nextSibling; n; n = n.nextSibling) { if (n.nodeType === 1) { after = n; break; } }
+    var next = after;
+    for (k = scored.length - 1; k >= 0; k--) {
+      parent.insertBefore(scored[k].b, next);
+      next = scored[k].b;
+    }
+    for (k = 0; k < group.length; k++) group[k].classList.remove('kp-close');
+    var exact = scored.filter(function (x) { return soundKey(x.t) === soundKey(heard); })[0];
+    if (exact) {
+      exact.b.classList.add('kp-close');
+      status(MIC_ESC + ' I heard "' + heard + '" - that is one of the choices. Tap it.');
+    } else if (top.s < 0.5) {
+      status(MIC_ESC + ' I heard "' + heard + '" - none of these sound like it. Tap the one you meant.');
+    } else {
+      top.b.classList.add('kp-close');
+      status(MIC_ESC + ' I heard "' + heard + '" - the closest is "' + top.t + '". Tap the one you meant.');
+    }
+    return true;
+  }
+
   /* ---------- the microphone ---------- */
   var UN = { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9,
     ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17,
@@ -277,19 +364,20 @@
     }
     if (listening && rec) { try { rec.stop(); } catch (e) {} return; }
     var t = target();
-    if (!t) { status('Tap the answer box first'); return; }
+    if (!t && !choiceGroup().length) { status('Tap the answer box first'); return; }
     rec = new SR();
-    rec.lang = t.getAttribute('data-lang') || 'en-IN';
+    rec.lang = (t && t.getAttribute('data-lang')) || 'en-IN';   /* a choice question has no box to read a language from */
     rec.interimResults = false;
     rec.maxAlternatives = 1;
     var micBtn = pad.querySelector('.kp-mic');
     rec.onstart = function () { listening = true; if (micBtn) micBtn.classList.add('listening'); status('\uD83C\uDFA4 Listening\u2026 speak now', true); };
     rec.onresult = function (e) {
-      var tr = e.results[0][0].transcript || '';
+      var tr = (e.results[0][0].transcript || '').trim();
+      if (!t) { rescueWithVoice(tr); return; }          /* a choice question: rank the options by sound */
       var wordy = (t.getAttribute('data-voice') || '') === 'word';
       var maths = wordy ? '' : voiceToMath(tr);
-      var use = (maths && /\d/.test(maths)) ? maths : tr.trim();
-      status('\uD83C\uDFA4 Heard: ' + (use || tr));
+      var use = (maths && /\d/.test(maths)) ? maths : tr;
+      status(MIC_ESC + ' Heard: ' + (use || tr));
       if (use) insert(t, use);
     };
     rec.onerror = function (e) {
@@ -324,11 +412,17 @@
       if (visible(boxes[i])) { any = true; if (!first) first = boxes[i]; }
     }
     if (any && !visible(current)) current = first;
+    /* a question with tappable options needs the microphone too, even though
+       there is nothing to type into */
+    var choices = choiceGroup();
+    var show = any || choices.length > 0;
     if (pad) {
-      if (any) { pad.classList.add('show'); pad.setAttribute('aria-hidden', 'false'); document.body.classList.add('kidpad-open'); }
+      if (show) { pad.classList.add('show'); pad.setAttribute('aria-hidden', 'false'); document.body.classList.add('kidpad-open'); }
       else { pad.classList.remove('show'); pad.setAttribute('aria-hidden', 'true'); document.body.classList.remove('kidpad-open'); }
     }
     if (!micAvailable()) showKeyboardKey(true);
+    var micBtn = pad && pad.querySelector('.kp-mic');
+    if (micBtn) micBtn.classList.toggle('ready', !!(!current && choices.length > 0));
   }
 
   function boot() {
