@@ -1069,6 +1069,25 @@ answer was typed with it, and the page's own checker responded. With speech
 removed, the keyboard fallback key appears; with speech present, it stays
 hidden.
 
+Recent changes (round 57 - v57: the pad cut down to two rows)
+------------------------
+The v56 pad was five rows tall and covered as much of the screen as the iPad
+keyboard did, which defeated the point. It is now TWO rows of thirteen keys.
+
+  row 1:  1 2 3 4 5 6 7 8 9 0 . (backspace) (microphone)
+  row 2:  + - x / = ( ) < > (root) (x2) (x3) GO
+
+MEASURED on an iPad portrait screen (768 wide): every key is 54 x 56 pixels,
+comfortably above the 44 pixel minimum for a finger; the whole pad is 132
+pixels tall - about a fifth of the screen, where the iPad keyboard takes
+roughly two fifths. In landscape the keys grow to 73 pixels wide. The
+question and the answer box sit fully visible above it, with the page padded
+so nothing hides underneath.
+
+The pad still appears the moment a question is on screen, the microphone
+still handles spoken word answers, and the small keyboard key still appears
+if the microphone is unavailable.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

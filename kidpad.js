@@ -21,12 +21,13 @@
   if (window.KidPad) return;
 
   /* ---------- the keys ---------- */
+  /* Two rows only, so the pad stays out of the way. Thirteen keys a row,
+     each at least 44px so a finger can hit it comfortably. */
   var ROWS = [
-    [['7', '7'], ['8', '8'], ['9', '9'], ['\u00F7', '\u00F7'], ['back', '\u232B']],
-    [['4', '4'], ['5', '5'], ['6', '6'], ['\u00D7', '\u00D7'], ['(', '(']],
-    [['1', '1'], ['2', '2'], ['3', '3'], ['-', '\u2212'], [')', ')']],
-    [['0', '0'], ['.', '.'], ['=', '='], ['+', '+'], ['<', '<']],
-    [['>', '>'], ['root', '\u221A'], ['sq', 'x\u00B2'], ['cb', 'x\u00B3'], ['mic', '\uD83C\uDFA4']]
+    [['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5'], ['6', '6'],
+     ['7', '7'], ['8', '8'], ['9', '9'], ['0', '0'], ['.', '.'], ['back', '\u232B'], ['mic', '\uD83C\uDFA4']],
+    [['+', '+'], ['-', '\u2212'], ['\u00D7', '\u00D7'], ['\u00F7', '\u00F7'], ['=', '='],
+     ['(', '('], [')', ')'], ['<', '<'], ['>', '>'], ['root', '\u221A'], ['sq', 'x\u00B2'], ['cb', 'x\u00B3'], ['go', 'GO \u2713']]
   ];
   var INSERT = { root: '\u221A', sq: '^2', cb: '^3' };
 
@@ -82,21 +83,24 @@
     var css = document.createElement('style');
     css.textContent =
       '#kidpad{position:fixed;left:0;right:0;bottom:0;z-index:950;display:none;' +
-      'padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:rgba(30,27,24,.97);' +
+      'padding:5px 6px calc(5px + env(safe-area-inset-bottom));background:rgba(30,27,24,.97);' +
       'border-radius:16px 16px 0 0;box-shadow:0 -8px 28px rgba(0,0,0,.32);}' +
       '#kidpad.show{display:block;}' +
-      '#kidpad .kp-status{color:#fdf6e8;font:600 13px/1.3 Nunito,system-ui,sans-serif;text-align:center;min-height:15px;margin:0 0 4px;}' +
-      '#kidpad .kp-row{display:flex;gap:6px;margin-bottom:6px;}' +
-      '#kidpad button{flex:1 1 0;min-width:0;min-height:50px;font:800 24px/1 Nunito,system-ui,sans-serif;' +
+      '#kidpad .kp-status{color:#fdf6e8;font:600 13px/1.3 Nunito,system-ui,sans-serif;text-align:center;margin:0 0 3px;}' +
+      '#kidpad .kp-status:empty{display:none;}' +
+      '#kidpad .kp-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px;}' +
+      '#kidpad .kp-row.kp-last{display:none;margin-bottom:0;}' +
+      '#kidpad .kp-row.kp-last.on{display:flex;}' +
+      '#kidpad button{flex:1 1 44px;min-width:44px;min-height:56px;font:800 22px/1 Nunito,system-ui,sans-serif;' +
       'border:0;border-radius:11px;background:#fdf6e8;color:#22201d;cursor:pointer;' +
       'touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}' +
       '#kidpad button:active{transform:translateY(2px);background:#f3d9a4;}' +
       '#kidpad .kp-soft{background:#e8e0cf;font-size:21px;}' +
-      '#kidpad .kp-go{background:#2a9d8f;color:#fff;font-size:19px;letter-spacing:.4px;}' +
+      '#kidpad .kp-go{background:#2a9d8f;color:#fff;font-size:18px;letter-spacing:.3px;flex:1 1 60px;}' +
       '#kidpad .kp-mic{background:#e8e0cf;}' +
       '#kidpad .kp-mic.listening{background:#ef5350;color:#fff;animation:kpulse 1s infinite;}' +
       '@keyframes kpulse{50%{opacity:.55;}}' +
-      'body.kidpad-open{padding-bottom:290px;}';
+      'body.kidpad-open{padding-bottom:140px;}';
     document.head.appendChild(css);
 
     pad = document.createElement('div');
@@ -115,8 +119,7 @@
       });
       html += '</div>';
     });
-    html += '<div class="kp-row"><button type="button" data-k="go" class="kp-go">GO \u2713</button>' +
-            '<button type="button" data-k="kb" class="kp-soft" id="kp-kb" style="display:none" aria-label="Use the keyboard">\u2328</button></div>';
+    html += '<div class="kp-row kp-last"><button type="button" data-k="kb" class="kp-soft" id="kp-kb" style="display:none" aria-label="Use the keyboard">\u2328</button></div>';
     pad.innerHTML = html;
     document.body.appendChild(pad);
     statusEl = pad.querySelector('#kp-status');
@@ -308,6 +311,8 @@
   function showKeyboardKey(on) {
     var k = pad.querySelector('#kp-kb');
     if (k) k.style.display = on ? '' : 'none';
+    var row = pad.querySelector('.kp-last');
+    if (row) row.className = 'kp-row kp-last' + (on ? ' on' : '');
   }
 
   /* ---------- show / hide ---------- */
