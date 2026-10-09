@@ -1032,6 +1032,43 @@ VERIFIED: 15,000 generated questions across the five types, every one solved
 independently and compared - 0 wrong. Then a real 15-minute session driven in
 a browser: 40 questions answered, 40 graded correct.
 
+Recent changes (round 56 - v56: THE KID PAD, EVERYWHERE)
+------------------------
+The iPad's own keyboard used to creep up over the question. Now every champ
+has one shared on-screen pad instead - kidpad.js, at the top level, next to
+champ-rail.js and rhythm.js.
+
+WHAT IT DOES
+- Every answer box on every champ page is switched off from the iPad keyboard
+  (inputmode="none"), so the native keyboard never appears.
+- A pad sits at the bottom of the screen the moment a question is on screen:
+  rows of 7 8 9 / 4 5 6 / 1 2 3 / 0 . = / + < > and
+  + - x / ( ) = < > , a square root key, square (x2), cube (x3), backspace,
+  a microphone, and a wide GO button that presses the page's own Check.
+- The microphone is for word answers: tap, speak, and it lands in the box.
+  It understands spoken numbers too ("five hundred and forty" -> 540).
+- If the microphone is unavailable (no internet, permission refused) a small
+  keyboard key appears so the answer can still be typed. Never a dead end.
+- Name fields and the Parent Console are untouched and keep the real keyboard
+  (data-nokidpad, or a placeholder that says name/token/email).
+
+FIXES ALONG THE WAY
+- The old per-page copies of this pad (4 maths pages, 2 science pages) are
+  removed, so all five champs now behave identically.
+- Some pages call .focus() the instant they draw the answer box, which could
+  beat the pad to it and let iOS raise its keyboard anyway. kidpad.js now
+  intercepts focus and tames the box first.
+- The "is this a name field?" test reads only the placeholder now, because a
+  generated id can contain any letters by chance.
+
+VERIFIED: a test page proved the pad shows, the box carries inputmode=none,
+the name field is left alone, the keys type and backspace correctly, GO
+presses the page's Check, and the body is padded so nothing hides under the
+pad. Then the real maths and mind sessions were driven: the pad appeared, the
+answer was typed with it, and the page's own checker responded. With speech
+removed, the keyboard fallback key appears; with speech present, it stays
+hidden.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
