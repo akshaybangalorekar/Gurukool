@@ -212,6 +212,12 @@
           '<button class="btn" onclick="checkPz()">✓</button></div>';
       if (pz.type === 'word') h += '<p class="muted small">Letters only — the answer is one Minecraft word.</p>';
     } else if (pz.type === 'mcq') {
+      /* shuffle the options once, so the right one is never in the same place */
+      if (!pz._mixed && pz.options && pz.options.length > 1) {
+        var rightOpt = pz.options[pz.answer], order = pz.options.slice();
+        for (var si = order.length - 1; si > 0; si--) { var sj = Math.floor(Math.random() * (si + 1)); var t2 = order[si]; order[si] = order[sj]; order[sj] = t2; }
+        pz.options = order; pz.answer = order.indexOf(rightOpt); pz._mixed = true;
+      }
       h = '<div class="opts">' + pz.options.map(function (o, i) { return '<button class="opt' + (P.answerVal === i ? ' sel' : '') + '" onclick="pickOpt(' + i + ')">' + esc(o) + '</button>'; }).join('') + '</div>';
     } else if (pz.type === 'clue') {
       if (pz.options) h = '<div class="opts">' + pz.options.map(function (o, i) { return '<button class="opt' + (P.answerVal === i ? ' sel' : '') + '" onclick="pickOpt(' + i + ')">' + esc(o) + '</button>'; }).join('') + '</div>';
@@ -307,7 +313,7 @@
   function collectAnswer(pz) {
     /* mcq + clue-with-options: the answer is the chosen INDEX
        (pz.answer is the index of the right option) */
-    if (pz.type === 'mcq') return { main: (P.answerVal >= 0) ? P.answerVal : null };
+    if (pz.type === 'mcq') return { main: (P.answerVal >= 0) ? P.answerVal : null };   /* see drawPz: options are shuffled once, and answer follows */
     if (pz.type === 'order') return { main: P.seq.length ? P.seq : null };
     if (pz.type === 'grid') {
       var any = false;

@@ -18,7 +18,7 @@
     var s = pick(sets);
     var four = shuffle(s.same.concat([s.odd]));
     var fair = [s.odd].concat(s.also || []);
-    return { q: 'Which is the odd one out: ' + four.join(', ') + '?', ans: fair, unit: '', items: four,
+    return { q: 'Which is the odd one out: ' + four.join(', ') + '?', ans: fair, unit: '', items: four, choices: four,
       know: ['Four items: ' + four.join(', '), 'Three of them belong to one group'],
       hints: ['Name the group that three of them share.', s.why + '.'],
       sol: s.odd + ' is the odd one out: ' + s.why + '.' +
@@ -54,17 +54,57 @@
       '<g transform="rotate(' + rot + ' 60 60)"><polygon points="60,16 78,54 60,44 42,54" fill="#2a9d8f"/><rect x="54" y="44" width="12" height="46" rx="3" fill="#2a9d8f"/></g></svg>';
   }
 
+  /* ---------- close options, for when speaking is not possible ----------
+     A noisy room makes the microphone useless, so any question whose answer is
+     a WORD also offers five tappable options: the right one, plus four others
+     of the same kind that are plainly not it. The wrong ones are never a fair
+     answer, only a near miss. */
+  function chooseOptions(right, pool) {
+    var out = [right], rest = shuffle((pool || []).filter(function (w) {
+      return String(w).toLowerCase() !== String(right).toLowerCase();
+    }));
+    for (var i = 0; i < rest.length && out.length < 5; i++) out.push(rest[i]);
+    return out.length >= 4 ? shuffle(out) : null;
+  }
+  var SHAPE_SET = ['circle', 'square', 'triangle', 'star'];
+  var DIR_SET = ['up', 'right', 'down', 'left'];
+  var ANALOGY_POOL = {
+    /* what other tools are for - so they are the right kind of word, and
+       plainly not the tool being asked about */
+    easy: ['cutting', 'washing', 'reading', 'opening', 'eating', 'writing', 'time'],
+    /* what other young animals grow into */
+    medium: ['chicken', 'sheep', 'frog', 'lion', 'duck', 'goat', 'horse', 'cow'],
+    /* what other makers make - 'meal' is deliberately absent, because a baker
+       could fairly be said to make one */
+    hard: ['statue', 'poem', 'crops', 'painting', 'basket', 'novel', 'pottery', 'sculpture']
+  };
+  /* near misses for a letter code: the same length, one letter off */
+  function nearCodes(word, n) {
+    var out = [], tries = 0;
+    while (out.length < n && tries < 300) {
+      tries++;
+      var i = ri(0, word.length - 1), d = pick([-1, 1]);
+      var c = String.fromCharCode(((word.charCodeAt(i) - 65 + d + 26) % 26) + 65);
+      var cand = word.slice(0, i) + c + word.slice(i + 1);
+      if (cand !== word && out.indexOf(cand) === -1) out.push(cand);
+    }
+    return out;
+  }
+
   /* ---------- the topics ---------- */
   var TOPICS = [
     { key: 'analogies', name: 'Analogies', icon: '\ud83d\udd17', strand: 'Verbal',
       what: 'An analogy says: A goes with B in the same way that C goes with D. First work out the RELATIONSHIP, then apply it.',
       lesson: [
         { say: 'A pen is to writing as a fork is to eating. The relationship is "tool to what it does". Find the link first.',
-          ask: 'A pen is to writing as a knife is to ___? (one word)', ans: 'cutting', hint: 'What does a knife do?' },
+          ask: 'A pen is to writing as a knife is to ___? (one word)', ans: 'cutting', hint: 'What does a knife do?',
+          choices: ['cutting', 'eating', 'writing', 'washing', 'drawing'] },
         { say: 'The link can be other things too: young to old, part to whole, or opposites.',
-          ask: 'A puppy is to a dog as a kitten is to a ___? (one word)', ans: 'cat', hint: 'What does a kitten grow into?' },
+          ask: 'A puppy is to a dog as a kitten is to a ___? (one word)', ans: 'cat', hint: 'What does a kitten grow into?',
+          choices: ['cat', 'dog', 'horse', 'lion', 'cow'] },
         { say: 'The trap: jumping at a word that is only loosely connected. Test the link on BOTH pairs before you answer.',
-          ask: 'Hot is to cold as up is to ___? (one word)', ans: 'down', hint: 'The relationship is "the opposite".' }
+          ask: 'Hot is to cold as up is to ___? (one word)', ans: 'down', hint: 'The relationship is "the opposite".',
+          choices: ['down', 'left', 'right', 'over', 'round'] }
       ],
       gen: {
         easy: function () { var a = pick([['a pen', 'writing'], ['a fork', 'eating'], ['a key', 'opening'], ['a clock', 'time']]);
@@ -72,29 +112,32 @@
           return { q: a[0] + ' is to ' + a[1] + ' as ' + b[0] + ' is to ___? (one word)', ans: b[1], unit: '',
             know: ['The first pair: ' + a[0] + ' and ' + a[1], 'The link is what the thing DOES', 'Apply the same link to ' + b[0]],
             hints: ['Ask what ' + b[0] + ' does.', 'The answer is one word: ' + b[1]],
+            choices: chooseOptions(b[1], ANALOGY_POOL.easy),
             sol: b[0] + ' is for ' + b[1] + '. Find the relationship in the first pair, then apply it to the second.' }; },
         medium: function () { var a = pick([['a puppy', 'dog'], ['a kitten', 'cat'], ['a calf', 'cow'], ['a joey', 'kangaroo']]);
           var b = pick([['a chick', 'chicken'], ['a lamb', 'sheep'], ['a tadpole', 'frog'], ['a cub', 'lion']]);
           return { q: a[0] + ' is to ' + a[1] + ' as ' + b[0] + ' is to ___? (one word)', ans: b[1], unit: '',
             know: ['First pair: ' + a[0] + ' and ' + a[1], 'The link is young to adult', 'Apply it to ' + b[0]],
             hints: ['What does ' + b[0] + ' grow into?', 'One word.'],
+            choices: chooseOptions(b[1], ANALOGY_POOL.medium),
             sol: 'The link is young to grown-up, so ' + b[0] + ' goes with ' + b[1] + '.' }; },
         hard: function () { var a = pick([['an author', 'book'], ['a composer', 'music'], ['a baker', 'bread'], ['a painter', 'picture']]);
           var b = pick([['a sculptor', 'statue'], ['a poet', 'poem'], ['a chef', 'meal'], ['a farmer', 'crops']]);
           return { q: a[0] + ' is to ' + a[1] + ' as ' + b[0] + ' is to ___? (one word)', ans: b[1], unit: '',
             know: ['First pair: ' + a[0] + ' and ' + a[1], 'The link is maker to what they make'],
             hints: ['What does ' + b[0] + ' make?', 'One word.'],
+            choices: chooseOptions(b[1], ANALOGY_POOL.hard),
             sol: 'The link is the maker and the thing made, so ' + b[0] + ' goes with ' + b[1] + '.' }; }
       } },
     { key: 'oddoneout', name: 'Odd one out', icon: '\ud83d\udd0d', strand: 'Verbal',
       what: 'In an odd-one-out question, three of the four belong to a group. Name the group first, then find the one that does not fit.',
       lesson: [
         { say: 'Apple, banana, pear, carrot. Three are fruit. Say the group out loud before you answer.',
-          ask: 'Which is the odd one out: apple, banana, pear, carrot?', ans: 'carrot', hint: 'Three of them are fruit.' },
+          ask: 'Which is the odd one out: apple, banana, pear, carrot?', ans: 'carrot', hint: 'Three of them are fruit.', choices: ['apple', 'banana', 'pear', 'carrot'] },
         { say: 'The group can be numbers too: 2, 4, 6, 9. Three are even.',
-          ask: 'Which is the odd one out: 2, 4, 6, 9?', ans: '9', hint: 'Which one is not even?' },
+          ask: 'Which is the odd one out: 2, 4, 6, 9?', ans: '9', hint: 'Which one is not even?', choices: ['2', '4', '6', '9'] },
         { say: 'The trap: picking the one that FEELS different without naming the group. Always name the rule that the other three share.',
-          ask: 'Which is the odd one out: 1, 4, 9, 16, 20?', ans: '20', hint: 'The others are square numbers.' }
+          ask: 'Which is the odd one out: 1, 4, 9, 16, 20?', ans: '20', hint: 'The others are square numbers.', choices: ['1', '4', '9', '16', '20'] }
       ],
       gen: {
         easy: function () { var sets = [
@@ -132,7 +175,8 @@
         { say: 'You can add letters up. C is 3, A is 1, T is 20, so CAT is 24.',
           ask: 'If C = 3, A = 1 and T = 20, what is CAT worth?', ans: 24, hint: '3 + 1 + 20.' },
         { say: 'The other kind of code shifts each letter along the alphabet. If every letter moves 2 forward, CAT becomes ECV.',
-          ask: 'Using that rule (move 2 forward), what does DOG become?', ans: 'FQI', hint: 'D to F, O to Q, G to I.' }
+          ask: 'Using that rule (move 2 forward), what does DOG become?', ans: 'FQI', hint: 'D to F, O to Q, G to I.',
+          choices: ['FQI', 'FQH', 'FPJ', 'GQI', 'EQH'] }
       ],
       gen: {
         easy: function () { var n = ri(3, 20), ch = String.fromCharCode(64 + n);
@@ -153,6 +197,7 @@
           return { q: 'In a code every letter moves ' + sh + ' place' + (sh === 1 ? '' : 's') + ' FORWARD in the alphabet. What does ' + w + ' become?', ans: out, unit: '',
             know: ['Each letter moves ' + sh + ' forward', 'The word is ' + w, 'Work one letter at a time'],
             hints: ['Take the first letter of ' + w + ' and move it ' + sh + ' along.', 'Do the same for every letter.'],
+            choices: chooseOptions(out, nearCodes(out, 6)),
             sol: w + ' becomes ' + out + ' when each letter moves ' + sh + ' forward.' }; }
       } },
     { key: 'series', name: 'Number series', icon: '\ud83d\udd22', strand: 'Quantitative',
@@ -203,47 +248,50 @@
       what: 'A shape pattern repeats a short cycle. Find the cycle, then count where the next shape falls in it.',
       lesson: [
         { say: 'Look at the cycle: circle, square, triangle, then it starts again. Three shapes repeat.',
-          ask: 'In the cycle circle, square, triangle, which shape comes after the triangle?', ans: 'circle', hint: 'It starts again from the beginning.' },
+          ask: 'In the cycle circle, square, triangle, which shape comes after the triangle?', ans: 'circle', hint: 'It starts again from the beginning.', choices: SHAPE_SET },
         { say: 'To find a shape far along, count in cycles. The 4th shape in a cycle of three is the start of the second cycle.',
-          ask: 'In a cycle of 3 shapes, which shape is the 4th?', ans: 'circle', hint: 'The cycle restarts at 4.' },
+          ask: 'In a cycle of 3 shapes, which shape is the 4th?', ans: 'circle', hint: 'The cycle restarts at 4.', choices: SHAPE_SET },
         { say: 'The trap: counting the first shape as position zero. The 1st shape is the first of the cycle.',
-          ask: 'In a cycle of 4 shapes (star, square, circle, triangle), which shape is the 5th?', ans: 'star', hint: 'The 5th restarts the cycle.' }
+          ask: 'In a cycle of 4 shapes (star, square, circle, triangle), which shape is the 5th?', ans: 'star', hint: 'The 5th restarts the cycle.', choices: SHAPE_SET }
       ],
       gen: {
         easy: function () { var cyc = ['circle', 'square', 'triangle'];
           var shown = cyc.concat(cyc.slice(0, 2));
           var next = cyc[shown.length % 3];
-          return { q: 'Look at the shapes. Which shape comes next? Type one of: circle, square, triangle.', ans: next, unit: '',
+          return { q: 'Look at the shapes. Which shape comes next? Tap one of the four.', ans: next, unit: '',
             art: seqSvg(shown, true),
             know: ['The cycle is circle, square, triangle', 'It repeats'],
             hints: ['The pattern repeats every three shapes.', 'Count along: circle, square, triangle, circle, square ...'],
+            choices: SHAPE_SET,
             sol: 'The cycle is circle, square, triangle, so after square comes ' + next + '.' }; },
         medium: function () { var cyc = ['star', 'square', 'circle', 'triangle'];
           var shown = cyc.concat(cyc.slice(0, 3));
           var next = cyc[shown.length % 4];
-          return { q: 'Look at the shapes. Which shape comes next? Type one of: star, square, circle, triangle.', ans: next, unit: '',
+          return { q: 'Look at the shapes. Which shape comes next? Tap one of the four.', ans: next, unit: '',
             art: seqSvg(shown, true),
             know: ['The cycle has four shapes', 'It repeats'],
             hints: ['Find where the cycle starts again.', 'The 5th shape restarts it.'],
+            choices: SHAPE_SET,
             sol: 'The cycle is star, square, circle, triangle, so the next is ' + next + '.' }; },
         hard: function () { var cyc = ['triangle', 'circle', 'star', 'square'];
           var shown = cyc.concat(cyc, cyc.slice(0, 1));
           var next = cyc[shown.length % 4];
-          return { q: 'Look at the shapes. Which shape comes next? Type one of: star, square, circle, triangle.', ans: next, unit: '',
+          return { q: 'Look at the shapes. Which shape comes next? Tap one of the four.', ans: next, unit: '',
             art: seqSvg(shown, true),
             know: ['The cycle has four shapes', 'It has already repeated more than once'],
             hints: ['Work out the cycle from the first four.', 'Then count on.'],
+            choices: SHAPE_SET,
             sol: 'The cycle is triangle, circle, star, square, so the next is ' + next + '.' }; }
       } },
     { key: 'rotations', name: 'Rotations', icon: '\ud83d\udd04', strand: 'Non-verbal',
       what: 'A rotation turns a shape about its centre. Clockwise goes right, down, left, up. A quarter turn is 90 degrees.',
       lesson: [
         { say: 'An arrow pointing up, turned 90 degrees clockwise, points right. Clockwise means the way clock hands move.',
-          ask: 'An arrow points UP. It turns 90 degrees clockwise. Which way does it point now? Type up, down, left or right.', ans: 'right', hint: 'Clockwise from up is to the right.' },
+          ask: 'An arrow points UP. It turns 90 degrees clockwise. Which way does it point now?', ans: 'right', hint: 'Clockwise from up is to the right.', choices: DIR_SET },
         { say: 'Half a turn is 180 degrees, which points it the opposite way.',
-          ask: 'An arrow points UP. It turns 180 degrees. Which way does it point? Type up, down, left or right.', ans: 'down', hint: '180 degrees is the opposite direction.' },
+          ask: 'An arrow points UP. It turns 180 degrees. Which way does it point?', ans: 'down', hint: '180 degrees is the opposite direction.', choices: DIR_SET },
         { say: 'Anticlockwise goes the other way, so 90 degrees anticlockwise from up is left.',
-          ask: 'An arrow points UP. It turns 90 degrees anticlockwise. Which way does it point?', ans: 'left', hint: 'Anticlockwise from up is to the left.' }
+          ask: 'An arrow points UP. It turns 90 degrees anticlockwise. Which way does it point?', ans: 'left', hint: 'Anticlockwise from up is to the left.', choices: DIR_SET }
       ],
       gen: {
         easy: function () { var dirs = ['up', 'right', 'down', 'left'];
@@ -253,6 +301,7 @@
             art: arrowSvg(start),
             know: ['It starts pointing ' + start, 'It turns ' + turn + ' degrees clockwise', 'A quarter turn is 90 degrees'],
             hints: ['Clockwise: up, right, down, left.', 'Each 90 degrees moves it one step round.'],
+            choices: DIR_SET,
             sol: turn + ' degrees clockwise from ' + start + ' points ' + end + '.' }; },
         medium: function () { var dirs = ['up', 'right', 'down', 'left'];
           var start = pick(dirs), i = dirs.indexOf(start), turn = pick([90, 180, 270]);
@@ -261,6 +310,7 @@
             art: arrowSvg(start),
             know: ['It starts pointing ' + start, 'It turns ' + turn + ' degrees anticlockwise', 'Anticlockwise is the opposite of clock hands'],
             hints: ['Anticlockwise from up is left.', 'Each 90 degrees is one step the other way.'],
+            choices: DIR_SET,
             sol: turn + ' degrees anticlockwise from ' + start + ' points ' + end + '.' }; },
         hard: function () { var dirs = ['up', 'right', 'down', 'left'];
           var start = pick(dirs), i = dirs.indexOf(start);
@@ -270,6 +320,7 @@
             art: arrowSvg(start),
             know: ['It starts pointing ' + start, 'Two clockwise turns: ' + t1 + ' then ' + t2, 'Add them: ' + (t1 + t2) + ' degrees'],
             hints: ['Add the two turns first: ' + (t1 + t2) + ' degrees.', 'Then move that many quarter turns clockwise.'],
+            choices: DIR_SET,
             sol: (t1 + t2) + ' degrees clockwise from ' + start + ' points ' + end + '. Adding the turns first saves two steps.' }; }
       } }
   ];

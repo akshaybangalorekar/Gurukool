@@ -1128,6 +1128,46 @@ spots (Homework Club: solid on Fractions on both sides, worth another round
 on Two fractions subtracted). All five tabs were then clicked in turn and
 each rendered its own content.
 
+Recent changes (round 59 - v59: close options for word answers in Mind-Champ)
+------------------------
+A noisy room makes the microphone useless, so every Mind-Champ question whose
+answer is a WORD now offers four or five tappable options instead of asking
+him to speak or type. The wrong options are the same KIND of word as the right
+one, so the question still tests the thinking, not the guessing.
+
+WHAT CHANGED
+- Analogies: five options. The four wrong ones are what OTHER tools are for
+  (a knife is to cutting, but a torch is to ___: light, versus cutting,
+  washing, opening, eating). For the young-to-adult set the wrong ones are
+  what other baby animals grow into; for the maker set, what other makers make.
+- Odd one out: the four items named in the question are now four tappable
+  buttons, so nothing has to be typed.
+- Letter codes: when the answer is a coded WORD, five options, four of them
+  the same word with a single letter moved one step - close enough to need the
+  rule, plainly wrong if you apply it.
+- Shape patterns: four shapes to tap.
+- Rotations: the four directions to tap.
+- The one Minecraft cipher puzzle in the vault ("what does EJNBOE say?") is now
+  a five-way choice: DIAMOND against EMERALD, REDSTONE, IRON and GOLD.
+- Number questions (series, number codes) keep the keypad, since the keypad
+  already handles numbers.
+
+THE TRAP I HAD TO AVOID
+A wrong option must never be a fair answer. "Soap is to washing" was
+originally offered against "cleaning" - and cleaning is a perfectly fair
+answer for soap, which would have marked a right answer wrong. The distractor
+sets were rewritten so each wrong option is a valid answer to a DIFFERENT
+question in the same set and clearly not this one.
+
+VERIFIED: 3,362 word-answer questions generated and checked - every one
+carries four or five distinct options, and a fair answer is always among them.
+Zero problems. Then the real page was driven: the analogy lesson showed five
+options with no typing box, tapping the right one said "Yes", tapping a wrong
+one said "Not yet. What does a knife do?" and kept the question in place, the
+odd-one-out question showed its four items as buttons, and a number topic
+still offered the typing box. Options are also shuffled once per question, so
+the right one is never in the same place.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

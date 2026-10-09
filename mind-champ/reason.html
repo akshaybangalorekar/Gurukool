@@ -36,6 +36,10 @@
   .r-say { background: #f8fafc; border-left: 4px solid #7c3aed; border-radius: 10px; padding: 14px 16px; font-size: 18px; line-height: 1.7; color: #1f2937; }
   .r-ask { font: 800 19.5px/1.5 Nunito, system-ui, sans-serif; color: #0f172a; margin: 16px 0 10px; }
   .r-in { font: 800 20px Space Mono, ui-monospace, monospace; padding: 11px 13px; border: 2px solid #cbd5e1; border-radius: 12px; width: 170px; }
+  .r-opts { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 4px; }
+  .r-opt { font: 800 19px Nunito, system-ui, sans-serif; padding: 13px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #1e293b; cursor: pointer; touch-action: manipulation; }
+  .r-opt.sel { border-color: #0ea5e9; background: #e0f2fe; color: #075985; }
+  .r-opt:active { transform: translateY(2px); }
   .r-btn { font: 800 16.5px Nunito, system-ui, sans-serif; padding: 12px 18px; border-radius: 13px; border: 2px solid #cbd5e1; background: #fff; color: #334155; cursor: pointer; margin: 4px 6px 4px 0; }
   .r-btn.p { background: #7c3aed; border-color: #7c3aed; color: #fff; }
   .r-fb { font: 700 17px Nunito, system-ui, sans-serif; margin: 12px 0 0; min-height: 24px; }
@@ -97,12 +101,19 @@
         '<div class="r-dots">' + dots + '</div>' +
         '<div class="r-say">' + esc(st.say) + '</div>' +
         '<p class="r-ask">' + esc(st.ask) + '</p>' +
-        '<input class="r-in" id="r-in" autocomplete="off" placeholder="answer"> ' +
+        (st.choices ? choiceHTML(st.choices) : '<input class="r-in" id="r-in" autocomplete="off" placeholder="answer"> ') +
         '<button class="r-btn p" onclick="R.checkStep()">Check</button>' +
         '<p class="r-fb" id="r-fb"></p></div>';
       var i = el('r-in');
-      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); R.checkStep(); } });
-      i.focus();
+      if (i) { i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); R.checkStep(); } }); i.focus(); }
+    }
+    /* five close options, tappable - so a noisy room is no problem */
+    var picked = -1;
+    function choiceHTML(list) {
+      picked = -1;
+      return '<div class="r-opts">' + list.map(function (o, i) {
+        return '<button class="r-opt" id="r-opt' + i + '" onclick="R.pick(' + i + ')">' + esc(o) + '</button>';
+      }).join('') + '</div>';
     }
     function renderQ() {
       if (qi >= queue.length) {
@@ -120,29 +131,39 @@
         '<div class="r-dots">' + queue.map(function (x, i) { return '<span class="r-dot' + (i < qi ? ' on' : '') + '"></span>'; }).join('') + '</div>' +
         '<p class="r-ask">' + esc(q.q) + '</p>' +
         (q.art ? q.art : '') +
-        '<input class="r-in" id="r-in" autocomplete="off" placeholder="answer"> ' +
+        (q.choices ? choiceHTML(q.choices) : '<input class="r-in" id="r-in" autocomplete="off" placeholder="answer"> ') +
         '<button class="r-btn p" onclick="R.checkQ()">Check</button>' +
         '<button class="r-btn" id="r-know-btn" onclick="R.know()">What do we know?</button>' +
         '<p class="r-fb" id="r-fb"></p><div id="r-know"></div><div id="r-sol"></div></div>';
       var i = el('r-in');
-      i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); R.checkQ(); } });
-      i.focus();
+      if (i) { i.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); R.checkQ(); } }); i.focus(); }
     }
     window.R = {
       open: function (key) {
         T = Reason.byKey(key); if (!T) { topics(); return; }
         stepI = 0; renderStep();
       },
+      pick: function (i) {
+        picked = i;
+        var all = document.querySelectorAll('.r-opt');
+        for (var k = 0; k < all.length; k++) all[k].className = 'r-opt' + (k === i ? ' sel' : '');
+      },
+      given: function (q) {
+        if (q && q.choices) return picked >= 0 ? q.choices[picked] : '';
+        var i = el('r-in');
+        return i ? i.value : '';
+      },
       checkStep: function () {
         var st = T.lesson[stepI], fb = el('r-fb');
-        if (!norm(el('r-in').value)) { fb.className='r-fb no'; fb.textContent='Have a go, a guess is fine.'; return; }
-        if (matches(el('r-in').value, st.ans)) {
+        var gave = R.given(st);
+        if (!norm(gave)) { fb.className='r-fb no'; fb.textContent = st.choices ? 'Tap one of the five.' : 'Have a go, a guess is fine.'; return; }
+        if (matches(gave, st.ans)) {
           fb.className='r-fb ok'; fb.innerHTML='Yes.';
           stepI++;
           setTimeout(function () { if (stepI < T.lesson.length) renderStep(); else R.start(); }, 600);
         } else {
           fb.className='r-fb no'; fb.textContent='Not yet. ' + st.hint;
-          el('r-in').value=''; el('r-in').focus();
+          if (st.choices) R.pick(-1); else { el('r-in').value=''; el('r-in').focus(); }
         }
       },
       start: function () {
@@ -162,8 +183,9 @@
       },
       checkQ: function () {
         var q = queue[qi], fb = el('r-fb');
-        if (!norm(el('r-in').value)) { fb.className='r-fb no'; fb.textContent='Type your answer first.'; return; }
-        if (matches(el('r-in').value, q.ans)) {
+        var gave = R.given(q);
+        if (!norm(gave)) { fb.className='r-fb no'; fb.textContent = q.choices ? 'Tap one of the five.' : 'Type your answer first.'; return; }
+        if (matches(gave, q.ans)) {
           record(T.key, true);
           fb.className='r-fb ok'; fb.innerHTML='Correct.';
           qi++; tries = 0;
@@ -192,6 +214,6 @@
     route();
 
   </script>
-  <script src="../kidpad.js?v=58"></script>
+  <script src="../kidpad.js?v=59"></script>
 </body>
 </html>
