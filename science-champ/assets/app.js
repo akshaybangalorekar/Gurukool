@@ -355,6 +355,23 @@ window.ChampSync = (function () {
     return null;
   }
   function saveGhCfg(c) { try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); } catch (e) {} }
+  /* GitHub answers 404 - not 403 - when a token cannot see a private repo, so
+     a bare "404" tells the parent nothing at all. Ask the repo itself and say
+     which of the two problems it really is. */
+  function whyFailed(c, status) {
+    var repo = 'https://api.github.com/repos/' + c.owner + '/' + c.repo;
+    return fetch(repo, { headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' } })
+      .then(function (r) { return r.status; })
+      .catch(function () { return 0; })
+      .then(function (vis) {
+        if (status === 401) return 'The token was refused (401). It may have expired or been revoked - make a new one.';
+        if (vis === 404) return 'The repo "' + c.owner + '/' + c.repo + '" is not visible to this token. For a private repo, edit the token and tick Contents: Read and write for that one repository.';
+        if (vis === 200 && (status === 403 || status === 404)) return 'The token can see "' + c.owner + '/' + c.repo + '" but is not allowed to write there. Edit the token and tick Contents: Read and write.';
+        if (status === 403) return 'GitHub refused the write (403). Check the token has Contents: Read and write for this repository.';
+        return 'GitHub said ' + status + '. Check the username, the repo name and the token.';
+      });
+  }
+
   function ghUrl(c) { return 'https://api.github.com/repos/' + c.owner + '/' + c.repo + '/contents/' + encodeURIComponent(c.path && c.path.length ? c.path : 'progress.json'); }
   function readLS(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function writeLS(k, v) { if (v == null) return; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -654,8 +671,8 @@ window.ChampSync = (function () {
     return fetch(ghUrl(c), { headers: { 'Authorization': 'Bearer ' + c.token, 'Accept': 'application/vnd.github+json' } })
       .then(function (r) {
         if (r.status === 200) return r.json();
-        if (r.status !== 404 && r.status !== 451) throw new Error('GitHub says ' + r.status);
-        return null;
+        if (r.status === 404 || r.status === 451) return null;   /* no cloud copy yet - that is normal */
+        return whyFailed(c, r.status).then(function (m) { throw new Error(m); });
       })
       .then(function (j) {
         if (!j) return null;
@@ -676,7 +693,7 @@ window.ChampSync = (function () {
         });
       })
       .then(function (r) {
-        if (!r.ok) throw new Error('GitHub says ' + r.status);
+        if (!r.ok) return whyFailed(c, r.status).then(function (m) { throw new Error(m); });
         if (!opts.silent && opts.toast) opts.toast('✅ Synced — all champs safe!');
         return 'ok';
       })
@@ -684,10 +701,7 @@ window.ChampSync = (function () {
         if (!opts.silent && opts.toast) opts.toast('⚠️ ' + (err && err.message ? err.message : 'Sync problem'));
         return 'error';
       })
-      .then(function (status) {
-        if (!opts.silent) downloadBackup(payload(merged ? merged.sq : readLS(SQ_KEY), merged ? merged.oc : readLS(OC_KEY), merged ? merged.mc : readLS(MC_KEY), merged ? merged.sk : readLS(SK_KEY)));
-        return status;
-      });
+      .then(function (status) { return status; });   /* no file download: a sync is just a sync */
   }
 
   /* restore a local backup file's text (same merge rules, no cloud) */
@@ -722,5 +736,5 @@ if(ghCfg())setTimeout(function(){cloudSync(true);},1500);
 /* AUTO-SAVE — silent cloud sync every 10 minutes. No buttons, no file downloads.
    Cloud settings live ONLY in the Admin Console (admin.html). Local progress
    saves to this browser instantly on every XP, star and badge. */
-setTimeout(function(){if(ghCfg())cloudSync(true);},20000);setInterval(function(){if(ghCfg())cloudSync(true);},180000);
+setTimeout(function(){if(ghCfg())cloudSync(true);},3000);setInterval(function(){if(ghCfg())cloudSync(true);},180000);
 

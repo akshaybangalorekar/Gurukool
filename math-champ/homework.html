@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=63">
+  <link rel="stylesheet" href="assets/style.css?v=64">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,15 +68,15 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=63"></script>
-  <script src="../hw-sheets.js?v=63"></script>
-  <script src="../gk-fresh.js?v=63"></script>
-  <script src="../rhythm.js?v=63"></script>
-  <script src="assets/app.js?v=63"></script>
-  <script src="assets/gen.js?v=63"></script>
-  <script src="assets/homework.js?v=63"></script>
-  <script src="../champ-rail.js?v=63"></script>
-  <script src="assets/nav.js?v=63"></script>
+  <script src="../version.js?v=64"></script>
+  <script src="../hw-sheets.js?v=64"></script>
+  <script src="../gk-fresh.js?v=64"></script>
+  <script src="../rhythm.js?v=64"></script>
+  <script src="assets/app.js?v=64"></script>
+  <script src="assets/gen.js?v=64"></script>
+  <script src="assets/homework.js?v=64"></script>
+  <script src="../champ-rail.js?v=64"></script>
+  <script src="assets/nav.js?v=64"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -164,8 +164,13 @@
             : (S.sheets[a.id] ? '<span class="h-chip" style="background:#fef3c7;color:#78350f">Look at the sheet while you wait</span>' : '')) +
           '</div></div></div></div>';
       });
-      h += '<div class="h-note">Nothing else lives in the Homework Club \u2014 only the kinds of question your teacher actually sets. ' +
-        'When a new sheet comes home, a grown-up adds it from the Parent Console and it appears here.</div>';
+      h += '<div class="h-note">Nothing else lives in the Homework Club \u2014 only the kinds of question your teacher actually sets.</div>';
+      h += '<div style="margin-top:16px;text-align:center">' +
+        '<input id="hw-add-file" type="file" accept="image/*,application/pdf" style="display:none" onchange="HWClub.addSheet(this)">' +
+        '<button class="h-btn" style="font-size:15px" onclick="document.getElementById(\'hw-add-file\').click()">\u2795 Add a homework sheet</button>' +
+        '<p class="h-lead" style="font-size:14.5px;margin:8px 0 0">For a grown-up: just choose the photo or the PDF. ' +
+        'The topic and the date are worked out from the sheet.</p>' +
+        '<p class="h-lead" id="hw-add-msg" style="font-size:15px;margin:6px 0 0;color:#047857"></p></div>';
       el('h-view').innerHTML = h;
       drawBar();
     }
@@ -294,6 +299,26 @@
       },
       teach: function (id) { teachView([id]); },
       sheet: function (id) { sheetView(id); },
+      /* just the file. The date and a first guess at the topic come from its
+         name; the questions are built from the sheet itself later. */
+      addSheet: function (input) {
+        var file = input && input.files && input.files[0];
+        if (!file) return;
+        var guess = HW.guessFromFile(file.name);
+        var topic = guess.topic || ('Sheet of ' + HW.prettyDate(guess.given || ''));
+        if (!guess.topic && !guess.given) topic = 'New sheet';
+        var id = HW.addAssignment(topic, guess.given);
+        var say = function (m) { var e = el('hw-add-msg'); if (e) e.textContent = m; };
+        /* show it at once - the file store can be slow, and the list must not wait */
+        list();
+        say('Filed as "' + topic + '". The questions for this one are being written \u2014 send the sheet to Gurukool and they will appear.');
+        if (window.HWSheets) {
+          HWSheets.put(id, file).then(function () { return HWSheets.all(); }).then(function (m) {
+            S.sheets = m || {};
+            if (S.view === 'list') list();
+          }).catch(function () {});
+        }
+      },
       teachPicked: function () {
         teachView(Object.keys(S.picked).filter(function (k) { return S.picked[k]; }));
       },

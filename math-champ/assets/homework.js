@@ -291,6 +291,33 @@
       types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }
   ];
 
+  /* Work the date and a first guess at the topic out of the file name, so a
+     grown-up only has to choose the file. The real topic is settled when the
+     questions are built from the sheet. */
+  function guessFromFile(name) {
+    var base = String(name || '').replace(/\.[a-z0-9]+$/i, '');
+    var given = '', m = base.match(/(20\d{2})[-_.]?(\d{2})[-_.]?(\d{2})/);      /* 2026-10-01 */
+    if (m) given = m[1] + '-' + m[2] + '-' + m[3];
+    if (!given) {
+      m = base.match(/(\d{1,2})[-_.](\d{1,2})[-_.](20\d{2})/);                 /* 01-10-2026 */
+      if (m && +m[2] >= 1 && +m[2] <= 12 && +m[1] >= 1 && +m[1] <= 31) {
+        given = m[3] + '-' + String(+m[2]).padStart(2, '0') + '-' + String(+m[1]).padStart(2, '0');
+      }
+    }
+    var topic = base
+      .replace(/\b\d{1,2}[.:]\d{2}\s*(am|pm)?\b/ig, ' ')   /* a clock time, before the dots go */
+      .replace(/\b(at|am|pm)\b/ig, ' ')
+      .replace(/20\d{2}[-_.]?\d{2}[-_.]?\d{2}/g, ' ')
+      .replace(/\d{1,2}[-_.]\d{1,2}[-_.]20\d{2}/g, ' ')
+      .replace(/[^A-Za-z0-9 ]+/g, ' ')          /* punctuation first, so the word strips below can bite */
+      .replace(/\b(img|image|photo|pic|dsc|screenshot|whatsapp|scan|copy|final|new)\b/ig, ' ')
+      .replace(/\d{4,}/g, ' ')
+      .replace(/\b(hw|homework|sheet|worksheet|test|paper|maths|math|mathematics|atharv|student|class|grade|term|week|practice|revision)\b/ig, ' ')
+      .replace(/\s+/g, ' ').trim();
+    if (topic.length < 3) topic = '';
+    return { topic: topic ? topic.charAt(0).toUpperCase() + topic.slice(1) : '', given: given };
+  }
+
   function readAssignments() {
     var stored = [];
     try {
@@ -299,8 +326,13 @@
     } catch (e) {}
     var out = DEFAULT_ASSIGNMENTS.slice(), seen = {};
     out.forEach(function (a) { seen[a.id] = 1; });
+    var builtDates = {};
+    out.forEach(function (a) { if (a.given) builtDates[a.given] = 1; });
     stored.forEach(function (a) {
       if (!a || !a.id || seen[a.id]) return;
+      /* once the questions for a sheet's date exist, the waiting copy of it
+         is dropped - otherwise the same homework would show twice */
+      if (a.given && builtDates[a.given]) return;
       seen[a.id] = 1;
       out.push(a);
     });
@@ -335,6 +367,7 @@
     assignments: readAssignments,
     saveAssignments: writeAssignments,
     prettyDate: prettyDate,
+    guessFromFile: guessFromFile,
     typesFor: typesFor,
     addAssignment: function (topic, given) {
       var list = readAssignments().filter(function (a) { return !a.built; });

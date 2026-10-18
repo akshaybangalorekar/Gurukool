@@ -1308,6 +1308,46 @@ mixed list: 2 cards, 2 tick boxes but only 1 tickable, chips "not practised
 yet" and "coming soon", one Practise and one Teach button, and the action bar
 correctly reading "1 selected: Linear equations".
 
+Recent changes (round 64 - v64: sync that just syncs, and a sheet added with one file)
+------------------------
+1. CLOUD SYNC
+   - It no longer downloads a backup file. "Save settings & sync now" saves and
+     syncs, and that is all. A backup is now a deliberate button of its own.
+   - The 404 is explained. GitHub answers 404 - not 403 - when a token cannot
+     see a private repo, so the old message told the parent nothing. It now asks
+     the repo directly and says which it is:
+       "The repo owner/name is not visible to this token. For a private repo,
+        edit the token and tick Contents: Read and write for that one repository."
+     or, when the repo is visible but the write is refused, that it needs
+     Contents: Read and write.
+   - A new device syncs itself. Maths and Science waited 20 seconds before their
+     first quiet sync; Mind and Sanskrit had no first sync at all, only a
+     3-minute timer. All four now sync 3 seconds after opening.
+
+2. ADDING A HOMEWORK SHEET
+   - It moved to where the homework is: Maths -> Homework -> "Add a homework
+     sheet". Just choose the photo or the PDF. No topic box, no date box, no
+     kinds to tick.
+   - The date and a first guess at the topic are read from the file name, in
+     either order (2026-10-01 or 01-10-2026), with camera and WhatsApp junk
+     stripped:
+       homework-linear-equations-2026-10-01.pdf -> "Linear equations", 1 Oct
+       geometry homework 05-10-2026.jpg         -> "Geometry", 5 Oct
+       Year 6 algebra worksheet 18-10-2026.pdf  -> "Year 6 algebra", 18 Oct
+       IMG_20260930_095223.jpg                  -> no topic, 30 Sep (falls back)
+     The real topic is settled when the questions are built from the sheet.
+   - It appears at once, with "coming soon" until its questions exist.
+   - The Parent Console keeps the list (and Remove), but no longer adds.
+   - A device-added sheet for a date whose questions now exist is dropped, so
+     the same homework never shows twice.
+
+VERIFIED: with the network stubbed, a refused sync produced the precise
+"not visible to this token" message and a good sync said "Synced - all champs
+safe!" with ZERO download attempts. The file-name reader was run over nine
+real-shaped names. The add-a-sheet flow was driven with a real File object: the
+row appeared immediately, the message read 'Filed as "Geometry"', and the list
+showed two rows with chips "not practised yet" and "coming soon".
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

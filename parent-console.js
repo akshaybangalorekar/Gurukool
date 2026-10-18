@@ -775,9 +775,13 @@
       var raw = JSON.parse(localStorage.getItem(HWA_KEY));
       if (raw && raw.length) stored = raw;
     } catch (e) {}
-    var out = HWA_BUILT.slice(), seen = {};
-    out.forEach(function (a) { seen[a.id] = 1; });
-    stored.forEach(function (a) { if (a && a.id && !seen[a.id]) { seen[a.id] = 1; out.push(a); } });
+    var out = HWA_BUILT.slice(), seen = {}, builtDates = {};
+    out.forEach(function (a) { seen[a.id] = 1; if (a.given) builtDates[a.given] = 1; });
+    stored.forEach(function (a) {
+      if (!a || !a.id || seen[a.id]) return;
+      if (a.given && builtDates[a.given]) return;   /* its questions exist now */
+      seen[a.id] = 1; out.push(a);
+    });
     return out;
   }
   function hwaWrite(list) {
@@ -802,19 +806,7 @@
     var list = hwaRead();
     var today = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
     var h = '<p class="pc-lead">What the maths teacher actually set. Each one appears in Atharv\'s Homework Club, where he ticks the ones he wants and chooses 15 minutes, 30 minutes, an hour, or to be taught it.</p>';
-    h += '<div style="background:#fffdf7;border:1.5px solid rgba(43,38,32,.12);border-radius:14px;padding:14px 16px;margin:0 0 16px">' +
-      '<b style="font-size:17px">Add a homework sheet</b>' +
-      '<div style="margin:10px 0 6px"><b style="font-size:15px">The sheet itself</b>' +
-      '<div style="margin-top:6px"><input id="hwa-file" type="file" accept="image/*,application/pdf" style="font:600 15px inherit">' +
-      '<span class="pc-meta" style="margin-left:8px">a photo or a PDF \u2014 kept on this device, never uploaded anywhere</span></div></div>' +
-      '<div style="margin:10px 0 6px"><label style="font-weight:700;font-size:15px">Topic &nbsp;</label>' +
-      '<input id="hwa-topic" type="text" placeholder="e.g. Linear equations" style="font:600 16px inherit;padding:9px 12px;border-radius:10px;border:2px solid rgba(43,38,32,.25);min-width:250px"></div>' +
-      '<div style="margin:6px 0 10px"><label style="font-weight:700;font-size:15px">Date given &nbsp;</label>' +
-      '<input id="hwa-given" type="date" value="' + today + '" style="font:600 16px inherit;padding:9px 12px;border-radius:10px;border:2px solid rgba(43,38,32,.25)"></div>' +
-      '<p class="pc-meta" style="margin:0 0 12px">You do not need to say which kinds of question it contains \u2014 ' +
-      'that is worked out from the sheet itself.</p>' +
-      '<button class="pc-tab" onclick="PC.addHW()" style="border-color:#2e7d32;background:linear-gradient(135deg,#f1f8e9,#fffdf7)">File this sheet</button>' +
-      '<span id="hwa-msg" style="margin-left:12px;font-weight:700;color:#2e7d32">' + esc(hwaMsg) + '</span></div>';
+    h += '<div class="pc-empty" style="margin-bottom:16px">Adding a sheet now happens in the Homework Club itself \u2014 open Maths, then <b>Homework</b>, and tap <b>Add a homework sheet</b>. Just choose the photo or the PDF; the topic and date are read from it.</div>';
     h += list.length ? list.map(function (a) {
       var sheet = hwaSheetMap[a.id];
       var kinds = (a.types || []).length;
