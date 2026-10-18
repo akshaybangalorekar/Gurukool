@@ -318,21 +318,47 @@
     return { topic: topic ? topic.charAt(0).toUpperCase() + topic.slice(1) : '', given: given };
   }
 
-  function readAssignments() {
-    var stored = [];
+  /* only the device-added ones are ever written back */
+  function readStored() {
     try {
       var raw = JSON.parse(localStorage.getItem(ASSIGN_KEY));
-      if (raw && raw.length) stored = raw;
+      if (raw && raw.length) return raw;
     } catch (e) {}
+    return [];
+  }
+
+  /* Two sheets are the same sheet when the file is the same file - name, size
+     and the moment it was last changed - or when the date AND the topic match.
+     Either way the second copy is dropped. */
+  function sameSheet(a, b) {
+    /* the same file, or two photographs of the same sheet (same date and the
+       same topic), which is what actually happens in a house with a camera */
+    if (a.sig && b.sig && a.sig === b.sig) return true;
+    return !!(a.given && b.given && a.given === b.given &&
+      String(a.topic || '').trim().toLowerCase() === String(b.topic || '').trim().toLowerCase());
+  }
+
+  /* Drop anything that repeats. Returns the entries that were removed, so the
+     page can say so instead of quietly changing under the child. */
+  function dedupe() {
+    var stored = readStored(), built = DEFAULT_ASSIGNMENTS, keep = [], dropped = [];
+    stored.forEach(function (a) {
+      if (!a || !a.id) return;
+      var dup = false;
+      built.forEach(function (b) { if (!dup && sameSheet(a, b)) dup = true; });
+      keep.forEach(function (b) { if (!dup && sameSheet(a, b)) dup = true; });
+      if (dup) dropped.push(a); else keep.push(a);
+    });
+    if (dropped.length) writeAssignments(keep);
+    return dropped;
+  }
+
+  function readAssignments() {
+    var stored = readStored();
     var out = DEFAULT_ASSIGNMENTS.slice(), seen = {};
     out.forEach(function (a) { seen[a.id] = 1; });
-    var builtDates = {};
-    out.forEach(function (a) { if (a.given) builtDates[a.given] = 1; });
     stored.forEach(function (a) {
       if (!a || !a.id || seen[a.id]) return;
-      /* once the questions for a sheet's date exist, the waiting copy of it
-         is dropped - otherwise the same homework would show twice */
-      if (a.given && builtDates[a.given]) return;
       seen[a.id] = 1;
       out.push(a);
     });
@@ -368,14 +394,26 @@
     saveAssignments: writeAssignments,
     prettyDate: prettyDate,
     guessFromFile: guessFromFile,
+    fileSignature: function (file) {
+      if (!file) return '';
+      return [file.name || '', file.size || 0, file.lastModified || 0].join('|');
+    },
     typesFor: typesFor,
-    addAssignment: function (topic, given) {
-      var list = readAssignments().filter(function (a) { return !a.built; });
+    addAssignment: function (topic, given, sig) {
+      var list = readStored();
       var id = 'a-' + (given || todayISO()) + '-' + Math.random().toString(36).slice(2, 6);
-      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(), types: [] });
+      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(), types: [], sig: sig || '' });
       writeAssignments(list);
       return id;
     },
+    /* is this exact sheet already here? */
+    findDuplicate: function (topic, given, sig) {
+      var probe = { topic: topic, given: given, sig: sig || '' };
+      var hit = null;
+      readAssignments().forEach(function (a) { if (!hit && sameSheet(probe, a)) hit = a; });
+      return hit;
+    },
+    dedupe: dedupe,
     removeAssignment: function (id) {
       var list = readAssignments().filter(function (a) { return a.id !== id && !a.built; });
       writeAssignments(list);

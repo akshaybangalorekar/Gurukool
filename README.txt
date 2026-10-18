@@ -1371,6 +1371,37 @@ the message now explains.
 VERIFIED: with the network stubbed to refuse, the console showed that message
 in full.
 
+Recent changes (round 66 - v66: no duplicate homework sheets)
+------------------------
+The child can add sheets himself now, so a repeat is easy to make. Two guards:
+
+1. A repeat is refused. Before filing, the page checks whether that sheet is
+   already there and says so instead of adding a second row:
+     "That sheet is already here - it is the one dated 12 Oct 2026. Nothing added."
+   Two things count as the same sheet:
+     - the same file (name + size + last-modified), and
+     - two photographs of the same sheet - the same date AND the same topic.
+       This matters because a re-photograph is a different file but obviously
+       the same homework.
+   A different sheet for the same date with a different topic is NOT a repeat,
+   and neither is the same topic on another date.
+
+2. Anything already duplicated is swept on open, and the page says so:
+   "Tidied up 1 duplicate sheet." The sweep is idempotent - a second pass
+   removes nothing - and it runs in the Parent Console too, so both lists agree.
+   A device-added sheet that repeats the built-in one (same date and topic) is
+   also swept, since its questions already exist.
+
+ALSO: the sync failure message no longer uses ">" characters, which were
+arriving on screen as "&gt;".
+
+VERIFIED: the rules were exercised directly - same file twice, a re-photograph,
+same date with a different topic, the built-in 1 Oct sheet, and three copies of
+one sheet (2 removed, 1 left, second pass removes 0). Then the real page was
+loaded with two identical entries stored: it swept one, showed "Tidied up 1
+duplicate sheet", kept three rows, and refused a re-add with the message above
+while adding nothing.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

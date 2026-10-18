@@ -597,11 +597,7 @@
       .catch(function () { return 0; })
       .then(function (vis) {
         if (status === 401) return 'The token was refused (401). It may have expired or been revoked - make a new one.';
-        if (vis === 404) return 'GitHub will not show "' + c.owner + '/' + c.repo + '" to this token. Two causes, both quick: ' +
-          '(1) the repo name - open the repo in GitHub and copy the name from the address bar; or ' +
-          '(2) the token\u2019s access - Settings > Developer settings > Fine-grained tokens > this token > ' +
-          'Repository access: Only select repositories, tick this repo, then Permissions > Contents: Read and write. ' +
-          'If the token starts with ghp_ it is a classic token and needs the "repo" scope instead.';
+        if (vis === 404) return 'GitHub will not show "' + c.owner + '/' + c.repo + '" to this token. Either the repo name is different (copy it from the address bar of the repo page), or the token was never given this repo - in GitHub, edit the token, set Repository access to include it, and set Contents to Read and write.';
         if (vis === 200 && (status === 403 || status === 404)) return 'The token can see "' + c.owner + '/' + c.repo + '" but is not allowed to write there. Edit the token and tick Contents: Read and write.';
         if (status === 403) return 'GitHub refused the write (403). Check the token has Contents: Read and write for this repository.';
         return 'GitHub said ' + status + '. Check the username, the repo name and the token.';

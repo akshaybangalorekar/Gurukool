@@ -769,17 +769,38 @@
 
   var HWA_BUILT = [{ id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01', built: true,
                      types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }];
-  function hwaRead() {
-    var stored = [];
+  function hwaRaw() {
     try {
       var raw = JSON.parse(localStorage.getItem(HWA_KEY));
-      if (raw && raw.length) stored = raw;
+      if (raw && raw.length) return raw;
     } catch (e) {}
-    var out = HWA_BUILT.slice(), seen = {}, builtDates = {};
-    out.forEach(function (a) { seen[a.id] = 1; if (a.given) builtDates[a.given] = 1; });
+    return [];
+  }
+  function hwaDedupe() {
+    var stored = hwaRaw(), keep = [], dropped = [];
+    stored.forEach(function (a) {
+      if (!a || !a.id) return;
+      var dup = false;
+      HWA_BUILT.forEach(function (b) { if (!dup && hwaSame(a, b)) dup = true; });
+      keep.forEach(function (b) { if (!dup && hwaSame(a, b)) dup = true; });
+      if (dup) dropped.push(a); else keep.push(a);
+    });
+    if (dropped.length) hwaWrite(keep);
+    return dropped;
+  }
+  function sameSheet(a, b) {
+    /* the same file, or two photographs of the same sheet (same date and the
+       same topic), which is what actually happens in a house with a camera */
+    if (a.sig && b.sig && a.sig === b.sig) return true;
+    return !!(a.given && b.given && a.given === b.given &&
+      String(a.topic || '').trim().toLowerCase() === String(b.topic || '').trim().toLowerCase());
+  }
+  function hwaRead() {
+    var stored = hwaRaw();
+    var out = HWA_BUILT.slice(), seen = {};
+    out.forEach(function (a) { seen[a.id] = 1; });
     stored.forEach(function (a) {
       if (!a || !a.id || seen[a.id]) return;
-      if (a.given && builtDates[a.given]) return;   /* its questions exist now */
       seen[a.id] = 1; out.push(a);
     });
     return out;
@@ -803,6 +824,7 @@
   function renderHW() {
     var host = el('pc-hw');
     if (!host) return;
+    try { hwaDedupe(); } catch (e) {}
     var list = hwaRead();
     var today = (function () { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })();
     var h = '<p class="pc-lead">What the maths teacher actually set. Each one appears in Atharv\'s Homework Club, where he ticks the ones he wants and chooses 15 minutes, 30 minutes, an hour, or to be taught it.</p>';
