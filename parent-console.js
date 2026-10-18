@@ -770,6 +770,9 @@
     { id: 'angles', name: 'Adjacent angles on a straight line' },
     { id: 'subfractions', name: 'Two fractions subtracted' }
   ];
+  var hwaSheetMap = {};       /* assignment id -> {name, type} */
+  var hwaSheetsAsked = false;
+
   function hwaRead() {
     try {
       var raw = JSON.parse(localStorage.getItem(HWA_KEY));
@@ -802,14 +805,29 @@
         return '<label style="display:inline-block;font-size:15px;font-weight:600;margin:0 14px 6px 0">' +
           '<input type="checkbox" class="hwa-t" value="' + t.id + '" checked> ' + esc(t.name) + '</label>';
       }).join('') + '</div></div>' +
+      '<div style="margin:0 0 12px"><b style="font-size:15px">The sheet itself (optional)</b>' +
+      '<div style="margin-top:6px"><input id="hwa-file" type="file" accept="image/*,application/pdf" style="font:600 15px inherit">' +
+      '<span class="pc-meta" style="margin-left:8px">a photo or a PDF \u2014 kept on this device, never uploaded anywhere</span></div></div>' +
       '<button class="pc-tab" onclick="PC.addHW()" style="border-color:#2e7d32;background:linear-gradient(135deg,#f1f8e9,#fffdf7)">Add this assignment</button>' +
       '<span id="hwa-msg" style="margin-left:12px;font-weight:700;color:#2e7d32"></span></div>';
     h += list.length ? list.map(function (a) {
+      var sheet = hwaSheetMap[a.id];
       return '<div class="pc-row"><b>' + esc(a.topic) + '</b><span class="pc-meta">given ' + esc(hwaDate(a.given)) + ' \u00b7 ' +
-        (a.types || []).length + ' kinds</span>' +
-        '<button class="pc-tab" style="margin-left:auto;font-size:14px;padding:6px 12px" onclick="PC.delHW(\'' + a.id + '\')">Remove</button></div>';
+        (a.types || []).length + ' kinds' + (sheet ? ' \u00b7 sheet attached' : '') + '</span>' +
+        '<span style="margin-left:auto;display:inline-flex;gap:8px;align-items:center">' +
+        '<input id="hwa-f-' + a.id + '" type="file" accept="image/*,application/pdf" style="display:none" ' +
+        'onchange="PC.attachHW(\'' + a.id + '\', this)">' +
+        '<button class="pc-tab" style="font-size:14px;padding:6px 12px" onclick="document.getElementById(\'hwa-f-' + a.id + '\').click()">' +
+        (sheet ? 'Replace sheet' : 'Attach sheet') + '</button>' +
+        (sheet ? '<button class="pc-tab" style="font-size:14px;padding:6px 12px" onclick="PC.delSheet(\'' + a.id + '\')">Remove sheet</button>' : '') +
+        '<button class="pc-tab" style="font-size:14px;padding:6px 12px" onclick="PC.delHW(\'' + a.id + '\')">Remove</button>' +
+        '</span></div>';
     }).join('') : '<div class="pc-empty">No assignments yet \u2014 add the first one above.</div>';
     host.innerHTML = h;
+    if (!hwaSheetsAsked && window.HWSheets) {
+      hwaSheetsAsked = true;
+      HWSheets.all().then(function (m) { hwaSheetMap = m || {}; renderHW(); }).catch(function () {});
+    }
   }
 
   function renderAll() {
@@ -985,10 +1003,41 @@
     if (!topic) { if (el('hwa-msg')) el('hwa-msg').textContent = 'Give it a topic name first.'; return; }
     if (!types.length) { if (el('hwa-msg')) el('hwa-msg').textContent = 'Tick at least one kind of question.'; return; }
     var list = hwaRead();
-    list.push({ id: 'a-' + (given || 'x') + '-' + Math.random().toString(36).slice(2, 6), topic: topic, given: given, types: types });
+    var id = 'a-' + (given || 'x') + '-' + Math.random().toString(36).slice(2, 6);
+    list.push({ id: id, topic: topic, given: given, types: types });
     hwaWrite(list);
-    renderHW();
-    if (el('hwa-msg')) el('hwa-msg').textContent = 'Added. It is in the Homework Club now.';
+    var pick = el('hwa-file');
+    var file = pick && pick.files && pick.files[0];
+    var done = function (msg) { renderHW(); if (el('hwa-msg')) el('hwa-msg').textContent = msg; };
+    done('Added. It is in the Homework Club now.');          /* never keep the parent waiting */
+    if (file && window.HWSheets) {
+      HWSheets.put(id, file).then(function () {
+        return HWSheets.all();
+      }).then(function (m) {
+        hwaSheetMap = m || {};
+        renderHW();
+        if (el('hwa-msg')) el('hwa-msg').textContent = 'Added, with the sheet attached.';
+      }).catch(function (e) {
+        if (el('hwa-msg')) el('hwa-msg').textContent = 'Added. The sheet could not be stored on this device: ' +
+          (e && e.message ? e.message : 'unknown');
+      });
+    }
+  };
+  window.PC.attachHW = function (id, input) {
+    var file = input && input.files && input.files[0];
+    if (!file) return;
+    HWSheets.put(id, file).then(function () { return HWSheets.all(); }).then(function (m) {
+      hwaSheetMap = m || {};
+      renderHW();
+    }).catch(function (e) {
+      if (el('hwa-msg')) el('hwa-msg').textContent = 'Could not store that sheet: ' + (e && e.message ? e.message : 'unknown');
+    });
+  };
+  window.PC.delSheet = function (id) {
+    HWSheets.del(id).then(function () { return HWSheets.all(); }).then(function (m) {
+      hwaSheetMap = m || {};
+      renderHW();
+    }).catch(function () {});
   };
   window.PC.delHW = function (id) {
     hwaWrite(hwaRead().filter(function (a) { return a.id !== id; }));

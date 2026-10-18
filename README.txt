@@ -1235,6 +1235,39 @@ ticked kinds, refused an empty topic name, and wrote the same shape the child's
 page reads. The action bar was measured at iPad width - all four buttons on
 screen, nothing cut off.
 
+Recent changes (round 62 - v62: attach the teacher's sheet)
+------------------------
+There is now an upload, in the Parent Console under Setup -> Homework
+assignments. A photo or a PDF of the sheet can be attached while adding an
+assignment, or afterwards from the row itself ("Attach sheet" / "Replace sheet"
+/ "Remove sheet"). The child then sees a green "See the sheet" button on that
+assignment in the Homework Club, and can open the real sheet beside the
+practice.
+
+HONEST LIMITS
+- A browser-only app cannot read a photo and invent questions from it. There is
+  no server and no OCR here, so the question kinds are still chosen by hand in
+  the same form. The sheet is kept, shown and used as a reference - it is not
+  turned into questions automatically.
+- The file never leaves the device. Nothing is uploaded anywhere.
+- Stored in IndexedDB, not localStorage, because a photo of a page is far too
+  big for localStorage.
+
+THE HANG THAT WOULD HAVE HAPPENED
+The child's list asked the file store for its sheets before drawing. In a
+browser where storage is switched off or in private mode, that request can
+never answer - so the Homework Club would have shown a blank page. It now
+draws the assignments first and adds the "See the sheet" button only if the
+store answers, and the store itself gives up after 2.5 seconds rather than
+waiting forever. The parent's form likewise records the assignment first and
+reports the sheet afterwards, so nothing ever waits on storage.
+
+VERIFIED: the storage module was driven end to end against a working stand-in
+for IndexedDB - put, has, all, get (returning the file name and a usable blob
+URL), and delete all behaved. The real Homework Club page was then loaded with
+storage unavailable and still drew its assignment and content, with no sheet
+button and no hang.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

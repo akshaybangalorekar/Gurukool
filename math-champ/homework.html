@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=61">
+  <link rel="stylesheet" href="assets/style.css?v=62">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,14 +68,15 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=61"></script>
-  <script src="../gk-fresh.js?v=61"></script>
-  <script src="../rhythm.js?v=61"></script>
-  <script src="assets/app.js?v=61"></script>
-  <script src="assets/gen.js?v=61"></script>
-  <script src="assets/homework.js?v=61"></script>
-  <script src="../champ-rail.js?v=61"></script>
-  <script src="assets/nav.js?v=61"></script>
+  <script src="../version.js?v=62"></script>
+  <script src="../hw-sheets.js?v=62"></script>
+  <script src="../gk-fresh.js?v=62"></script>
+  <script src="../rhythm.js?v=62"></script>
+  <script src="assets/app.js?v=62"></script>
+  <script src="assets/gen.js?v=62"></script>
+  <script src="assets/homework.js?v=62"></script>
+  <script src="../champ-rail.js?v=62"></script>
+  <script src="assets/nav.js?v=62"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -85,7 +86,7 @@
     function el(id) { return document.getElementById(id); }
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-    var S = { view: 'list', picked: {}, on: false, ends: 0, total: 0, n: 0, right: 0, q: null, answered: false, tick: null, types: [], mode: 'mixed', typeId: null };
+    var S = { view: 'list', picked: {}, sheets: {}, sheetOpen: null, on: false, ends: 0, total: 0, n: 0, right: 0, q: null, answered: false, tick: null, types: [], mode: 'mixed', typeId: null };
     var TICK = '\u2611', BLANK = '\u2610';
 
     /* ---------- what each assignment has been doing ---------- */
@@ -96,6 +97,37 @@
         if (r) { n += (r.n || 0); right += (r.right || 0); }
       });
       return { n: n, right: right, pct: n ? Math.round(100 * right / n) : null };
+    }
+
+    /* ---------- the sheets the teacher gave ---------- */
+    /* Draw the assignments straight away. If a sheet turns up afterwards, the
+       list is redrawn with the "See the sheet" button on it. Never wait. */
+    function loadSheets(cb) {
+      cb && cb();
+      if (!window.HWSheets) return;
+      HWSheets.all().then(function (m) {
+        var had = Object.keys(S.sheets || {}).length;
+        S.sheets = m || {};
+        if (Object.keys(S.sheets).length !== had && S.view === 'list') list();
+      }).catch(function () {});
+    }
+    function sheetView(id) {
+      var a = HW.assignments().filter(function (x) { return x.id === id; })[0] || {};
+      HWSheets.get(id).then(function (rec) {
+        if (!rec || !rec.url) return;
+        var body;
+        if (HWSheets.isPdf(rec.type)) {
+          body = '<iframe src="' + rec.url + '" style="width:100%;height:70vh;border:1px solid #e6ebf1;border-radius:12px"></iframe>' +
+                 '<p style="margin:10px 0 0"><a class="h-btn small" href="' + rec.url + '" target="_blank" rel="noopener">Open the sheet in a new window</a></p>';
+        } else {
+          body = '<img src="' + rec.url + '" alt="The homework sheet" style="width:100%;border-radius:12px;border:1px solid #e6ebf1">';
+        }
+        el('h-view').innerHTML = '<h1 class="h-h1">\ud83d\udcc4 ' + esc(a.topic || 'The sheet') + '</h1>' +
+          '<p class="h-lead">The sheet your teacher gave, exactly as it came home. ' +
+          'Use it beside the practice \u2014 the questions you get are fresh, but they are the same kinds.</p>' +
+          '<div class="h-panel">' + body + '</div>' +
+          '<button class="h-btn p big" style="margin-top:14px" onclick="HWClub.back()">Back to the assignments</button>';
+      }).catch(function () {});
     }
 
     /* ---------- the list ---------- */
@@ -119,6 +151,7 @@
           '<p class="hw-covers">' + (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ') + '</p>' +
           '<span class="h-chip">' + (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet') + '</span>' +
           '<div class="hw-acts">' +
+          (S.sheets[a.id] ? '<button class="h-btn small" style="border-color:#2e7d32;color:#2e7d32" onclick="HWClub.sheet(\'' + a.id + '\')">See the sheet</button>' : '') +
           '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
           '<button class="h-btn small" onclick="HWClub.teach(\'' + a.id + '\')">Teach me this</button>' +
           '</div></div></div></div>';
@@ -244,6 +277,7 @@
         nextQuestion();
       },
       teach: function (id) { teachView([id]); },
+      sheet: function (id) { sheetView(id); },
       teachPicked: function () {
         teachView(Object.keys(S.picked).filter(function (k) { return S.picked[k]; }));
       },
@@ -293,7 +327,7 @@
         '<button class="h-btn p" onclick="HWClub.back()">Back to the assignments</button></div>';
     }
 
-    list();
+    loadSheets(function () { list(); });
   })();
   </script>
 </body>
