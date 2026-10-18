@@ -1348,6 +1348,29 @@ real-shaped names. The add-a-sheet flow was driven with a real File object: the
 row appeared immediately, the message read 'Filed as "Geometry"', and the list
 showed two rows with chips "not practised yet" and "coming soon".
 
+Recent changes (round 65 - v65: the 404 message covers both causes)
+------------------------
+A token-scoped 404 from GitHub cannot say whether a repo is private-and-
+invisible or simply misnamed, so the sync message now names both causes with
+the exact fix for each:
+
+  "GitHub will not show owner/repo to this token. Two causes, both quick:
+   (1) the repo name - open the repo in GitHub and copy the name from the
+       address bar; or
+   (2) the token's access - Settings > Developer settings > Fine-grained
+       tokens > this token > Repository access: Only select repositories,
+       tick this repo, then Permissions > Contents: Read and write.
+   If the token starts with ghp_ it is a classic token and needs the repo
+   scope instead."
+
+Checked from outside: akshaybangalorekar/gurukoolProgressReport returns 404
+both unauthenticated and with the Gurukool token, and it is not among the eight
+public repos on that account - which is exactly the private-or-misnamed case
+the message now explains.
+
+VERIFIED: with the network stubbed to refuse, the console showed that message
+in full.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
