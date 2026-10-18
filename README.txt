@@ -1497,6 +1497,25 @@ VERIFIED: the uploader itself was driven against the live GitHub API and a file
 appeared on the sources branch and was then deleted; the page was loaded with a
 real waiting sheet to confirm the card and its wording.
 
+Recent changes (round 71 - v71: a waiting sheet can be removed)
+------------------------
+Each sheet whose questions do not exist yet now has "Remove this sheet" on its
+card, so a sheet that was added wrongly - or one that needs re-adding - can be
+cleared from the Homework page itself. It is offered ONLY on unbuilt sheets, so
+a child cannot delete homework that actually works. The Parent Console still has
+its own Remove for anything added on the device.
+
+VERIFIED: with two waiting sheets and one built sheet, the page showed two
+Remove buttons and none on the built one; removing one left the right two rows,
+cleared the stored copy, and said "Removed. Add it again whenever you like."
+
+NOTE ON WHERE A SHEET LIVES
+Gurukool's working memory is per-visit and is wiped between visits, so a file
+that is not in the repository is gone. A sheet on the iPad is only on the iPad
+and cannot be read from outside. That is why the upload goes to the sources
+branch: the repository is the only memory that lasts and that both sides can
+read.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
