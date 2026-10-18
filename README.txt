@@ -1558,6 +1558,36 @@ recomputed independently from the question text - zero disagreements, every one
 with 4-5 distinct options. The sheets are filed on the sources branch as
 sources/sheets/2026-10-18-au7-*.pdf.
 
+Recent changes (round 73 - v73: accurate diagrams for the geometry kinds)
+------------------------
+The sheets themselves carry no images, and the homework page could not show a
+diagram at all - so every angle question was words only, which is genuinely
+hard for parallel line properties. Both are fixed.
+
+New file math-champ/assets/hw-au7-art.js draws each figure from the real
+geometry: every arc is placed at the angle the question states, so a 65 degree
+angle looks like 65 degrees, corresponding angles come out visibly equal, and
+co-interior angles come out visibly supplementary. Fourteen kinds now carry a
+diagram: classifying an angle, complementary, angles on a straight line,
+vertically opposite, angles at a point, a ray inside a right angle, the three
+parallel line pairs, the parallel test, both algebra kinds, the triangle between
+parallels, and the bent path.
+
+THREE REAL ERRORS FOUND BY RENDERING THEM AND LOOKING
+- A 124 degree alternate-angle question was drawn and LABELLED 80, because the
+  lean had been clamped for tidiness and the label taken from the clamped value.
+  A diagram that contradicts its own question teaches the wrong thing.
+- The triangle's apex angle was drawn above the line instead of between the two
+  arms.
+- The bent path put the bend outside the parallel lines and had the angle at the
+  bend wrong. Both arms must leave the bend on the same side for the angle there
+  to be a + b; the feet are now placed so each arm makes exactly its stated
+  angle with its line.
+
+VERIFIED: every figure was rendered in a headless browser and inspected. The
+bent path was checked numerically as well - the feet land exactly on their lines
+and the bend always sits between them.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

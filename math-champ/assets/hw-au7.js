@@ -415,7 +415,8 @@
      SHEET 2 - LINES, ANGLES AND PARALLEL LINE PROPERTIES
      ============================================================ */
   var DEG = '\u00B0';
-  var ch;   /* one slot for the choices, so they are shuffled once and the index matches */
+  var ch;
+  function art() { return window.AU7Art || {}; }   /* one slot for the choices, so they are shuffled once and the index matches */
   function angleQ(q, ans, wrongs, know, hints, sol) {
     var ch = opts(ans, wrongs, DEG);
     return { q: q, options: ch.options, answer: ch.answer, know: know, hints: hints, sol: sol };
@@ -471,6 +472,7 @@
         var ch = optsText(k.name, shuffle(all.filter(function (x) { return x !== k.name; })).slice(0, 3));
         return { q: 'An angle measures ' + a + DEG + '. How is this angle classified?',
           options: ch.options, answer: ch.answer,
+          art: art().oneAngle ? art().oneAngle(a) : '',
           know: ['Less than 90 is acute', 'Exactly 90 is a right angle', 'Between 90 and 180 is obtuse',
                  'Exactly 180 is straight, and more than 180 is reflex'],
           hints: ['Which range does ' + a + DEG + ' fall into?', 'Compare it with 90' + DEG + ' and 180' + DEG + '.'],
@@ -506,11 +508,13 @@
                'Check by adding the two together - they must make 90.'],
       make: function () {
         var a = ri(11, 79), ans = 90 - a;
-        return angleQ('Two angles are complementary. If one angle measures ' + a + DEG + ', what is the measure of the other angle?',
+        var q1 = angleQ('Two angles are complementary. If one angle measures ' + a + DEG + ', what is the measure of the other angle?',
           ans, [180 - a, a, 90 + a],
           ['Complementary angles add to 90' + DEG],
           ['What do complementary angles add up to?', 'So the other angle is 90' + DEG + ' \u2212 ' + a + DEG + '.'],
           'Complementary angles add to 90' + DEG + ', so the other angle is 90' + DEG + ' \u2212 ' + a + DEG + ' = ' + ans + DEG + '.');
+        q1.art = art().complementary ? art().complementary(a) : '';
+        return q1;
       } },
 
     { id: 'l-supp', name: 'Angles on a straight line', icon: '\uD83D\uDCCF',
@@ -520,11 +524,13 @@
                'Check the two add to 180.'],
       make: function () {
         var a = ri(20, 160), ans = 180 - a;
-        return angleQ('Two adjacent angles lie on a straight line and are supplementary. If one angle is ' + a + DEG +
+        var q2 = angleQ('Two adjacent angles lie on a straight line and are supplementary. If one angle is ' + a + DEG +
           ', find the size of the other angle.', ans, [90 - a, a, 360 - a],
           ['Angles on a straight line add to 180' + DEG],
           ['A straight line is 180' + DEG + '.', 'So the other angle is 180' + DEG + ' \u2212 ' + a + DEG + '.'],
           'Angles on a straight line add to 180' + DEG + ', so the other angle is 180' + DEG + ' \u2212 ' + a + DEG + ' = ' + ans + DEG + '.');
+        q2.art = art().onStraightLine ? art().onStraightLine(a, true) : '';
+        return q2;
       } },
 
     { id: 'l-vert', name: 'Vertically opposite angles', icon: '\u2716\uFE0F',
@@ -534,11 +540,13 @@
                'The angle next to it is the one that adds to 180.'],
       make: function () {
         var a = ri(20, 160);
-        return angleQ('Two straight lines intersect to form opposite angles. If one angle is ' + a +
+        var q3 = angleQ('Two straight lines intersect to form opposite angles. If one angle is ' + a +
           DEG + ', what is the size of the vertically opposite angle?', a, [180 - a, 90 - a, a + 10],
           ['Vertically opposite angles are equal'],
           ['Vertically opposite angles are the same size.', 'So it is ' + a + DEG + ' too.'],
           'Vertically opposite angles are equal, so the opposite angle is also ' + a + DEG + '.');
+        q3.art = art().crossing ? art().crossing(a, 'pair') : '';
+        return q3;
       } },
 
     { id: 'l-point', name: 'Angles meeting at a point', icon: '\uD83D\uDD35',
@@ -551,13 +559,15 @@
         for (i = 0; i < known; i++) { var a = ri(30, 140); list.push(a); total += a; }
         var ans = 360 - total;
         if (ans < 15 || ans > 200) return window.AU7.byId('l-point').make();
-        return angleQ(n + ' angles meet at a single vertex point. ' + known + ' of them measure ' +
+        var q4 = angleQ(n + ' angles meet at a single vertex point. ' + known + ' of them measure ' +
           list.join(DEG + ', ') + DEG + '. Find the size of the missing angle x.',
           ans, [180 - total, ans + 20, 360 + total],
           ['Angles at a point add to 360' + DEG, 'The angles given add to ' + total + DEG],
           ['Add the angles you know.', 'Take the total away from 360' + DEG + '.'],
           'The known angles add to ' + total + DEG + '. Angles at a point make 360' + DEG + ', so x = 360' + DEG + ' \u2212 ' +
           total + DEG + ' = ' + ans + DEG + '.');
+        q4.art = art().atPoint ? art().atPoint(list, ans) : '';
+        return q4;
       } },
 
     { id: 'l-right', name: 'Angles inside a right angle', icon: '\uD83D\uDCD0',
@@ -567,12 +577,14 @@
                'So the one you want is 90 minus the one you are given.'],
       make: function () {
         var a = ri(12, 78), ans = 90 - a;
-        return angleQ('Line AB is perpendicular to line CD, meeting at O to form the right angle AOC of 90' + DEG +
+        var q5 = angleQ('Line AB is perpendicular to line CD, meeting at O to form the right angle AOC of 90' + DEG +
           '. Ray OE is drawn inside angle AOC so that angle AOE is ' + a + DEG + '. What is the measure of angle EOC?',
           ans, [180 - a, a, 90 + a],
           ['AOC is a right angle, so it is 90' + DEG, 'AOE and EOC together make up AOC'],
           ['The two angles together make 90' + DEG + '.', 'So EOC is 90' + DEG + ' \u2212 ' + a + DEG + '.'],
           'AOE and EOC together make the right angle AOC, so EOC = 90' + DEG + ' \u2212 ' + a + DEG + ' = ' + ans + DEG + '.');
+        q5.art = art().insideRight ? art().insideRight(a) : '';
+        return q5;
       } },
 
     { id: 'l-corresp', name: 'Corresponding angles', icon: '\u2194\uFE0F',
@@ -582,11 +594,13 @@
                'So the corresponding angle is the same as the one you are given.'],
       make: function () {
         var a = ri(25, 155);
-        return angleQ('Two parallel lines are cut by a transversal line. If a given angle is ' + a +
+        var q6 = angleQ('Two parallel lines are cut by a transversal line. If a given angle is ' + a +
           DEG + ', what is the measure of its corresponding angle?', a, [180 - a, 90 - a, a + 15],
           ['Corresponding angles between parallel lines are equal'],
           ['Corresponding angles are in matching positions.', 'So they are the same size.'],
           'Corresponding angles are equal when the lines are parallel, so it is ' + a + DEG + '.');
+        q6.art = art().parallelCut ? art().parallelCut(a, 'corresponding') : '';
+        return q6;
       } },
 
     { id: 'l-alt', name: 'Alternate interior angles', icon: '\u2197\uFE0F',
@@ -596,11 +610,13 @@
                'So the other alternate interior angle is the same.'],
       make: function () {
         var a = ri(25, 155);
-        return angleQ('Two parallel lines are intersected by a transversal. One of the alternate interior angles measures ' +
+        var q7 = angleQ('Two parallel lines are intersected by a transversal. One of the alternate interior angles measures ' +
           a + DEG + '. What is the measure of the other alternate interior angle?', a, [180 - a, 90 - a, a - 20],
           ['Alternate interior angles between parallel lines are equal'],
           ['They make a Z shape between the lines.', 'Alternate angles are equal.'],
           'Alternate interior angles are equal between parallel lines, so the other one is ' + a + DEG + '.');
+        q7.art = art().parallelCut ? art().parallelCut(a, 'alternate') : '';
+        return q7;
       } },
 
     { id: 'l-coint', name: 'Co-interior angles', icon: '\uD83E\uDD1D',
@@ -610,12 +626,14 @@
                'So the other one is 180 minus the one you are given.'],
       make: function () {
         var a = ri(25, 155), ans = 180 - a;
-        return angleQ('Two parallel lines are intersected by a transversal. If one co-interior angle is ' + a +
+        var q8 = angleQ('Two parallel lines are intersected by a transversal. If one co-interior angle is ' + a +
           DEG + ', what is the measure of the other co-interior angle on the same side of the transversal?',
           ans, [a, 90 - a, 360 - a],
           ['Co-interior angles add to 180' + DEG],
           ['They make a C shape and add to 180' + DEG + '.', 'So it is 180' + DEG + ' \u2212 ' + a + DEG + '.'],
           'Co-interior angles add to 180' + DEG + ', so the other is 180' + DEG + ' \u2212 ' + a + DEG + ' = ' + ans + DEG + '.');
+        q8.art = art().parallelCut ? art().parallelCut(a, 'cointerior') : '';
+        return q8;
       } },
 
     { id: 'l-partest', name: 'Are the lines parallel?', icon: '\uD83E\uDD14',
@@ -675,6 +693,7 @@
                  '(' + a + 'x + ' + k1 + ') + (' + b + 'x + ' + k2 + ') = 180'],
           hints: ['Add the two expressions: the x parts give ' + (a + b) + 'x.', 'The numbers give ' + (k1 + k2) + ', so ' +
                   (a + b) + 'x + ' + (k1 + k2) + ' = 180.'],
+          art: art().onStraightLine ? art().onStraightLine(a * x + k1, true) : '',
           sol: '(' + a + 'x + ' + k1 + ') + (' + b + 'x + ' + k2 + ') = 180, so ' + (a + b) + 'x + ' + (k1 + k2) +
                ' = 180, giving ' + (a + b) + 'x = ' + sum + ' and x = ' + x + '.' };
       } },
@@ -698,6 +717,7 @@
           know: ['Vertically opposite angles are equal',
                  a + 'x \u2212 ' + k1 + ' = ' + b + 'x + ' + k2],
           hints: ['Set the two expressions equal.', 'Move the x terms to one side: ' + (a - b) + 'x = ' + (k1 + k2) + '.'],
+          art: art().crossing ? art().crossing(a * x - k1, 'pair') : '',
           sol: 'Vertically opposite angles are equal, so ' + a + 'x \u2212 ' + k1 + ' = ' + b + 'x + ' + k2 + '. That gives ' +
                (a - b) + 'x = ' + (k1 + k2) + ', so x = ' + x + '.' };
       } },
@@ -711,7 +731,7 @@
         var a = ri(25, 80), b = ri(25, 80);
         var ans = 180 - a - b;
         if (ans < 20) return window.AU7.byId('l-tri').make();
-        return angleQ('Line AB is parallel to line CD. A triangle EFG has its top vertex E on line AB and its base vertices F and G on line CD. ' +
+        var q9 = angleQ('Line AB is parallel to line CD. A triangle EFG has its top vertex E on line AB and its base vertices F and G on line CD. ' +
           'If angle AEF = ' + a + DEG + ' and angle BEG = ' + b + DEG + ', calculate the interior top angle FEG of the triangle.',
           ans, [a + b, 90 - a, 180 - a],
           ['A, E and B are on one straight line, so the angles at E add to 180' + DEG,
@@ -719,6 +739,8 @@
           ['The straight line through E is 180' + DEG + '.', 'So FEG = 180' + DEG + ' \u2212 ' + a + DEG + ' \u2212 ' + b + DEG + '.'],
           'A, E and B are in a straight line, so ' + a + DEG + ' + FEG + ' + b + DEG + ' = 180' + DEG + '. ' +
           'That makes FEG = 180' + DEG + ' \u2212 ' + a + DEG + ' \u2212 ' + b + DEG + ' = ' + ans + DEG + '.');
+        q9.art = art().triangleBetween ? art().triangleBetween(a, b, ans) : '';
+        return q9;
       } },
 
     { id: 'l-bent', name: 'A bent path between parallel lines', icon: '\uD83D\uDD00',
@@ -729,7 +751,7 @@
       make: function () {
         var a = ri(20, 75), b = ri(20, 75);
         var ans = a + b;
-        return angleQ('Line L1 is parallel to line L2. A bent path forms an interior vertex V between the lines. The upper angle between L1 and the top arm is ' +
+        var q10 = angleQ('Line L1 is parallel to line L2. A bent path forms an interior vertex V between the lines. The upper angle between L1 and the top arm is ' +
           a + DEG + ', and the lower angle between L2 and the bottom arm is ' + b + DEG +
           '. What is the total measure of the interior angle V facing the opening?',
           ans, [180 - a - b, Math.abs(a - b), 180 - ans],
@@ -738,6 +760,8 @@
           ['The two parts of the angle at V are alternate angles.', 'So V = ' + a + DEG + ' + ' + b + DEG + '.'],
           'Drawing a parallel line through V makes the two parts alternate angles equal to ' + a + DEG + ' and ' + b + DEG +
           ', so V = ' + a + DEG + ' + ' + b + DEG + ' = ' + ans + DEG + '.');
+        q10.art = art().bentPath ? art().bentPath(a, b, ans) : '';
+        return q10;
       } }
   ];
 

@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=72">
+  <link rel="stylesheet" href="assets/style.css?v=73">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,16 +68,17 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=72"></script>
-  <script src="../hw-sheets.js?v=72"></script>
-  <script src="../gk-fresh.js?v=72"></script>
-  <script src="../rhythm.js?v=72"></script>
-  <script src="assets/app.js?v=72"></script>
-  <script src="assets/gen.js?v=72"></script>
-  <script src="assets/hw-au7.js?v=72"></script>
-  <script src="assets/homework.js?v=72"></script>
-  <script src="../champ-rail.js?v=72"></script>
-  <script src="assets/nav.js?v=72"></script>
+  <script src="../version.js?v=73"></script>
+  <script src="../hw-sheets.js?v=73"></script>
+  <script src="../gk-fresh.js?v=73"></script>
+  <script src="../rhythm.js?v=73"></script>
+  <script src="assets/app.js?v=73"></script>
+  <script src="assets/gen.js?v=73"></script>
+  <script src="assets/hw-au7-art.js?v=73"></script>
+  <script src="assets/hw-au7.js?v=73"></script>
+  <script src="assets/homework.js?v=73"></script>
+  <script src="../champ-rail.js?v=73"></script>
+  <script src="assets/nav.js?v=73"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -240,6 +241,7 @@
         '<div class="h-panel"><div class="h-chip">' + esc(q.typeName) + '</div>' +
         '<div class="h-chip">Question ' + (S.n || 1) + '</div>' +
         '<p class="h-q" style="font-size:19px">' + esc(q.q) + '</p>' +
+        (q.art || '') +
         q.options.map(function (o, i) {
           return '<button class="h-opt" id="h-opt' + i + '" onclick="HWClub.pick(' + i + ')">' +
             String.fromCharCode(65 + i) + '.  ' + esc(o) + '</button>';
