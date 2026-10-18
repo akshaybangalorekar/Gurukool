@@ -1268,32 +1268,45 @@ URL), and delete all behaved. The real Homework Club page was then loaded with
 storage unavailable and still drew its assignment and content, with no sheet
 button and no hang.
 
-SOURCE MATERIAL (the teacher's sheets and the raw files)
---------------------------------------------------------
-The original sheets, photos and source files are NOT in this folder - they are
-on a separate branch called "sources", in a folder called "sources".
+Recent changes (round 63 - v63: no more asking which kinds of question)
+------------------------
+Adding a homework sheet no longer asks the parent to tick which kinds of
+question it contains. That is worked out from the sheet, by reading it.
 
-  git clone --depth 1 --branch sources \
-    https://github.com/akshaybangalorekar/Gurukool.git sources
+WHAT THE FORM IS NOW
+Parent Console -> Setup -> Homework assignments:
+  the sheet (a photo or a PDF), the topic name, and the date it was given.
+  Three things. Nothing to tick.
 
-They are kept off main on purpose: this repository is published as the live
-site on every push, and one of those files is a 52 MB scan, which would be
-re-uploaded with every single deploy.
+WHAT HAPPENS IN BETWEEN
+A sheet added this way has no question kinds yet, because a browser cannot
+read a photo and invent questions from it. So it is filed, and:
+- the console row says "questions not built yet";
+- the child's Homework Club shows the sheet with "The questions for this one
+  are still being written" and a "coming soon" chip, a dashed tick box that
+  cannot be ticked, and no Practise or Teach button - so nothing wrong is ever
+  practised;
+- the sheet is on the sources branch, so the kinds can be built from it in a
+  later session and added to the app.
 
-What is on that branch, and what has been built from it:
-  maths-olympiad-278-pages.pdf        278-page scanned Olympiad book, no text
-                                      layer. Nothing built from it yet.
-  maths-practice-photo-2026-09-30.jpg a photo of a printed practice paper.
-                                      Nothing built from it yet.
-  homework-linear-equations-2026-10-01.pdf
-                                      the 1 Oct 2026 homework sheet. BUILT: the
-                                      five Homework Club types in Maths.
-  science-quest.html + -features.md   the earlier single-file science game that
-                                      seeded Science-Champ.
+BUILT-IN ASSIGNMENTS NOW MERGE
+Assignments whose questions exist live in the code and always show. Device
+-added ones (his uploads) merge in beside them instead of replacing them. This
+fixes a real flaw: before, adding one assignment from the console made the
+built-in "Linear equations" row disappear. "Remove" is only offered on the
+device-added ones, since a built-in one would simply come back.
 
-To add another sheet: put the file on the sources branch, say what it is in
-sources/README.md, then build its question types here on main and add an
-assignment row in the Parent Console so it shows up in the Homework Club.
+ALSO FIXED: the console's confirmation message was wiped by the redraw that
+follows it, so "Added..." never appeared. The message is now held and rendered
+with the form, so it survives.
+
+VERIFIED: the console form showed zero kind checkboxes and told the parent they
+do not need to choose; filing a sheet stored it with no kinds and left the
+built-in row intact (2 rows, "5 kinds of question" and "questions not built
+yet", only one Remove button). The child's page was then loaded with that
+mixed list: 2 cards, 2 tick boxes but only 1 tickable, chips "not practised
+yet" and "coming soon", one Practise and one Teach button, and the action bar
+correctly reading "1 selected: Linear equations".
 
 What lives here
 ---------------

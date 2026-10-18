@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=62">
+  <link rel="stylesheet" href="assets/style.css?v=63">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,15 +68,15 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=62"></script>
-  <script src="../hw-sheets.js?v=62"></script>
-  <script src="../gk-fresh.js?v=62"></script>
-  <script src="../rhythm.js?v=62"></script>
-  <script src="assets/app.js?v=62"></script>
-  <script src="assets/gen.js?v=62"></script>
-  <script src="assets/homework.js?v=62"></script>
-  <script src="../champ-rail.js?v=62"></script>
-  <script src="assets/nav.js?v=62"></script>
+  <script src="../version.js?v=63"></script>
+  <script src="../hw-sheets.js?v=63"></script>
+  <script src="../gk-fresh.js?v=63"></script>
+  <script src="../rhythm.js?v=63"></script>
+  <script src="assets/app.js?v=63"></script>
+  <script src="assets/gen.js?v=63"></script>
+  <script src="assets/homework.js?v=63"></script>
+  <script src="../champ-rail.js?v=63"></script>
+  <script src="assets/nav.js?v=63"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -142,18 +142,26 @@
         h += '<div class="h-note">No assignments on this device yet. A grown-up can add one from the Parent Console.</div>';
       }
       list.forEach(function (a) {
-        var st = statsFor(a), on = !!S.picked[a.id];
+        var st = statsFor(a), on = !!S.picked[a.id], ready = (a.types || []).length > 0;
+        var sheetBtn = S.sheets[a.id] ? '<button class="h-btn small" style="border-color:#2e7d32;color:#2e7d32" onclick="HWClub.sheet(\'' + a.id + '\')">See the sheet</button>' : '';
         h += '<div class="h-card' + (on ? ' picked' : '') + '"><div class="hw-row">' +
-          '<button class="hw-tick' + (on ? ' on' : '') + '" onclick="HWClub.toggle(\'' + a.id + '\')" aria-label="Tick this assignment">' + (on ? TICK : BLANK) + '</button>' +
+          (ready
+            ? '<button class="hw-tick' + (on ? ' on' : '') + '" onclick="HWClub.toggle(\'' + a.id + '\')" aria-label="Tick this assignment">' + (on ? TICK : BLANK) + '</button>'
+            : '<span class="hw-tick" style="border-style:dashed;color:#cbd5e1;cursor:default" aria-hidden="true">\u00b7</span>') +
           '<div class="hw-main">' +
           '<p class="hw-topic">' + esc(a.topic) + '</p>' +
           '<p class="hw-given">given ' + esc(HW.prettyDate(a.given)) + '</p>' +
-          '<p class="hw-covers">' + (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ') + '</p>' +
-          '<span class="h-chip">' + (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet') + '</span>' +
-          '<div class="hw-acts">' +
-          (S.sheets[a.id] ? '<button class="h-btn small" style="border-color:#2e7d32;color:#2e7d32" onclick="HWClub.sheet(\'' + a.id + '\')">See the sheet</button>' : '') +
-          '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
-          '<button class="h-btn small" onclick="HWClub.teach(\'' + a.id + '\')">Teach me this</button>' +
+          '<p class="hw-covers">' + (ready
+            ? (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ')
+            : 'The questions for this one are still being written.') + '</p>' +
+          '<span class="h-chip">' + (ready
+            ? (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet')
+            : 'coming soon') + '</span>' +
+          '<div class="hw-acts">' + sheetBtn +
+          (ready
+            ? '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
+              '<button class="h-btn small" onclick="HWClub.teach(\'' + a.id + '\')">Teach me this</button>'
+            : (S.sheets[a.id] ? '<span class="h-chip" style="background:#fef3c7;color:#78350f">Look at the sheet while you wait</span>' : '')) +
           '</div></div></div></div>';
       });
       h += '<div class="h-note">Nothing else lives in the Homework Club \u2014 only the kinds of question your teacher actually sets. ' +
@@ -262,6 +270,13 @@
       start: function (mins) {
         var ids = Object.keys(S.picked).filter(function (k) { return S.picked[k]; });
         S.types = HW.typesFor(ids);
+        if (!S.types.length) {
+          el('h-view').innerHTML = '<h1 class="h-h1">Nothing to practise yet</h1>' +
+            '<div class="h-panel"><p class="h-q">The questions for the sheet you ticked are still being written. ' +
+            'Tick one of the others and you can start straight away.</p>' +
+            '<button class="h-btn p" onclick="HWClub.back()">Back to the assignments</button></div>';
+          return;
+        }
         S.view = 'run'; S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0;
         el('hw-bar').className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
         startClock(mins);
@@ -271,6 +286,7 @@
         var a = HW.assignments().filter(function (x) { return x.id === id; })[0];
         if (!a) return;
         S.types = (a.types || []).slice();
+        if (!S.types.length) { HWClub.start(15); return; }
         S.view = 'run'; S.on = true; S.mode = 'mixed'; S.n = 0; S.right = 0;
         el('hw-bar').className = 'hw-bar'; document.body.classList.remove('hw-bar-open');
         startClock(15);

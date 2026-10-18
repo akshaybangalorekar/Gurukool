@@ -282,17 +282,29 @@
      lives on the device, so a new one can be added without touching code.
      ============================================================ */
   var ASSIGN_KEY = 'gk_hw_assignments';
+  /* The ones already built from a sheet. These are always shown, because their
+     question kinds exist in this file. A sheet added later from the Parent
+     Console is stored on the device and merged in beside them - its kinds are
+     worked out from the sheet and added here when they are ready. */
   var DEFAULT_ASSIGNMENTS = [
-    { id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01',
+    { id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01', built: true,
       types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }
   ];
 
   function readAssignments() {
+    var stored = [];
     try {
       var raw = JSON.parse(localStorage.getItem(ASSIGN_KEY));
-      if (raw && raw.length) return raw;
+      if (raw && raw.length) stored = raw;
     } catch (e) {}
-    return DEFAULT_ASSIGNMENTS.slice();
+    var out = DEFAULT_ASSIGNMENTS.slice(), seen = {};
+    out.forEach(function (a) { seen[a.id] = 1; });
+    stored.forEach(function (a) {
+      if (!a || !a.id || seen[a.id]) return;
+      seen[a.id] = 1;
+      out.push(a);
+    });
+    return out;
   }
   function writeAssignments(list) {
     try { localStorage.setItem(ASSIGN_KEY, JSON.stringify(list || [])); } catch (e) {}
@@ -309,7 +321,9 @@
       if (ids && ids.length && ids.indexOf(a.id) === -1) return;
       (a.types || []).forEach(function (t) { if (!seen[t]) { seen[t] = 1; out.push(t); } });
     });
-    return out.length ? out : TYPES.map(function (t) { return t.id; });
+    /* if a sheet has no kinds yet, nothing is invented for it - the caller
+       checks for an empty list and says so instead of practising something else */
+    return out;
   }
   function todayISO() {
     var d = new Date();
@@ -322,16 +336,15 @@
     saveAssignments: writeAssignments,
     prettyDate: prettyDate,
     typesFor: typesFor,
-    addAssignment: function (topic, given, types) {
-      var list = readAssignments();
+    addAssignment: function (topic, given) {
+      var list = readAssignments().filter(function (a) { return !a.built; });
       var id = 'a-' + (given || todayISO()) + '-' + Math.random().toString(36).slice(2, 6);
-      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(),
-                  types: (types && types.length) ? types : TYPES.map(function (t) { return t.id; }) });
+      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(), types: [] });
       writeAssignments(list);
       return id;
     },
     removeAssignment: function (id) {
-      var list = readAssignments().filter(function (a) { return a.id !== id; });
+      var list = readAssignments().filter(function (a) { return a.id !== id && !a.built; });
       writeAssignments(list);
       return list;
     },
