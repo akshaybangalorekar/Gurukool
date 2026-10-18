@@ -1402,6 +1402,37 @@ loaded with two identical entries stored: it swept one, showed "Tidied up 1
 duplicate sheet", kept three rows, and refused a re-add with the message above
 while adding nothing.
 
+Recent changes (round 67 - v67: a waiting clock, and a cheer when it lands)
+------------------------
+A sheet that has been filed but whose questions are not built yet used to just
+say "coming soon". Now it says how long it has been waiting, and the page
+cheers when the questions arrive.
+
+WHY THERE IS NO COUNTDOWN
+The questions are built from the sheet by Gurukool, not by the browser - a page
+cannot read a photo and invent questions. So a countdown to a fixed time would
+be a made-up number, and the app does not tell the parent things that are not
+true. What it does instead:
+  - "waiting 3 days" on the card, kept honest while the page is open (it is
+    redrawn every minute),
+  - "the questions are built from the sheet itself, so this one is ready as
+    soon as the sheet reaches Gurukool",
+  - and, when the questions do arrive, "🎉 The questions are ready for Linear
+    equations. Tick it and go." - so nobody has to keep checking.
+A sheet filed before this was recorded falls back to the date on the sheet.
+The Parent Console shows the same wait on its row ("waiting 3 days").
+
+ALSO FIXED: the console's duplicate sweep was calling a helper that had never
+been defined (hwaSame instead of sameSheet), so it threw and was swallowed -
+the console's sweep had never actually run.
+
+VERIFIED: the waiting wording was checked at just-filed, hours and days, and
+with no recorded time (it falls back to the sheet date). Then the real page was
+loaded with one sheet waiting 3 days and one whose questions now exist: two
+rows, chips "not practised yet", "coming soon" and "waiting 3 days", the
+waiting line in full, the message "The questions are ready for Linear
+equations. Tick it and go.", and only the still-waiting sheet left in storage.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

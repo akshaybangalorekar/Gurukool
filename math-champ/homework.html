@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=66">
+  <link rel="stylesheet" href="assets/style.css?v=67">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,15 +68,15 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=66"></script>
-  <script src="../hw-sheets.js?v=66"></script>
-  <script src="../gk-fresh.js?v=66"></script>
-  <script src="../rhythm.js?v=66"></script>
-  <script src="assets/app.js?v=66"></script>
-  <script src="assets/gen.js?v=66"></script>
-  <script src="assets/homework.js?v=66"></script>
-  <script src="../champ-rail.js?v=66"></script>
-  <script src="assets/nav.js?v=66"></script>
+  <script src="../version.js?v=67"></script>
+  <script src="../hw-sheets.js?v=67"></script>
+  <script src="../gk-fresh.js?v=67"></script>
+  <script src="../rhythm.js?v=67"></script>
+  <script src="assets/app.js?v=67"></script>
+  <script src="assets/gen.js?v=67"></script>
+  <script src="assets/homework.js?v=67"></script>
+  <script src="../champ-rail.js?v=67"></script>
+  <script src="assets/nav.js?v=67"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -153,10 +153,12 @@
           '<p class="hw-given">given ' + esc(HW.prettyDate(a.given)) + '</p>' +
           '<p class="hw-covers">' + (ready
             ? (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ')
-            : 'The questions for this one are still being written.') + '</p>' +
+            : 'The questions for this one are still being written \u2014 they are built from the sheet itself, ' +
+              'so this one is ready as soon as the sheet reaches Gurukool.') + '</p>' +
           '<span class="h-chip">' + (ready
             ? (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet')
             : 'coming soon') + '</span>' +
+          (ready ? '' : '<span class="h-chip" style="background:#fef3c7;color:#78350f">waiting ' + esc(HW.waitingText(a)) + '</span>') +
           '<div class="hw-acts">' + sheetBtn +
           (ready
             ? '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
@@ -377,16 +379,36 @@
         '<button class="h-btn p" onclick="HWClub.back()">Back to the assignments</button></div>';
     }
 
-    /* clear out any sheet that was filed twice before this check existed */
+    /* Anything filed twice is cleared out. A sheet whose questions have since
+       been built is dropped too - and that one is worth a cheer, because the
+       child was told to wait for it. */
+    function isBuiltNow(a) {
+      var hit = null;
+      HW.assignments().forEach(function (b) {
+        if (hit || !b.built) return;
+        if (b.given && a.given && b.given === a.given &&
+            String(b.topic || '').trim().toLowerCase() === String(a.topic || '').trim().toLowerCase()) hit = b;
+      });
+      return hit;
+    }
     var removed = [];
     try { removed = HW.dedupe() || []; } catch (e) { removed = []; }
+    var landed = removed.map(isBuiltNow).filter(Boolean);
+
     loadSheets(function () {
       list();
-      if (removed.length) {
-        var e = el('hw-add-msg');
-        if (e) e.textContent = 'Tidied up ' + removed.length + ' duplicate sheet' + (removed.length === 1 ? '' : 's') + '.';
+      var e = el('hw-add-msg');
+      if (!e) return;
+      if (landed.length) {
+        e.textContent = '\ud83c\udf89 The questions are ready for ' +
+          landed.map(function (b) { return b.topic; }).join(', ') + '. Tick it and go.';
+      } else if (removed.length) {
+        e.textContent = 'Tidied up ' + removed.length + ' duplicate sheet' + (removed.length === 1 ? '' : 's') + '.';
       }
     });
+
+    /* keep the waiting clock honest while the page is open */
+    setInterval(function () { if (S.view === 'list') list(); }, 60000);
   })();
   </script>
 </body>

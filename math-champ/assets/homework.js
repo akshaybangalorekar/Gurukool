@@ -402,9 +402,30 @@
     addAssignment: function (topic, given, sig) {
       var list = readStored();
       var id = 'a-' + (given || todayISO()) + '-' + Math.random().toString(36).slice(2, 6);
-      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(), types: [], sig: sig || '' });
+      list.push({ id: id, topic: String(topic || 'Homework').trim(), given: given || todayISO(),
+                  types: [], sig: sig || '', added: Date.now() });
       writeAssignments(list);
       return id;
+    },
+    /* how long a sheet has been waiting for its questions. A sheet filed
+       before this was recorded falls back to the date on it. */
+    waitingSince: function (a) {
+      if (!a) return 0;
+      if (a.added) return a.added;
+      var m = String(a.given || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m) return new Date(+m[1], (+m[2]) - 1, +m[3]).getTime();
+      return 0;
+    },
+    waitingText: function (a) {
+      var t = window.HW.waitingSince(a);
+      if (!t) return '';
+      var mins = Math.floor((Date.now() - t) / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + ' minute' + (mins === 1 ? '' : 's');
+      var hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + ' hour' + (hrs === 1 ? '' : 's');
+      var days = Math.floor(hrs / 24);
+      return days + ' day' + (days === 1 ? '' : 's');
     },
     /* is this exact sheet already here? */
     findDuplicate: function (topic, given, sig) {
