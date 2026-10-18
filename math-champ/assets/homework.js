@@ -407,26 +407,11 @@
       writeAssignments(list);
       return id;
     },
-    /* how long a sheet has been waiting for its questions. A sheet filed
-       before this was recorded falls back to the date on it. */
-    waitingSince: function (a) {
-      if (!a) return 0;
-      if (a.added) return a.added;
-      var m = String(a.given || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (m) return new Date(+m[1], (+m[2]) - 1, +m[3]).getTime();
-      return 0;
-    },
-    waitingText: function (a) {
-      var t = window.HW.waitingSince(a);
-      if (!t) return '';
-      var mins = Math.floor((Date.now() - t) / 60000);
-      if (mins < 1) return 'just now';
-      if (mins < 60) return mins + ' minute' + (mins === 1 ? '' : 's');
-      var hrs = Math.floor(mins / 60);
-      if (hrs < 24) return hrs + ' hour' + (hrs === 1 ? '' : 's');
-      var days = Math.floor(hrs / 24);
-      return days + ' day' + (days === 1 ? '' : 's');
-    },
+    /* A sheet whose questions do not exist yet is not "waiting for a timer" -
+       it needs to reach Gurukool, where the questions are built from it. So
+       there is no clock here on purpose: counting the hours would only tell the
+       parent that nothing is happening. */
+    needsSending: function (a) { return !!(a && !(a.types || []).length); },
     /* is this exact sheet already here? */
     findDuplicate: function (topic, given, sig) {
       var probe = { topic: topic, given: given, sig: sig || '' };

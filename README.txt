@@ -1433,6 +1433,30 @@ rows, chips "not practised yet", "coming soon" and "waiting 3 days", the
 waiting line in full, the message "The questions are ready for Linear
 equations. Tick it and go.", and only the still-waiting sheet left in storage.
 
+Recent changes (round 68 - v68: the waiting clock is gone)
+------------------------
+The v67 "waiting 20 hours" clock was a mistake. Counting how long a sheet has
+sat there tells the parent nothing - it is not a countdown, and it reads as if
+something is happening when nothing is. It has been removed from the child's
+page and from the Parent Console.
+
+What a sheet without questions says now:
+  chip:    "needs sending to Gurukool"
+  line:    "Its questions do not exist yet - they are built from the sheet
+            itself, so tap Send this sheet, then attach the file in your chat
+            with Gurukool."
+  button:  "Send this sheet" - opens the iPad share sheet with the file, so it
+            can be saved to Files or sent on; a plain download only if the
+            device does not offer sharing.
+When no sheet was stored on the device, the line does not mention the button at
+all, so it never points at something that is not on screen.
+
+VERIFIED: the page was loaded with two real unbuilt sheets (the AU 7 Whole
+Number Operations and Place Value, and the AU 7 Lines Angles and Parallel Line
+Properties): three rows, chips "not practised yet", "coming soon" and "needs
+sending to Gurukool", the correct line with no button reference, and no clock
+text anywhere.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

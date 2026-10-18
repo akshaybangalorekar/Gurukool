@@ -788,20 +788,6 @@
     if (dropped.length) hwaWrite(keep);
     return dropped;
   }
-  function hwaWait(a) {
-    var t = (a && a.added) ? a.added : 0;
-    if (!t) {
-      var m = String((a && a.given) || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-      if (m) t = new Date(+m[1], (+m[2]) - 1, +m[3]).getTime();
-    }
-    if (!t) return 'a while';
-    var mins = Math.floor((Date.now() - t) / 60000);
-    if (mins < 60) return Math.max(1, mins) + ' min';
-    var hrs = Math.floor(mins / 60);
-    if (hrs < 24) return hrs + ' hr';
-    var d = Math.floor(hrs / 24);
-    return d + ' day' + (d === 1 ? '' : 's');
-  }
   function sameSheet(a, b) {
     /* the same file, or two photographs of the same sheet (same date and the
        same topic), which is what actually happens in a house with a camera */
@@ -847,7 +833,7 @@
       var sheet = hwaSheetMap[a.id];
       var kinds = (a.types || []).length;
       return '<div class="pc-row"><b>' + esc(a.topic) + '</b><span class="pc-meta">given ' + esc(hwaDate(a.given)) + ' \u00b7 ' +
-        (kinds ? kinds + ' kinds of question' : 'questions not built yet \u00b7 waiting ' + hwaWait(a)) + (sheet ? ' \u00b7 sheet attached' : '') + '</span>' +
+        (kinds ? kinds + ' kinds of question' : 'questions not built yet \u00b7 send the sheet to Gurukool') + (sheet ? ' \u00b7 sheet attached' : '') + '</span>' +
         '<span style="margin-left:auto;display:inline-flex;gap:8px;align-items:center">' +
         '<input id="hwa-f-' + a.id + '" type="file" accept="image/*,application/pdf" style="display:none" ' +
         'onchange="PC.attachHW(\'' + a.id + '\', this)">' +

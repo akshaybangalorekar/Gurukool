@@ -16,7 +16,7 @@
   <title>Math-Champ — Homework Club</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/style.css?v=67">
+  <link rel="stylesheet" href="assets/style.css?v=68">
 <style>
   .h-wrap { max-width: 780px; margin: 0 auto; padding: 26px 22px 190px; }
   .h-h1 { font-family: Baloo 2, Nunito, sans-serif; font-weight: 800; font-size: 32px; color: #0f172a; margin: 4px 0 6px; }
@@ -68,15 +68,15 @@
   <header class="topnav" id="topnav"></header>
   <main class="h-wrap"><div id="h-view"></div></main>
   <div class="hw-bar" id="hw-bar"></div>
-  <script src="../version.js?v=67"></script>
-  <script src="../hw-sheets.js?v=67"></script>
-  <script src="../gk-fresh.js?v=67"></script>
-  <script src="../rhythm.js?v=67"></script>
-  <script src="assets/app.js?v=67"></script>
-  <script src="assets/gen.js?v=67"></script>
-  <script src="assets/homework.js?v=67"></script>
-  <script src="../champ-rail.js?v=67"></script>
-  <script src="assets/nav.js?v=67"></script>
+  <script src="../version.js?v=68"></script>
+  <script src="../hw-sheets.js?v=68"></script>
+  <script src="../gk-fresh.js?v=68"></script>
+  <script src="../rhythm.js?v=68"></script>
+  <script src="assets/app.js?v=68"></script>
+  <script src="assets/gen.js?v=68"></script>
+  <script src="assets/homework.js?v=68"></script>
+  <script src="../champ-rail.js?v=68"></script>
+  <script src="assets/nav.js?v=68"></script>
   <script>MathNav.mount('homework'); MathNav.top();</script>
   <script>
   (function () {
@@ -153,17 +153,19 @@
           '<p class="hw-given">given ' + esc(HW.prettyDate(a.given)) + '</p>' +
           '<p class="hw-covers">' + (ready
             ? (a.types || []).map(function (t) { var T = HW.byId(t); return esc(T ? T.name : t); }).join(' \u00b7 ')
-            : 'The questions for this one are still being written \u2014 they are built from the sheet itself, ' +
-              'so this one is ready as soon as the sheet reaches Gurukool.') + '</p>' +
+            : 'Its questions do not exist yet \u2014 they are built from the sheet itself, ' +
+              (S.sheets[a.id]
+                ? 'so tap <b>Send this sheet</b>, then attach the file in your chat with Gurukool.'
+                : 'so send this sheet in your chat with Gurukool and the questions will appear here.')) + '</p>' +
           '<span class="h-chip">' + (ready
             ? (st.n ? st.n + ' practised \u00b7 ' + st.pct + '% right' : 'not practised yet')
             : 'coming soon') + '</span>' +
-          (ready ? '' : '<span class="h-chip" style="background:#fef3c7;color:#78350f">waiting ' + esc(HW.waitingText(a)) + '</span>') +
+          (ready ? '' : '<span class="h-chip" style="background:#fef3c7;color:#78350f">needs sending to Gurukool</span>') +
           '<div class="hw-acts">' + sheetBtn +
           (ready
             ? '<button class="h-btn small" onclick="HWClub.practiseOne(\'' + a.id + '\')">Practise just this</button>' +
               '<button class="h-btn small" onclick="HWClub.teach(\'' + a.id + '\')">Teach me this</button>'
-            : (S.sheets[a.id] ? '<span class="h-chip" style="background:#fef3c7;color:#78350f">Look at the sheet while you wait</span>' : '')) +
+            : (S.sheets[a.id] ? '<button class="h-btn small" style="border-color:#2e7d32;color:#2e7d32" onclick="HWClub.sendSheet(\'' + a.id + '\')">Send this sheet</button>' : '')) +
           '</div></div></div></div>';
       });
       h += '<div class="h-note">Nothing else lives in the Homework Club \u2014 only the kinds of question your teacher actually sets.</div>';
@@ -301,6 +303,30 @@
       },
       teach: function (id) { teachView([id]); },
       sheet: function (id) { sheetView(id); },
+      /* get the sheet out of the device and into the parent's hands, so it can
+         be sent to Gurukool. The share sheet first - it can save to Files, or
+         send it on - and a plain download only if sharing is not offered. */
+      sendSheet: function (id) {
+        if (!window.HWSheets) return;
+        HWSheets.get(id).then(function (rec) {
+          if (!rec || !rec.blob) return;
+          var file = new File([rec.blob], rec.name || 'homework-sheet', { type: rec.type || 'application/octet-stream' });
+          var say = function (m) { var e = el('hw-add-msg'); if (e) e.textContent = m; };
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            navigator.share({ files: [file], title: rec.name || 'Homework sheet' })
+              .then(function () { say('Sent. Now attach it in your chat with Gurukool.'); })
+              .catch(function () { /* the parent closed the share sheet - nothing to do */ });
+            return;
+          }
+          try {
+            var url = URL.createObjectURL(rec.blob);
+            var a = document.createElement('a');
+            a.href = url; a.download = rec.name || 'homework-sheet';
+            document.body.appendChild(a); a.click(); a.remove();
+            say('Saved to this device \u2014 attach that file in your chat with Gurukool.');
+          } catch (e) { say('Could not open the sheet: ' + (e && e.message ? e.message : 'unknown')); }
+        }).catch(function () {});
+      },
       /* just the file. The date and a first guess at the topic come from its
          name; the questions are built from the sheet itself later. */
       addSheet: function (input) {
@@ -407,8 +433,7 @@
       }
     });
 
-    /* keep the waiting clock honest while the page is open */
-    setInterval(function () { if (S.view === 'list') list(); }, 60000);
+
   })();
   </script>
 </body>
