@@ -1457,6 +1457,30 @@ Properties): three rows, chips "not practised yet", "coming soon" and "needs
 sending to Gurukool", the correct line with no button reference, and no clock
 text anywhere.
 
+Recent changes (round 69 - v69: a sheet is sent to GitHub as soon as it is added)
+------------------------
+When a homework sheet is filed, it is now uploaded straight away to the
+"sources" branch of the Gurukool repository, under sources/sheets/. That is the
+one place Gurukool can read without being handed anything, so a sheet can be
+built into questions without the parent sending it separately.
+
+- Uses the same token the cloud sync already has (stored as sq_gh).
+- The only setup: that token must also be given the Gurukool repository
+  (Repository access > add Gurukool, Contents: Read and write). If it is not,
+  the page says exactly that instead of a bare failure.
+- The file name is made from the sheet's date and topic, so re-sending the same
+  sheet replaces it rather than piling up copies.
+- The page reports what happened: "sent to Gurukool (sources/sheets/...)" or
+  the reason it could not.
+- NOTE: the Gurukool repository is public, so a sheet sent this way is public
+  on that branch. The sheets are school worksheets, not personal data, but it
+  is the parent's choice - the upload can be pointed at a private repo instead,
+  at the cost of Gurukool not being able to read it.
+
+VERIFIED end to end against the live GitHub API: a probe file was uploaded
+through the page's own uploader and appeared at
+sources/sheets/upload-probe.txt in the repository, then was deleted again.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
