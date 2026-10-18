@@ -1268,6 +1268,33 @@ URL), and delete all behaved. The real Homework Club page was then loaded with
 storage unavailable and still drew its assignment and content, with no sheet
 button and no hang.
 
+SOURCE MATERIAL (the teacher's sheets and the raw files)
+--------------------------------------------------------
+The original sheets, photos and source files are NOT in this folder - they are
+on a separate branch called "sources", in a folder called "sources".
+
+  git clone --depth 1 --branch sources \
+    https://github.com/akshaybangalorekar/Gurukool.git sources
+
+They are kept off main on purpose: this repository is published as the live
+site on every push, and one of those files is a 52 MB scan, which would be
+re-uploaded with every single deploy.
+
+What is on that branch, and what has been built from it:
+  maths-olympiad-278-pages.pdf        278-page scanned Olympiad book, no text
+                                      layer. Nothing built from it yet.
+  maths-practice-photo-2026-09-30.jpg a photo of a printed practice paper.
+                                      Nothing built from it yet.
+  homework-linear-equations-2026-10-01.pdf
+                                      the 1 Oct 2026 homework sheet. BUILT: the
+                                      five Homework Club types in Maths.
+  science-quest.html + -features.md   the earlier single-file science game that
+                                      seeded Science-Champ.
+
+To add another sheet: put the file on the sources branch, say what it is in
+sources/README.md, then build its question types here on main and add an
+assignment row in the Parent Console so it shows up in the Homework Club.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
