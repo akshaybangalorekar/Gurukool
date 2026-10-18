@@ -51,6 +51,32 @@ and 10 are different shapes** (brackets, one-sided fractions, perimeter, ages,
 a distance formula, ticket costs) and are deliberately not in the Homework
 Club yet — Atharv's father asked for only the five he needed help with.
 
+### `sheets/2026-10-18-au7-whole-number-operations-and-place-value.pdf` (90 KB)
+### `sheets/2026-10-18-au7-lines-angles-and-parallel-line-properties.pdf` (88 KB)
+Two sheets the maths teacher set on 18 October 2026, 20 multiple-choice
+questions each, both with a text layer so the questions can be read directly.
+
+**Both are built.** They became the AU 7 assignments in the Homework Club
+(round 72), as 15 and 16 question kinds in `math-champ/assets/hw-au7.js`:
+
+Whole number operations and place value (15 kinds): place value of a digit;
+expanded form to a whole number; adding; subtracting; the carry into a named
+column; the distributive property; multiplying; dividing; division with a
+remainder in context; rounding up to fit everyone; rounding to a named place;
+estimating a product; estimating a total; order of operations (plain, with
+brackets, and nested); and choosing the expression that gives the change.
+
+Lines, angles and parallel line properties (16 kinds): collinear and concurrent
+points, rays; classifying an angle; right, straight and full turns;
+complementary; supplementary on a straight line; vertically opposite; angles at
+a point; angles inside a right angle; corresponding; alternate interior;
+co-interior; deciding whether lines are parallel; finding x with angles on a
+line; finding x with vertically opposite angles; a triangle between parallel
+lines; and a bent path between parallel lines.
+
+All 31 kinds were swept: 12,400 questions generated and 10,809 recomputed
+independently - zero disagreements.
+
 ### `science-quest.html` (522 KB) and `science-quest-features.md` (7 KB)
 An earlier single-file science game, "Science Quest by Gurukool", with its
 feature list. It was the seed for Science-Champ: the worlds, the level ladder
