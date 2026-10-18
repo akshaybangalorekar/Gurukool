@@ -768,7 +768,11 @@
   var hwaSheetsAsked = false;
 
   var HWA_BUILT = [{ id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01', built: true,
-                     types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] }];
+                     types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] },
+                   { id: 'a-2026-10-18-whole', topic: 'AU 7 Whole Number Operations and Place Value', given: '2026-10-18', built: true,
+                     types: ['w-place','w-expand','w-add','w-sub','w-carry','w-distrib','w-mult','w-div','w-rem','w-roundup','w-round','w-estprod','w-estsum','w-ops','w-expr'] },
+                   { id: 'a-2026-10-18-lines', topic: 'AU 7 Lines, Angles and Parallel Line Properties', given: '2026-10-18', built: true,
+                     types: ['l-vocab','l-classify','l-facts','l-comp','l-supp','l-vert','l-point','l-right','l-corresp','l-alt','l-coint','l-partest','l-algadj','l-algvert','l-tri','l-bent'] }];
   function hwaRaw() {
     try {
       var raw = JSON.parse(localStorage.getItem(HWA_KEY));
@@ -792,8 +796,15 @@
     /* the same file, or two photographs of the same sheet (same date and the
        same topic), which is what actually happens in a house with a camera */
     if (a.sig && b.sig && a.sig === b.sig) return true;
-    return !!(a.given && b.given && a.given === b.given &&
-      String(a.topic || '').trim().toLowerCase() === String(b.topic || '').trim().toLowerCase());
+    if (!(a.given && b.given && a.given === b.given)) return false;
+    var na = String(a.topic || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    var nb = String(b.topic || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!na || !nb) return false;
+    if (na === nb) return true;
+    /* the same sheet can arrive with extra words on the end - a filename, or
+       the name of the app the teacher used */
+    var short = na.length <= nb.length ? na : nb, long = na.length <= nb.length ? nb : na;
+    return short.length >= 10 && long.indexOf(short) === 0;
   }
   function hwaRead() {
     var stored = hwaRaw();

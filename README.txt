@@ -1516,6 +1516,48 @@ and cannot be read from outside. That is why the upload goes to the sources
 branch: the repository is the only memory that lasts and that both sides can
 read.
 
+Recent changes (round 72 - v72: the two AU Grade 7 sheets are built)
+------------------------
+Both sheets the teacher set on 18 Oct 2026 are now in the Homework Club, built
+from the sheets themselves into 31 question kinds, in a new file
+math-champ/assets/hw-au7.js.
+
+  AU 7 Whole Number Operations and Place Value   - 15 kinds
+  AU 7 Lines, Angles and Parallel Line Properties - 16 kinds
+
+Every kind is a shape that appears on those sheets, and nothing else: place
+value, expanded form, adding, subtracting, the carry into a named column, the
+distributive property, multiplying, dividing, division with a remainder in
+context, rounding up to fit everyone, rounding to a place, estimating a product,
+estimating a total, order of operations (plain, bracketed and nested), and
+choosing the expression that gives the change; then collinear and concurrent
+points, rays, classifying an angle, right/straight/full turns, complementary,
+supplementary, vertically opposite, angles at a point, angles inside a right
+angle, corresponding, alternate interior, co-interior, deciding whether lines
+are parallel, finding x on a line, finding x with vertically opposite angles, a
+triangle between parallels, and a bent path between parallels.
+
+Each question offers four choices: the right answer and three that are the
+mistakes children actually make.
+
+BUGS FOUND AND FIXED WHILE BUILDING THIS
+- Several kinds called the option-shuffler twice, so the choices and the answer
+  index would have disagreed - the right answer would have been marked wrong.
+  Every one now shuffles once.
+- "Angles at a point" added up one more angle than it showed.
+- "Finding x with vertically opposite angles" had a sign error; the sheet's own
+  example, (4x - 20) and (2x + 30) giving x = 25, now reproduces.
+- Two kinds could offer only three choices; the sentence helper now guarantees
+  four.
+- Duplicate detection now treats a topic as the same when one name starts with
+  the other, so his two local copies ("...Place Value Plickers") were recognised
+  as the built sheets and swept: the page went from five rows to three.
+
+VERIFIED: 12,400 questions generated across the 31 kinds, with 10,809
+recomputed independently from the question text - zero disagreements, every one
+with 4-5 distinct options. The sheets are filed on the sources branch as
+sources/sheets/2026-10-18-au7-*.pdf.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
