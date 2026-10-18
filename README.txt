@@ -1481,6 +1481,22 @@ VERIFIED end to end against the live GitHub API: a probe file was uploaded
 through the page's own uploader and appeared at
 sources/sheets/upload-probe.txt in the repository, then was deleted again.
 
+Recent changes (round 70 - v70: send an existing sheet too)
+------------------------
+v69 uploads a sheet the moment it is added. But a sheet filed BEFORE that
+existed - which includes the two AU 7 sheets - has no way up, and re-adding it
+is refused by the duplicate check. So each sheet that is still waiting now has:
+
+  "Send to Gurukool"      uploads the copy on this device to sources/sheets/
+  "Send it to myself"     hands the file over (share sheet, or a download) so
+                          the parent can attach it in chat instead
+
+Both are only shown when a sheet is actually stored on the device.
+
+VERIFIED: the uploader itself was driven against the live GitHub API and a file
+appeared on the sources branch and was then deleted; the page was loaded with a
+real waiting sheet to confirm the card and its wording.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
