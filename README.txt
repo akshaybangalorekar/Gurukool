@@ -1679,6 +1679,25 @@ this"] and calling Practice More directly did nothing at all. With all twenty
 marked done, they read ["Homework Done", "Practice More", "Teach me this"], and
 Practice More then served a freshly generated question on the same kind.
 
+Recent changes (round 77 - v77: the sheet's own question numbers are shown)
+------------------------
+The teacher's questions carried no number on screen, so there was no way to line
+up what the child was answering with the sheet the teacher is marking.
+
+Now each of the teacher's questions shows its number FROM THE SHEET:
+  "Question 6 of 20 - from your teacher's sheet"
+The number is the position on the sheet, not a running count, so if five have
+been done the next one to come up is still Question 6 of 20 - and if he does
+them out of order, the number stays the one his teacher has. Gurukool's own
+practice questions keep a plain running count, since they have no sheet number.
+
+The four choices are lettered A, B, C and D in the sheet's own order, which was
+confirmed on screen.
+
+VERIFIED: with five of the twenty marked done, a session opened on Question 6 of
+20, then 7, then 8, each showing A. B. C. D. in the sheet's order and the sheet's
+own wording.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

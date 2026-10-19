@@ -448,6 +448,9 @@
           if (done.indexOf(i) !== -1) return;
           out.push({ q: q.q, options: q.options.slice(), answer: q.answer,
                      typeId: a.id, typeName: (q.topic || a.topic), teacher: true, index: i,
+                     /* the number this question carries ON THE SHEET, so it lines up
+                        with the teacher's marking even when done out of order */
+                     sheetNumber: i + 1, sheetTotal: sheet.length,
                      assignId: a.id, hints: q.hints || [], sol: q.why || '' });
         });
       });
