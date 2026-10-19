@@ -1619,6 +1619,38 @@ sheet's own Q1-Q4 in order with the sheet's options in order. With all 20 marked
 done, the same session served generated questions instead, and the card read
 "all 20 done - practice open".
 
+Recent changes (round 75 - v75: the questions now match the sheet word for word)
+------------------------
+The parent was right: v74 stored the teacher's questions but not in the
+teacher's words. Working from an automatic text extraction had quietly
+"improved" the sheet, which is exactly what was asked not to happen.
+
+WHAT WAS WRONG
+- Several questions on both sheets begin with no article at all - the sheet
+  reads "stadium hosted 14,250 spectators...", "warehouse had 8,500 boxes...",
+  "store sells boxes of chocolates...", "hotel has 125 rooms...", "factory
+  packages 845 tennis balls...", "school needs to transport 380 students...",
+  "company spent $18,920...", "teacher buys 5 packs of markers...", and on the
+  lines sheet "straight geometric figure starts at a fixed endpoint A...". An
+  article had been added to each of those nine. It is gone.
+- The sheet uses a plain hyphen in "5,004 - 2,638", "18 + 12 / 3 x 2 - 5",
+  "50 - [4 + (8 - 2) x 5]", "(4x - 20)" and the four expressions in question 20.
+  A proper minus sign had been substituted. The hyphen is back.
+- Question 11 reads "Calculate 1,728 / 16" with the fraction shown, so it ends
+  there - a full stop had been added.
+
+HOW IT WAS CHECKED
+Each page was RENDERED AND READ, not just text-extracted: the extraction loses
+the superscript in question 18 ((15 - 3) x 2^3 / 4, which is why 24 is the
+answer) and reads the two columns out of order. Every question was then
+compared against the sheet, and the nine openings and five hyphens above were
+checked character by character.
+
+ONE THING THE TEACHER SHOULD KNOW
+Question 18 of the lines sheet is cut off ON THE SHEET: it ends "What is the
+total measure of interior angle V facin". It is completed in the app as
+"facing the opening" so it can be read, and it is noted on the sources branch.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

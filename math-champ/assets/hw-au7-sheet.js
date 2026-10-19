@@ -1,13 +1,22 @@
 /* ============================================================
    THE TEACHER'S OWN QUESTIONS - copied from the sheets, not rewritten
    The two AU Grade 7 sheets of 18 October 2026, 20 questions each, in the
-   order they appear on the sheet, with the same options and the same wording.
-   Nothing here is invented: these are the questions his teacher set.
+   order they appear, with the sheet's own wording and the sheet's own options.
 
-   Only after all of them have been attempted does the Homework Club offer
-   practice on the same topics (those are generated, in hw-au7.js).
+   These were checked against a rendering of each page, not against an
+   automatic text extraction, because the extraction loses the superscript in
+   question 18 and reorders the columns.
 
-   The answer for each was worked out from the question itself and checked.
+   Nothing here is rewritten. Where the sheet has no article ("stadium hosted
+   14,250 spectators..."), there is no article here either. Where the sheet uses
+   a plain hyphen ("5,004 - 2,638"), so does this. Where the sheet writes
+   (15 - 3) x 2 to the power 3 / 4, so does this.
+
+   The answer to each was worked out from the question and checked.
+
+   ONE THING TO KNOW: question 18 of the lines paper is cut off ON THE SHEET
+   ITSELF - it ends "What is the total measure of interior angle V facin". The
+   word is completed here as "facing the opening" so the question can be read.
    ============================================================ */
 (function () {
   var DEG = '\u00B0';
@@ -18,45 +27,45 @@
       answer: 3, topic: 'Place value' },
     { q: 'Which whole number is represented by the expanded form: 3 \u00D7 100,000 + 5 \u00D7 10,000 + 8 \u00D7 100 + 4 \u00D7 1?',
       options: ['350,840', '358,004', '350,804', '3,508,004'], answer: 2, topic: 'Expanded form' },
-    { q: 'A stadium hosted 14,250 spectators on Friday and 18,970 spectators on Saturday. How many total spectators attended over the two days?',
+    { q: 'stadium hosted 14,250 spectators on Friday and 18,970 spectators on Saturday. How many total spectators attended over the two days?',
       options: ['33,120', '32,120', '33,220', '34,220'], answer: 2, topic: 'Adding' },
-    { q: 'A warehouse had 8,500 boxes in stock. After delivering 3,745 boxes to retail stores, how many boxes remained in the warehouse?',
+    { q: 'warehouse had 8,500 boxes in stock. After delivering 3,745 boxes to retail stores, how many boxes remained in the warehouse?',
       options: ['4,755', '4,765', '4,855', '5,255'], answer: 0, topic: 'Subtracting' },
     { q: 'In the vertical addition algorithm for 4,839 + 3,768, what value is carried into the thousands column?',
       options: ['6', '0', '1', '2'], answer: 2, topic: 'Carrying' },
-    { q: 'Calculate 5,004 \u2212 2,638 using the formal subtraction algorithm.',
+    { q: 'Calculate 5,004 - 2,638 using the formal subtraction algorithm.',
       options: ['2,466', '3,366', '2,376', '2,366'], answer: 3, topic: 'Subtracting' },
     { q: 'Using the distributive property, calculate 8 \u00D7 47 by expanding 47 as (40 + 7).',
       options: ['386', '356', '376', '396'], answer: 2, topic: 'Distributive property' },
-    { q: 'A store sells boxes of chocolates containing 24 chocolates each. If a customer purchases 9 boxes, how many total chocolates do they buy?',
+    { q: 'store sells boxes of chocolates containing 24 chocolates each. If a customer purchases 9 boxes, how many total chocolates do they buy?',
       options: ['226', '206', '196', '216'], answer: 3, topic: 'Multiplying' },
     { q: 'Calculate the product of 345 \u00D7 28.',
       options: ['9,560', '9,660', '9,760', '8,660'], answer: 1, topic: 'Multiplying' },
-    { q: 'A hotel has 125 rooms. If each room costs $140 per night, what is the total revenue collected if all rooms are booked for one night?',
+    { q: 'hotel has 125 rooms. If each room costs $140 per night, what is the total revenue collected if all rooms are booked for one night?',
       options: ['$17,500', '$16,500', '$18,500', '$17,000'], answer: 0, topic: 'Multiplying' },
-    { q: 'Calculate 1,728 \u00F7 16.',
+    { q: 'Calculate 1,728 \u00F7 16',
       options: ['112', '108', '118', '98'], answer: 1, topic: 'Dividing' },
-    { q: 'A factory packages 845 tennis balls into cans that hold 4 balls each. How many full cans are packaged, and how many balls are left over?',
+    { q: 'factory packages 845 tennis balls into cans that hold 4 balls each. How many full cans are packaged, and how many balls are left over?',
       options: ['212 full cans with 1 ball left over', '211 full cans with 1 ball left over',
                 '211 full cans with 2 balls left over', '210 full cans with 5 balls left over'],
       answer: 1, topic: 'Division with a remainder' },
-    { q: 'A school needs to transport 380 students on buses. Each bus can seat a maximum of 45 students. What is the minimum number of buses required to transport all students?',
+    { q: 'school needs to transport 380 students on buses. Each bus can seat a maximum of 45 students. What is the minimum number of buses required to transport all students?',
       options: ['10 buses', '7 buses', '8 buses', '9 buses'], answer: 3, topic: 'Rounding up' },
     { q: 'Round 68,492 to the nearest thousand.',
       options: ['70,000', '68,500', '68,000', '69,000'], answer: 2, topic: 'Rounding' },
     { q: 'By rounding each number to its leading digit (1 significant figure), estimate the product of 492 \u00D7 38.',
       options: ['18,000', '25,000', '15,000', '20,000'], answer: 3, topic: 'Estimating' },
-    { q: 'A company spent $18,920 on hardware and $31,250 on software. Estimate the total expenditure by rounding each amount to the nearest ten thousand.',
+    { q: 'company spent $18,920 on hardware and $31,250 on software. Estimate the total expenditure by rounding each amount to the nearest ten thousand.',
       options: ['$50,000', '$60,000', '$40,000', '$55,000'], answer: 0, topic: 'Estimating' },
-    { q: 'Evaluate the expression: 18 + 12 \u00F7 3 \u00D7 2 \u2212 5',
+    { q: 'Evaluate the expression: 18 + 12 \u00F7 3 \u00D7 2 - 5',
       options: ['21', '35', '25', '15'], answer: 0, topic: 'Order of operations' },
-    { q: 'Evaluate the expression: (15 \u2212 3) \u00D7 2<sup>3</sup> \u00F7 4',
+    { q: 'Evaluate the expression: (15 - 3) \u00D7 2<sup>3</sup> \u00F7 4',
       options: ['18', '24', '48', '36'], answer: 1, topic: 'Order of operations' },
-    { q: 'Evaluate the expression: 50 \u2212 [4 + (8 \u2212 2) \u00D7 5]',
+    { q: 'Evaluate the expression: 50 - [4 + (8 - 2) \u00D7 5]',
       options: ['34', '16', '20', '24'], answer: 1, topic: 'Order of operations' },
-    { q: 'A teacher buys 5 packs of markers at $6 per pack and 3 boxes of pens at $4 per box. If she pays with a $50 bill, which mathematical expression correctly calculates her change in dollars, and what is the final amount?',
-      options: ['50 \u2212 5 \u00D7 6 + 3 \u00D7 4 = $32', '(50 \u2212 5) \u00D7 6 + 3 \u00D7 4 = $282',
-                '50 \u2212 (5 \u00D7 6 + 3 \u00D7 4) = $8', '50 \u2212 (5 \u00D7 6) \u00D7 (3 \u00D7 4) = $14'],
+    { q: 'teacher buys 5 packs of markers at $6 per pack and 3 boxes of pens at $4 per box. If she pays with a $50 bill, which mathematical expression correctly calculates her change in dollars, and what is the final amount?',
+      options: ['50 - 5 \u00D7 6 + 3 \u00D7 4 = $32', '(50 - 5) \u00D7 6 + 3 \u00D7 4 = $282',
+                '50 - (5 \u00D7 6 + 3 \u00D7 4) = $8', '50 - (5 \u00D7 6) \u00D7 (3 \u00D7 4) = $14'],
       answer: 2, topic: 'Writing an expression' }
   ];
 
@@ -67,7 +76,7 @@
     { q: 'When three or more straight lines intersect at a single common point, how are these lines described?',
       options: ['Perpendicular lines', 'Concurrent lines', 'Parallel lines', 'Collinear lines'],
       answer: 1, topic: 'Points and lines' },
-    { q: 'A straight geometric figure starts at a fixed endpoint A and extends infinitely through point B in one direction. How is this figure named?',
+    { q: 'straight geometric figure starts at a fixed endpoint A and extends infinitely through point B in one direction. How is this figure named?',
       options: ['Line segment AB', 'Ray AB', 'Line AB', 'Angle AB'], answer: 1, topic: 'Points and lines' },
     { q: 'An angle measures 215' + DEG + '. How is this angle classified?',
       options: ['Reflex angle', 'Revolution', 'Acute angle', 'Obtuse angle'], answer: 0, topic: 'Classifying angles' },
@@ -95,7 +104,7 @@
       answer: 1, topic: 'Deciding if lines are parallel' },
     { q: 'Two adjacent angles on a straight line are given by the expressions (3x + 15)' + DEG + ' and (2x + 10)' + DEG + '. Find the value of x.',
       options: ['35', '27', '25', '31'], answer: 3, topic: 'Finding x' },
-    { q: 'Two intersecting lines form vertically opposite angles measuring (4x \u2212 20)' + DEG + ' and (2x + 30)' + DEG + '. Find the value of x.',
+    { q: 'Two intersecting lines form vertically opposite angles measuring (4x - 20)' + DEG + ' and (2x + 30)' + DEG + '. Find the value of x.',
       options: ['20', '30', '25', '15'], answer: 2, topic: 'Finding x' },
     { q: 'Line AB is parallel to line CD. A triangle EFG has its top vertex E on line AB and its base vertices F and G on line CD. If angle AEF = 50' + DEG + ' and angle BEG = 60' + DEG + ', calculate interior top angle FEG of the triangle.',
       options: ['110' + DEG, '70' + DEG, '80' + DEG, '50' + DEG], answer: 1, topic: 'A triangle between parallels' },
