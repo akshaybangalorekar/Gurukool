@@ -1588,6 +1588,37 @@ VERIFIED: every figure was rendered in a headless browser and inspected. The
 bent path was checked numerically as well - the feet land exactly on their lines
 and the bend always sits between them.
 
+Recent changes (round 74 - v74: the teacher's questions come first, unaltered)
+------------------------
+The parent's rule, and it is the right one: a sheet the teacher set is the
+teacher's work, so the questions and the options must not be touched. Gurukool
+was inventing fresh questions from the very first session, which is wrong.
+
+WHAT HAPPENS NOW
+- New file math-champ/assets/hw-au7-sheet.js holds the two AU Grade 7 sheets
+  verbatim: all 40 questions, in the order they appear, with the same wording
+  and the same options, and the answer for each.
+- Those are served FIRST, in the sheet's order, with the options in the sheet's
+  order too - nothing is shuffled and nothing is reworded.
+- A topic is not practised with invented questions until every one of the
+  teacher's questions on it has been attempted. Only then do the generated
+  kinds (hw-au7.js, with their diagrams) open up as "practise this again".
+- The card says where he is: "your teacher's 20 questions - 7 done", and once
+  they are all done, "all 20 done - practice open".
+
+THE ANSWERS
+The sheets do not mark the answers, so every one of the 40 was worked out from
+the question itself and written down with its working, then checked by a script
+that recomputes each independently. All 40 agree. One thing worth knowing: on
+the sheet, question 18 of the whole number paper reads "(15 - 3) x 23 / 4"
+because the superscript was lost when the PDF was made - it is (15 - 3) x 2^3 /
+4, which is 24, and that is how it is now written.
+
+VERIFIED: with nothing done, a session on the whole number sheet served the
+sheet's own Q1-Q4 in order with the sheet's options in order. With all 20 marked
+done, the same session served generated questions instead, and the card read
+"all 20 done - practice open".
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

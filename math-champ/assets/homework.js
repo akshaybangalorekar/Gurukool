@@ -282,6 +282,7 @@
      lives on the device, so a new one can be added without touching code.
      ============================================================ */
   var ASSIGN_KEY = 'gk_hw_assignments';
+  var DONE_KEY = 'gk_hw_teacher_done';
   /* The ones already built from a sheet. These are always shown, because their
      question kinds exist in this file. A sheet added later from the Parent
      Console is stored on the device and merged in beside them - its kinds are
@@ -290,9 +291,11 @@
     { id: 'a-2026-10-01', topic: 'Linear equations', given: '2026-10-01', built: true,
       types: ['bothsides', 'addfractions', 'wordproblem', 'angles', 'subfractions'] },
     { id: 'a-2026-10-18-whole', topic: 'AU 7 Whole Number Operations and Place Value', given: '2026-10-18', built: true,
+      sheet: 'whole',
       types: ['w-place', 'w-expand', 'w-add', 'w-sub', 'w-carry', 'w-distrib', 'w-mult', 'w-div', 'w-rem',
               'w-roundup', 'w-round', 'w-estprod', 'w-estsum', 'w-ops', 'w-expr'] },
     { id: 'a-2026-10-18-lines', topic: 'AU 7 Lines, Angles and Parallel Line Properties', given: '2026-10-18', built: true,
+      sheet: 'lines',
       types: ['l-vocab', 'l-classify', 'l-facts', 'l-comp', 'l-supp', 'l-vert', 'l-point', 'l-right',
               'l-corresp', 'l-alt', 'l-coint', 'l-partest', 'l-algadj', 'l-algvert', 'l-tri', 'l-bent'] }
   ];
@@ -412,6 +415,55 @@
       return [file.name || '', file.size || 0, file.lastModified || 0].join('|');
     },
     typesFor: typesFor,
+    /* ---- the teacher's own questions ----
+       A sheet that Gurukool has read carries its questions verbatim: the same
+       wording and the same options, in the same order. They are served first.
+       Nothing is invented for that topic until every one of them has been
+       attempted - only then does practice on the same kinds open up. */
+    teacher: function (assign) {
+      if (!assign || !assign.sheet || !window.AU7SHEET) return null;
+      return window.AU7SHEET[assign.sheet] || null;
+    },
+    teacherDone: function (assignId) {
+      try { var m = JSON.parse(localStorage.getItem(DONE_KEY)) || {}; return m[assignId] || []; } catch (e) { return []; }
+    },
+    markTeacherDone: function (assignId, index) {
+      try {
+        var m = JSON.parse(localStorage.getItem(DONE_KEY)) || {};
+        var list = m[assignId] || [];
+        if (list.indexOf(index) === -1) list.push(index);
+        m[assignId] = list;
+        localStorage.setItem(DONE_KEY, JSON.stringify(m));
+      } catch (e) {}
+    },
+    /* every teacher question still to be done, across the assignments picked */
+    pendingTeacher: function (ids) {
+      var out = [];
+      readAssignments().forEach(function (a) {
+        if (ids && ids.length && ids.indexOf(a.id) === -1) return;
+        var sheet = window.HW.teacher(a);
+        if (!sheet) return;
+        var done = window.HW.teacherDone(a.id);
+        sheet.forEach(function (q, i) {
+          if (done.indexOf(i) !== -1) return;
+          out.push({ q: q.q, options: q.options.slice(), answer: q.answer,
+                     typeId: a.id, typeName: (q.topic || a.topic), teacher: true, index: i,
+                     assignId: a.id, hints: q.hints || [], sol: q.why || '' });
+        });
+      });
+      return out;
+    },
+    teacherProgress: function (ids) {
+      var total = 0, done = 0;
+      readAssignments().forEach(function (a) {
+        if (ids && ids.length && ids.indexOf(a.id) === -1) return;
+        var sheet = window.HW.teacher(a);
+        if (!sheet) return;
+        total += sheet.length;
+        done += window.HW.teacherDone(a.id).length;
+      });
+      return { total: total, done: done };
+    },
     addAssignment: function (topic, given, sig) {
       var list = readStored();
       var id = 'a-' + (given || todayISO()) + '-' + Math.random().toString(36).slice(2, 6);
