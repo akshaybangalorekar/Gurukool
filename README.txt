@@ -1651,6 +1651,34 @@ Question 18 of the lines sheet is cut off ON THE SHEET: it ends "What is the
 total measure of interior angle V facin". It is completed in the app as
 "facing the opening" so it can be read, and it is noted on the sources branch.
 
+Recent changes (round 76 - v76: Homework Pending / Homework Done / Practice More)
+------------------------
+The parent's rule, stated strictly: a sheet the teacher set is never changed,
+and the ORDER OF THE ANSWERS is never changed either. That last part matters
+most - the teacher marks the sheet by letter, so if the app showed the options
+in a different order the child would learn "the answer is B" while the sheet
+says C, and it would look as though he got everything wrong.
+
+The option order was already preserved (the sheet's options are copied, never
+shuffled), and that is now checked: fifty draws of the same question hand back
+the identical option list and the identical answer letter every time.
+
+THE BUTTONS
+Each sheet-backed assignment now shows its state, and nothing of Gurukool's is
+reachable before the teacher's work is finished:
+  while questions remain   "Homework Pending"   and "Teach me this"
+  once every one is done   "Homework Done" (a green label), "Practice More",
+                           and "Teach me this"
+"Practice More" does not appear at all until the last of the teacher's questions
+has been attempted, and the function behind it refuses to run even if called
+directly while any are outstanding. It is the only door to the generated
+questions, so there is no other way in.
+
+VERIFIED: with nothing done, the buttons read ["Homework Pending", "Teach me
+this"] and calling Practice More directly did nothing at all. With all twenty
+marked done, they read ["Homework Done", "Practice More", "Teach me this"], and
+Practice More then served a freshly generated question on the same kind.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP
