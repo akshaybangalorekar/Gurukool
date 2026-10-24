@@ -72,18 +72,18 @@
     };
 
     stages.push({ type: 'q', title: 'Warm up', mins: 5, blurb: 'Five quick ones, to get your eye in.',
-      qs: shuffle(keys).slice(0, 5).map(function (k) { return q(k, 'easy'); }) });
+      qs: shuffle(keys).slice(0, 5).map(function (k) { return q(k, 'hard'); }) });
     stages.push({ type: 'learn', title: 'Learn: ' + ((g.byKey(weak) || {}).name || weak), mins: 15, topic: weak,
-      demo: q(weak, 'easy'), blurb: 'One rule, shown to you first. Nothing is asked before it is shown.' });
+      demo: q(weak, 'hard'), blurb: 'One rule, shown to you first. Nothing is asked before it is shown.' });
     /* practise draws on the topic that needs it AND one other, so no question
        has to be repeated and a second skill gets a turn */
     var fresh = shuffle(keys.filter(function (k) { return k !== weak; }))[0];
     var pracKeys = [weak, weak, fresh, weak, fresh, fresh];
     stages.push({ type: 'q', title: 'Practise', mins: 20,
       blurb: 'Questions on ' + ((g.byKey(weak) || {}).name || weak).toLowerCase() + ' and ' + ((g.byKey(fresh) || {}).name || fresh).toLowerCase() + ', getting harder.',
-      qs: pracKeys.map(function (k, i) { return q(k, ['easy', 'easy', 'medium', 'medium', 'hard', 'medium'][i]); }) });
+      qs: pracKeys.map(function (k, i) { return q(k, ['hard', 'hard', 'medium', 'hard', 'hard', 'medium'][i]); }) });
     stages.push({ type: 'q', title: 'Check yourself', mins: 10, blurb: 'Five mixed ones. No hints unless you want them.',
-      qs: shuffle(keys).slice(0, 5).map(function (k, i) { return q(k, i < 3 ? 'medium' : 'hard'); }) });
+      qs: shuffle(keys).slice(0, 5).map(function (k, i) { return q(k, i < 4 ? 'hard' : 'medium'); }) });
     stages.push({ type: 'q', title: 'One hard one', mins: 10, optional: true,
       blurb: 'The toughest kind, only if today is going well.', qs: [q(weak, 'hard')] });
     return { date: todayStr(), mins: MINUTES, reason: d.reason, weak: weak, stages: stages, at: Date.now() };

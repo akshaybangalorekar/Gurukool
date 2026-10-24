@@ -35,11 +35,11 @@
       return 1;
     },
     label: function (lv) { return ['Not started', 'Getting it', 'Solid', 'Mastered'][lv] || 'Not started'; },
-    /* the practice tiers that suit a level: the questions rise with him */
+    /* The parent's rule: nothing starts at the simple end, at any level. Every
+       session opens on the harder tiers, so a topic is never warmed up with
+       questions that were never going to stretch him. */
     tiers: function (lv) {
-      if (lv >= 3) return ['medium', 'hard', 'hard', 'medium', 'hard', 'medium'];
-      if (lv === 2) return ['easy', 'medium', 'medium', 'hard', 'medium', 'easy'];
-      return ['easy', 'easy', 'easy', 'medium', 'easy', 'medium'];
+      return ['hard', 'hard', 'medium', 'hard', 'hard', 'medium'];
     }
   };
 })();

@@ -61,7 +61,7 @@
     MindNav.auto();
     function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
     var hard = MC_LEVELS.slice(5, 10).map(function (c) {
-      return '<a class="l-card" href="index.html"><span class="ico">' + c.icon + '</span><b>' + esc(c.name) + '</b>' +
+      return '<a class="l-card" href="index.html#' + c.id + '"><span class="ico">' + c.icon + '</span><b>' + esc(c.name) + '</b>' +
         '<span class="sub">' + esc(c.tech ? c.tech.desc : 'The hardest cases') + '</span><span class="l-lv">boss level</span></a>';
     }).join('');
     document.getElementById('m-view').innerHTML =
@@ -75,6 +75,6 @@
       '<p class="l-sec">The Detective Files</p><div class="l-grid">' + hard + '</div>';
 
   </script>
-  <script src="../kidpad.js?v=77"></script>
+  <script src="../kidpad.js?v=78"></script>
 </body>
 </html>

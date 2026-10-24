@@ -1698,6 +1698,36 @@ VERIFIED: with five of the twenty marked done, a session opened on Question 6 of
 20, then 7, then 8, each showing A. B. C. D. in the sheet's order and the sheet's
 own wording.
 
+Recent changes (round 78 - v78: Games fixed, and nothing starts at the simple end)
+------------------------
+1. MIND-CHAMP GAMES WERE BROKEN
+   Two cards on the Games page - The Minecraft Quests and The Detective Files -
+   both pointed at index.html, which is the champ home. So tapping either one
+   landed the child back on the front door, with nothing started. The same fault
+   was on the Challenge page, whose five detective cards also pointed at the
+   home.
+
+   Both now name the case they want (index.html#q1, index.html#q6 and so on),
+   and the home opens that case when it is handed one, including on a hash
+   change. VERIFIED: opening the page with #q6 landed on "The Vanishing Cake"
+   with view {page:"case", lid:"q6", phase:"intro"} - not the home.
+
+2. NOTHING STARTS AT THE SIMPLE END
+   The parent's rule. Every place that chose a difficulty now opens on the
+   harder tiers:
+     maths    every level gets [hard, hard, medium, hard, hard, medium] - it
+              used to give the lowest level easy, easy, easy, medium, easy,
+              medium; and the random tier is now hard first
+     word     the warm up, the worked demonstration, the practice mix and the
+              check-yourself stage all start at hard
+     mind     every case is reachable from the start, so he can go straight to
+              the hardest instead of unlocking them one at a time
+     science  no difficulty tier existed (the "easy" hits there are prose)
+     sanskrit no easy tier either
+
+   The easy questions still exist in the generators - they are simply never
+   chosen by default, so putting them back is a one-line change.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

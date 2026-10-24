@@ -94,7 +94,9 @@
 
   function levelById(id) { for (var i = 0; i < MC_LEVELS.length; i++) if (MC_LEVELS[i].id === id) return MC_LEVELS[i]; return null; }
   function caseState(id) { return (S.cases[id] = S.cases[id] || { done: false, stars: 0, used: [], journal: [] }); }
-  function levelUnlocked(i) { return i === 0 || !!(S.cases[MC_LEVELS[i - 1].id] && S.cases[MC_LEVELS[i - 1].id].done); }
+  /* The parent's rule: nothing starts at the simple end, so every case is
+     open from the beginning and he can go straight to the hard ones. */
+  function levelUnlocked(i) { return true; }
 
   /* ---------- view ---------- */
 
@@ -448,6 +450,18 @@
   /* ---------- navigation ---------- */
 
   window.goHome = function () { view = { page: 'home' }; render(); };
+  /* Opening a quest by address, so the Games and Challenge pages can hand over
+     to a specific case instead of dumping the child back at the door. */
+  window.gkOpenFromHash = function () {
+    var m = String(location.hash || '').replace('#', '').trim();
+    if (!m) return false;
+    if (typeof MC_LEVELS === 'undefined') return false;
+    for (var i = 0; i < MC_LEVELS.length; i++) {
+      if (MC_LEVELS[i].id === m) { window.openCase(m); return true; }
+    }
+    return false;
+  };
+  window.addEventListener('hashchange', function () { window.gkOpenFromHash(); });
   window.openCase = function (id) {
     view = { page: 'case', lid: id, phase: 'intro', pi: 0 };
     var st = caseState(id);
@@ -860,4 +874,6 @@
     startPuzzle: startPuzzle, openCase: openCase, nextPz: nextPz, finishCase: finishCase, levelUnlocked: levelUnlocked };
 
   render();
+  /* a link from the Games or Challenge page names the case it wants */
+  window.gkOpenFromHash();
 })();

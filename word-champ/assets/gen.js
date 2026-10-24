@@ -174,6 +174,6 @@
       q.topic = t.key; q.topicName = t.name; q.tier = tier;
       return q;
     },
-    randomTier: function () { return pick(['easy', 'easy', 'medium', 'medium', 'hard']); }
+    randomTier: function () { return pick(['hard', 'hard', 'hard', 'medium', 'hard']); }
   };
 })();
