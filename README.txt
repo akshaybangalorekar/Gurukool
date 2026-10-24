@@ -1728,6 +1728,41 @@ Recent changes (round 78 - v78: Games fixed, and nothing starts at the simple en
    The easy questions still exist in the generators - they are simply never
    chosen by default, so putting them back is a one-line change.
 
+Recent changes (round 79 - v79: every link checked, every page opened in a browser)
+------------------------
+The parent asked for the whole app to be tested rather than spot-checked, because
+something keeps breaking when his son sits down with it.
+
+WHAT WAS DONE
+1. Every link on every page was crawled: 43 pages, 540 links. Zero point at a
+   file that does not exist.
+2. Every page was then OPENED IN A REAL BROWSER with an error catcher installed,
+   with the scripts inlined so the browser could not mask the error as
+   "Script error.". That is what found the real faults below.
+
+FAULTS FOUND AND FIXED
+- science-champ CRASHED on four pages. assets/app.js ended with
+  document.getElementById('modal').addEventListener(...), and #modal only exists
+  on the home page. On challenge, learn, play and projects it was null, so the
+  line threw "Cannot read properties of null" and KILLED THE REST OF THAT FILE
+  on those pages. Guarded.
+- science-champ ignored the section it was sent to. Links such as
+  index.html#trivia and index.html#world-sky landed on the front door. A hash
+  router now opens the world (or the trivia arena) that was asked for. Verified
+  in a browser: #trivia opens "Trivia Arena".
+- math-champ's "25 riddles" card pointed at quests.html#riddles, and no such
+  anchor ever existed. It now points at the page that holds the riddles.
+- champ-rail.js called the page's info() unguarded, so a page with a bad state
+  could take the whole top bar - and the page - down with it. Guarded, and
+  science's nav now hands it a state object that always exists.
+
+RESULT
+All 43 pages now load and run with ZERO errors, and every link resolves. The
+remaining anchors that a static check flags (mind's #q1 and #q6, reason.html's
+#codes and #series, sanskrit's #mission) are resolved in JavaScript by design -
+those were read in the code and, for the mind and science ones, confirmed in a
+browser.
+
 What lives here
 ---------------
 index.html            The hub. One name for the whole family, the XP

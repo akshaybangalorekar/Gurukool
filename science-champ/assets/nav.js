@@ -59,7 +59,7 @@
     },
     top: function () {
       if (!window.ChampRail) return;
-      var s = window.state || savedState();
+      var s = window.state || savedState() || {};
       var here = (location.pathname.split('/').pop() || 'index.html');
       var home = (here === 'index.html') ? '../index.html' : 'index.html';
       ChampRail.top({
@@ -68,7 +68,9 @@
         sync: (window.syncNow ? function () { try { syncNow(); } catch (e) {} } : null),
         progress: 'dashboard.html',
         info: function () {
-          return { name: (s.name || '').trim(), xp: s.xp || 0, streak: streakOf(s) };
+          try {
+            return { name: (s.name || '').trim(), xp: s.xp || 0, streak: streakOf(s) };
+          } catch (e) { return {}; }
         }
       });
     },

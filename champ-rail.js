@@ -60,7 +60,9 @@
       var host = document.getElementById(o.el || 'gk-head');
       if (!host) return;
       if (host.id !== 'gk-head') { host.className = (host.className || '') + ' gk-head-bar'; host.style.position = 'sticky'; host.style.top = '0'; host.style.left = '0'; host.style.right = '0'; }
-      var info = (typeof o.info === 'function') ? (o.info() || {}) : {};
+      /* never let the bar take the page down with it */
+      var info = {};
+      if (typeof o.info === 'function') { try { info = o.info() || {}; } catch (e) { info = {}; } }
       host.innerHTML =
         '<span class="gk-head__title">' + (o.icon || '') + ' ' + esc(o.title || '') + '</span>' +
         '<span class="gk-head__sp"></span>' +

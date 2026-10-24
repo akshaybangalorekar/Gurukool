@@ -727,7 +727,10 @@ function exportCode(){return 'SQ3.'+btoa(unescape(encodeURIComponent(JSON.string
 function importCode(c){c=(c||'').trim();var pref=null;if(c.indexOf('SQ3.')===0)pref='SQ3.';else if(c.indexOf('SQ2.')===0)pref='SQ2.';else if(c.indexOf('SQ1.')===0)pref='SQ1.';if(!pref)return false;try{var o=JSON.parse(decodeURIComponent(escape(atob(c.slice(pref.length)))));if(!o)return false;if(pref==='SQ3.'&&o.profiles){mergeS(o);}else if(typeof o.xp==='number'){mergeProfile(S.profiles[S.current],o);}else{return false;}checkBadges();save();return true;}catch(e){return false;}}
 function mergeProfile(a,b){a.xp=Math.max(a.xp||0,b.xp||0);['lessons','practice'].forEach(function(k){var src=b[k]||{};a[k]=a[k]||{};for(var key in src){if(src[key])a[k][key]=src[key];}});var q=b.quiz||{};for(var w in q){if(q[w]&&q[w].t){a.quiz=a.quiz||{};if(!a.quiz[w]||!a.quiz[w].t||q[w].s>a.quiz[w].s)a.quiz[w]=q[w];}}var lvB=b.levels||{};for(var wL in lvB){a.levels=a.levels||{};var mL=a.levels[wL]||{c:1,b1:0,b2:0,arena:0};mL.c=Math.max(mL.c||1,lvB[wL].c||1);mL.b1=Math.max(mL.b1||0,lvB[wL].b1||0);mL.b2=Math.max(mL.b2||0,lvB[wL].b2||0);mL.arena=Math.max(mL.arena||0,lvB[wL].arena||0);a.levels[wL]=mL;}['badges','visited'].forEach(function(k){a[k]=a[k]||[];(b[k]||[]).forEach(function(x){if(a[k].indexOf(x)<0)a[k].push(x);});});if((b.streak||0)>(a.streak||0)){a.streak=b.streak;a.lastDay=b.lastDay||a.lastDay;}(b.doubts||[]).forEach(function(x){a.doubts=a.doubts||[];if(!a.doubts.some(function(y){return y.t===x.t&&y.d===x.d;}))a.doubts.push(x);});}
 function mergeS(o){if(o.pin&&!S.pin)S.pin=o.pin;for(var k in o.profiles){if(!S.profiles[k]){S.profiles[k]=o.profiles[k];}else{mergeProfile(S.profiles[k],o.profiles[k]);}}}
-document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+/* #modal only exists on some pages - on the others this was null and threw,
+   which killed the rest of this file on those pages. */
+var gkModalEl=document.getElementById('modal');
+if(gkModalEl)gkModalEl.addEventListener('click',function(e){if(e.target===this)closeModal();});
 document.addEventListener('selectionchange',scheduleSel);
 window.addEventListener('scroll',hideSelBtn,true);
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){hideSelUI();closeModal();}});
@@ -737,4 +740,22 @@ if(ghCfg())setTimeout(function(){cloudSync(true);},1500);
    Cloud settings live ONLY in the Admin Console (admin.html). Local progress
    saves to this browser instantly on every XP, star and badge. */
 setTimeout(function(){if(ghCfg())cloudSync(true);},3000);setInterval(function(){if(ghCfg())cloudSync(true);},180000);
+
+/* A link may name the world it wants - index.html#world-sky, or #trivia for the
+   rapid-fire arena. Without this the child landed on the front door instead. */
+function gkOpenFromHash(){
+  var h = String(location.hash || '').replace('#','').trim();
+  if (!h) return false;
+  if (h === 'trivia') { openWorld('trivia'); return true; }
+  if (h.indexOf('world-') === 0) {
+    var id = h.slice(6);
+    if (W(id)) { openWorld(id); return true; }
+  }
+  if (W(h)) { openWorld(h); return true; }
+  return false;
+}
+window.gkOpenFromHash = gkOpenFromHash;
+window.addEventListener('hashchange', gkOpenFromHash);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', gkOpenFromHash);
+else gkOpenFromHash();
 
